@@ -8,14 +8,14 @@ import database.MySQLdatabase;
 
 public class Model {
 
-	MySQLdatabase db = null;
+	private MySQLdatabase db = null;
 	
 	public Model(){
 		
 //		sample sql query database information retrieval
 		db = new MySQLdatabase();
 		
-		String sql = "select * from instructor natural join department where instructor.DeptName = department.DeptName and department.Building = 'Painter'";
+		String sql = "select formula FROM compound WHERE formula like '%H%'";
 		
 		try {
 		    PreparedStatement statement = db.connect().prepareStatement(sql);
@@ -23,8 +23,9 @@ public class Model {
 		    
 		    // look through the information received from the database
 		    
+		    System.out.println("Compound formulas with a hydrogen atom:");
 		    while (resultSet.next()) {
-		        System.out.println("Instructor name: " + resultSet.getString("InstName"));
+		        System.out.println("\t" + resultSet.getString("formula"));
 		    }
 		    
 		} catch (SQLException e) {

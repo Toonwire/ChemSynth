@@ -10,13 +10,11 @@ public class MySQLdatabase {
 
 	private Connection connection = null;
 	
-	// http://stackoverflow.com/questions/2839321/connect-java-to-a-mysql-database
-	
 	public Connection connect() {
 		
-		String url = "jdbc:mysql://localhost:3306/startup";
-		String username = "Toonwire";
-		String password = "Zwd75zya159";
+		String url = "jdbc:mysql://localhost:3306/chemical_reaction";
+		String username = "root";
+		String password = "chemsynth";
 
 
 		// establish a connection to the database

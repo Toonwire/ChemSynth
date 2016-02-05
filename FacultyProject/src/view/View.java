@@ -4,7 +4,7 @@ import model.Model;
 
 public class View {
 
-	Model model;
+	private Model model;
 	
 	public View(Model model){
 		this.model = model;
