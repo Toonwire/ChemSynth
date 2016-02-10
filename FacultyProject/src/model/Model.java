@@ -15,7 +15,7 @@ public class Model {
 //		sample sql query database information retrieval
 		db = new MySQLdatabase();
 		
-		String sql = "select formula FROM compound WHERE formula like '%H%'";
+		String sql = "select * from compound where (formula like '%N%' AND formula like'%H%')";
 		
 		try {
 		    PreparedStatement statement = db.connect().prepareStatement(sql);
@@ -23,9 +23,9 @@ public class Model {
 		    
 		    // look through the information received from the database
 		    
-		    System.out.println("Compound formulas with a hydrogen atom:");
+		    System.out.println("Compound formulas with a nitrogen and oxygen atom:");
 		    while (resultSet.next()) {
-		        System.out.println("\t" + resultSet.getString("formula"));
+		        System.out.println("\tFormula: " + resultSet.getString("formula") + "\tCharge: " + resultSet.getString("charge"));
 		    }
 		    
 		} catch (SQLException e) {
