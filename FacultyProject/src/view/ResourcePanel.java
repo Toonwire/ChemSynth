@@ -1,5 +1,7 @@
 package view;
 
+import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -39,6 +41,10 @@ public class ResourcePanel extends JPanel{
 	
 	
 	public ResourcePanel(Model model){
+		
+		
+		
+		this.add(titleLabel);
 		
 	}
 

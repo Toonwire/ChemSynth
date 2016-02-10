@@ -1,8 +1,10 @@
 package model;
 
+import java.awt.Component;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import database.MySQLdatabase;
 
@@ -12,27 +14,22 @@ public class Model {
 	
 	public Model(){
 		
-//		sample sql query database information retrieval
 		db = new MySQLdatabase();
 		
-		String sql = "select * from compound where (formula like '%N%' AND formula like'%H%')";
+//		SELECT METHOD TEST
+		String attribute = "formula", sql = "select * from compound;";
 		
-		try {
-		    PreparedStatement statement = db.connect().prepareStatement(sql);
-		    ResultSet resultSet = statement.executeQuery(sql);
-		    
-		    // look through the information received from the database
-		    
-		    System.out.println("Compound formulas with a nitrogen and oxygen atom:");
-		    while (resultSet.next()) {
-		        System.out.println("\tFormula: " + resultSet.getString("formula") + "\tCharge: " + resultSet.getString("charge"));
-		    }
-		    
-		} catch (SQLException e) {
-		    e.printStackTrace();		    
-		    
-		} finally {
-			db.disconnect();
+		ArrayList<String> list = db.select(attribute, sql);
+		System.out.println("\nDisplaying information:");
+		for (String s : list){
+			System.out.println("\t" + attribute + ": " + s);
 		}
+		
+		
+		
+	}
+
+	public MySQLdatabase getDatabase() {
+		return db;
 	}
 }

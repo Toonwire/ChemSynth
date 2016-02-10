@@ -1,53 +1,149 @@
 package database;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MySQLdatabase {
 
 	private Connection connection = null;
+	private Statement statement = null;
 	
-	public Connection connect() {
+	public MySQLdatabase() {
 		
-		String url = "jdbc:mysql://localhost:3306/chemical_reaction";
-		String username = "root";
-		String password = "chemsynth";
+		createTable();
+		insertIntoTable();
+	}
+	
+	public void createTable(){
+		
+		try{
+			connection = this.connect();
+			statement = connection.createStatement();
+			
+			
+			
+		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
+		    statement.executeUpdate(sql);
+		    
+		    System.out.println("Created table");
 
-
-		// establish a connection to the database
-		try {
-			connection = DriverManager.getConnection(url, username, password);
+		    disconnect();
 		    
 		} catch (SQLException e) {
-		    throw new IllegalStateException("Cannot connect the database!", e);
-		}
-		
+			System.err.println("Could not create table");
+			e.printStackTrace();
+		}	
+	}
 
-		// Load the jdbc driver from classpath (check referenced libraries for .jar file)
+	public void insertIntoTable(){
+		
+		try{
+			
+			connection = this.connect();
+			statement = connection.createStatement();
+			
+			// read all inserts from text file to avoid big ass code spam
+			Scanner s = new Scanner(new File("inserts_into_table.txt"));
+			while(s.hasNextLine()){
+				statement.executeUpdate(s.nextLine());
+			}
+			s.close();
+			
+			System.out.println("Inserted into table");
+			disconnect();
+			
+		} catch (SQLException | FileNotFoundException e){
+			System.err.println("Most likely, the file wasn't found - see StackTrace");
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<String> select(String attribute, String sql){
+
+		ArrayList<String> info = new ArrayList<String>();
+		
 		try {
-		    Class.forName("com.mysql.jdbc.Driver");
-		    
-		} catch (ClassNotFoundException e) {
-		    throw new IllegalStateException("Cannot find the driver in the classpath!", e);
+			connection = this.connect();
+			statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+	      
+			while (resultSet.next()) {
+				info.add(resultSet.getString(attribute));
+			}
+			      
+			resultSet.close();
+			resultSet = null;
+			
+			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				System.err.println("No attribute with that name: '" + attribute + "'");
+		} 
+		
+		return info;
+	}
+		
+	private Connection connect(){
+		try {
+			
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection("jdbc:sqlite:chemSynth.db");
+			System.out.println("---> Connected to database");
+			
+		} catch (Exception e){
+			System.err.println("---> Could not connect to the database");
+			e.printStackTrace();
 		}
 		
 		return connection;
 	}
+		
+	private void disconnect() {
+		try {
+			statement.close();
+			connection.close();
+			
+			connection = null;
+			statement = null;
+			
+			System.out.println("---> Disconnected from database\n");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	
-	public void disconnect() {
-	    if (connection != null) {
-	        try {
-	            connection.close();	            
-	            connection = null;
-	            
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+	public ArrayList<String> getAttributeNames(){
+		
+		ArrayList<String> attributeNames = new ArrayList<String>();
+		try{
+			connection = this.connect();
+			statement = connection.createStatement();
+			
+			// Only used to get a ResultSet object back, of which we get the MetaData
+			ResultSet rs = statement.executeQuery("select * from compound");	
+			
+			ResultSetMetaData rsmd = rs.getMetaData();		// this is what we're after
+			int columnCount = rsmd.getColumnCount();
+
+			// The column count starts from 1, for some reason..
+			for (int i = 1; i <= columnCount; i++ ) {
+				attributeNames.add(rsmd.getColumnName(i));
+			}
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		
+		return attributeNames;
 	}
 }
 

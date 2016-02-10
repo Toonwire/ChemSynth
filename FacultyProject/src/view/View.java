@@ -1,7 +1,9 @@
 package view;
 
 import java.awt.CardLayout;
+
 import javax.swing.JFrame;
+
 import model.Model;
 
 public class View extends JFrame{
@@ -17,23 +19,22 @@ public class View extends JFrame{
 	private SynthPanel synthPanel;
 	
 	public View(Model model){		
-		super("Snake");
+		super("ChemSynth");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.model = model;
 		this.resourcePanel = new ResourcePanel(model);
 		this.synthPanel = new SynthPanel(model);
 		
-		
-		
 		this.setResizable(false);
 		this.setLayout(new CardLayout());
-
+		
+		
 		this.add(resourcePanel);
 
 		this.pack();
 		this.setLocationRelativeTo(null);
-		this.setVisible(true);
+//		this.setVisible(true);
 
 	}
 
