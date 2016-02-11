@@ -12,4 +12,8 @@ public class SynthPanel extends JPanel {
 	public SynthPanel(Model model){
 		
 	}
+
+	public void update() {
+		
+	}
 }

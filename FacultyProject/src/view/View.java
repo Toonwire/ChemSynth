@@ -34,7 +34,7 @@ public class View extends JFrame{
 
 		this.pack();
 		this.setLocationRelativeTo(null);
-//		this.setVisible(true);
+		this.setVisible(true);
 
 	}
 
@@ -44,6 +44,11 @@ public class View extends JFrame{
 
 	public SynthPanel getSynthPanel() {
 		return synthPanel;
+	}
+	
+	public void update(){
+		resourcePanel.update();
+		synthPanel.update();
 	}
 
 }

@@ -17,15 +17,17 @@ public class Model {
 		db = new MySQLdatabase();
 		
 //		SELECT METHOD TEST
-		String attribute = "formula", sql = "select * from compound;";
-		
-		ArrayList<String> list = db.select(attribute, sql);
-		System.out.println("\nDisplaying information:");
-		for (String s : list){
-			System.out.println("\t" + attribute + ": " + s);
-		}
-		
-		
+//		String attribute = "formula", sql = "select * from compound;";
+//		
+//		ArrayList<String> list = db.select(attribute, sql);
+//		System.out.println("\nDisplaying information:");
+//		for (String s : list){
+//			System.out.println("\t" + attribute + ": " + s);
+//		}
+//		
+//		for (String att : db.getAttributeNames()){
+//			System.out.println(att);
+//		}
 		
 	}
 

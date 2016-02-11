@@ -28,8 +28,6 @@ public class MySQLdatabase {
 			connection = this.connect();
 			statement = connection.createStatement();
 			
-			
-			
 		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
 		    statement.executeUpdate(sql);
 		    
