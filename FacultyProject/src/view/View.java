@@ -1,8 +1,11 @@
 package view;
 
 import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 
 import model.Model;
 
@@ -51,4 +54,7 @@ public class View extends JFrame{
 		synthPanel.update();
 	}
 
+	public JTextField getFocus(){
+		return (JTextField) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+	}
 }

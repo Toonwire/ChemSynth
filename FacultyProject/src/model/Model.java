@@ -11,6 +11,8 @@ import database.MySQLdatabase;
 public class Model {
 
 	private MySQLdatabase db = null;
+	private ArrayList<Formula> formulaResourceList = new ArrayList<Formula>();
+	
 	
 	public Model(){
 		
@@ -33,5 +35,10 @@ public class Model {
 
 	public MySQLdatabase getDatabase() {
 		return db;
+	}
+
+	public void setUpSynth() {
+		
+		
 	}
 }

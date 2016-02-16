@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
@@ -26,29 +27,34 @@ public class ResourcePanel extends JPanel{
 //	------------------------------------------------
 //	-                   Resources                  -
 //	-                                              -
-//	- Chemicals			             Amounts       -
-//	-   *****                           ***** +-   -
-//	-   *****                           ***** +-   -
-//	-   *****                           ***** +-   -
+//	- Chemicals									   -
+//	-   *****                                      -
+//	-   *****                                      -
+//	-   *****                                      -
+//	-	*****									   -
+//	-	*****									   -
+//	-											   -
 //	-                                              -
-//	-            Seeking:  *****                   -
+//	-            Desiring:  *****                  -
 //	-											   -
 //	-                                   SYNTHESIZE -
 //	------------------------------------------------
 	private final int SIZE = 800;
-	private final String chemTextPlaceholder = "Enter chemical resource";
-	private final String seekingTextPlaceholder = "Enter desired chemical";
+	private final String chemTextPlaceholder = " Enter chemical resource";
+	private final String desiredTextPlaceholder = " Enter desired chemical";
 	
 	private JLabel titleLabel = new JLabel("Resources");
 	private JLabel chemLabel = new JLabel("Chemicals");
-	private JLabel seekLabel = new JLabel("Seeking");
-	private JLabel amountLabel = new JLabel("Amounts");
-	private LinkedList<JTextField> chemList = new LinkedList<JTextField>();
+	private JLabel desireLabel = new JLabel("Desiring");
+	private JLabel errorLabel = new JLabel("");
 	
 	private JButton synthButton = new JButton("Synthesize");
+
+	private JTextField desireTextField = new JTextField(desiredTextPlaceholder);
 	
-	private JTextField seekingTextField = new JTextField();
 	
+	private LinkedList<JTextField> chemList = new LinkedList<JTextField>();
+	private HashMap<JTextField,String> resourceMap = new HashMap<JTextField,String>();
 	
 	public ResourcePanel(Model model){
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
@@ -60,31 +66,43 @@ public class ResourcePanel extends JPanel{
 		chemLabel.setBounds(40, SIZE/2-150, 200, 50);
 		chemLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		
-		amountLabel.setBounds(SIZE-200, SIZE/2-150, 200, 50);
-		amountLabel.setFont(new Font("Arial", Font.BOLD, 20));
+//		amountLabel.setBounds(SIZE-200, SIZE/2-150, 200, 50);
+//		amountLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		
-		seekLabel.setBounds(SIZE/2-150, SIZE-200, 100, 50);
-		seekLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		desireLabel.setBounds(SIZE/2-200, SIZE-200, 100, 50);
+		desireLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		
 		synthButton.setBounds(SIZE-250, SIZE-100, 200, 50);
 		synthButton.setFont(new Font("Arial", Font.BOLD, 18));
 		
-		seekingTextField.setBounds(SIZE/2-50, SIZE-200, 130, 50);
-		seekingTextField.setFont(new Font("Plain", Font.ITALIC, 18));
+		desireTextField.setBounds(SIZE/2-100, SIZE-200, 200, 50);
+		desireTextField.setFont(new Font("Plain", Font.ITALIC, 16));
+
+		errorLabel.setFont(new Font("Roman", Font.ITALIC, 15));
+		errorLabel.setBounds(60, SIZE/2-150+50*6, 300, 30);
+		errorLabel.setForeground(Color.RED);
+		
+//		// Dark theme
+//		chemLabel.setForeground(Color.WHITE);
+//		titleLabel.setForeground(Color.WHITE);
+//		desireLabel.setForeground(Color.WHITE);
+//		synthButton.setForeground(Color.WHITE);
+//		this.setBackground(Color.BLACK);
 		
 		this.add(titleLabel);
 		this.add(chemLabel);
-		this.add(amountLabel);
-		this.add(seekLabel);
+		this.add(desireLabel);
 		this.add(synthButton);
-		
-		this.add(seekingTextField);
+		this.add(errorLabel);
+		this.add(desireTextField);
 		this.addChemTextField();
 		
 	}
-	
+
 	public void registerListeners(ResourceController controller) {
 		getCurrentChemTextField().addFocusListener(controller);
+		desireTextField.addFocusListener(controller);
+		desireTextField.addKeyListener(controller);
 		synthButton.addActionListener(controller);
 	}
 	
@@ -94,20 +112,20 @@ public class ResourcePanel extends JPanel{
 	
 	public void addChemTextField(){
 		
-		if (chemList.size() < 5){
-			JTextField chemTextField = new JTextField(chemTextPlaceholder);
-			chemList.add(chemTextField);
-			
-			int n = chemList.size();
-			chemTextField.setFont(new Font("Plain", Font.ITALIC, 14));
-			chemTextField.setBounds(60, SIZE/2-150+50*n, 200, 30);
-			this.add(chemTextField);
-		}
+		JTextField chemTextField = new JTextField(chemTextPlaceholder);
+		resourceMap.put(chemTextField, "");
+		//always pair one chemical with an amount
+		chemList.add(chemTextField);
+		
+		int n = chemList.size();
+		chemTextField.setFont(new Font("Plain", Font.ITALIC, 14));
+		chemTextField.setBounds(60, SIZE/2-150+50*n, 200, 30);
+		this.add(chemTextField);
 		
 	}
 
 	public String getChemPlaceholderText() {
-		return chemTextPlaceholder;
+		return this.chemTextPlaceholder;
 	}
 
 	public void update() {
@@ -115,19 +133,32 @@ public class ResourcePanel extends JPanel{
 	}
 
 	public LinkedList<JTextField> getChemList() {
-		return chemList;
+		return this.chemList;
 	}
 
 	public JTextField getPreviousChemTextField() {
-		return chemList.get(chemList.size()-2);
+		return this.chemList.get(chemList.size()-2);
 	}
 	
-	public void addLimitErrorLabel() {
-		JLabel limitErrorLabel = new JLabel("Limit reached");
-		limitErrorLabel.setFont(new Font("Arial", Font.ITALIC, 16));
-		limitErrorLabel.setForeground(Color.RED);
-		limitErrorLabel.setBounds(60, SIZE/2-150+50*6, 200, 30);
-		this.add(limitErrorLabel);
+	public JTextField getDesiredTextField() {
+		return this.desireTextField;
+	}
+
+	public String getDesiredPlaceholderText() {
+		return this.desiredTextPlaceholder;
+	}
+
+	public JLabel getErrorLabel() {
+		return this.errorLabel;
+	}
+
+	public void setErrorColor(Color c) {
+		errorLabel.setForeground(c);
+		
+	}
+
+	public HashMap<JTextField,String> getResourceMap() {
+		return resourceMap;
 	}
 
 }
