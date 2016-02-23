@@ -58,17 +58,15 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			view.getResourcePanel().requestFocus();
 			focusOnPanel = true;
 		} else {
+			JTextField tf = (JTextField) e.getComponent();
 			
-			if (view.getResourcePanel().getDesiredTextField().getText().equals(view.getResourcePanel().getDesiredPlaceholderText())
-					&& view.getResourcePanel().getDesiredTextField().isFocusOwner()){
-				view.getResourcePanel().getDesiredTextField().setText("");
+			if (tf.getText().equals(view.getResourcePanel().getDesiredPlaceholderText())){
+				tf.setText("");
 			}
 			
-			for (JTextField t : view.getResourcePanel().getChemList()){
-				if (t.getText().equals(view.getResourcePanel().getChemPlaceholderText()) && t.isFocusOwner()) {
-					t.setText("");
-				}
-			}
+			if (tf.getText().equals(view.getResourcePanel().getChemPlaceholderText()))
+				tf.setText("");
+			
 		}
 	}
 
@@ -81,30 +79,65 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			tf.setBackground(Color.WHITE);
 			view.getResourcePanel().getErrorLabel().setText("");
 			
-		} else if (existsInDatabase(tf.getText())) {
-			
-			if (!view.getResourcePanel().getResourceMap().containsValue(tf.getText().trim())) {
-				tf.setBackground(CUSTOM_GREEN);
-				this.view.getResourcePanel().getResourceMap().put((JTextField) e.getComponent(), tf.getText().trim());
+			if (allSet()){
+				view.getResourcePanel().getReadyLabel().setForeground(CUSTOM_GREEN);
+				view.getResourcePanel().getReadyLabel().setText("Ready to go!");
+				view.getResourcePanel().getSynthButton().setEnabled(true);
 				
 			} else {
-				// TODO: figure out a way to iterate through the subset of the map
-				// matching only JTextFields different from the one losing focus
+				view.getResourcePanel().getSynthButton().setEnabled(false);
+			}
+			
+		} else if (existsInDatabase(tf.getText())) {
+			
+			if (!view.getResourcePanel().getResourceMap().containsValue(tf.getText().trim())
+					|| view.getResourcePanel().getResourceMap().get(tf).equals(tf.getText().trim())) {
+				tf.setBackground(CUSTOM_GREEN);
+				this.view.getResourcePanel().getResourceMap().put((JTextField) e.getComponent(), tf.getText().trim());
+				this.view.getResourcePanel().getErrorLabel().setText("");
+				
+			} else {
 				for (JTextField t : view.getResourcePanel().getChemList()) {
 					if (tf != t && t.getText().trim().equals(tf.getText().trim())){
 						// duplicate
 						tf.setBackground(CUSTOM_RED);
 						view.getResourcePanel().getErrorLabel().setText("Chemical already listed");
+						view.getResourcePanel().getReadyLabel().setText("");
 					}
 				}
-				
 			}
 				
+			if (allSet()){
+				view.getResourcePanel().getReadyLabel().setForeground(CUSTOM_GREEN);
+				view.getResourcePanel().getReadyLabel().setText("Ready to go!");
+				view.getResourcePanel().getSynthButton().setEnabled(true);
+				
+			} else {
+				view.getResourcePanel().getSynthButton().setEnabled(false);
+			}
 			
 		} else if (!existsInDatabase(tf.getText()) && !tf.getText().equals(view.getResourcePanel().getChemPlaceholderText())) {
 			tf.setBackground(CUSTOM_RED);
 			this.view.getResourcePanel().getErrorLabel().setText("Formula doesn't exist in database");
+			view.getResourcePanel().getReadyLabel().setText("");
+
 		} 
+	}
+
+	private boolean allSet() {
+		boolean ready = true;
+		
+		for (JTextField tf : view.getResourcePanel().getChemList()){
+			if (tf.getBackground().equals(CUSTOM_RED)) {
+				ready = false;
+				break;
+			}
+		}
+		
+		if (!view.getResourcePanel().getDesiredTextField().getBackground().equals(CUSTOM_GREEN))
+			ready = false;
+		
+		return ready;
 	}
 
 	@Override
@@ -121,10 +154,9 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			
 			// create a new text field
 			if(!tf.getText().trim().isEmpty() 
-					&& !tf.getText().equals(view.getResourcePanel().getChemPlaceholderText())
+					&& view.getResourcePanel().getChemList().contains(tf)
 					&& (view.getResourcePanel().getChemList().size() < 5)
 					&& existsInDatabase(tf.getText())
-					&& tf.isFocusOwner()
 					&& !view.getResourcePanel().getResourceMap().containsValue(tf.getText())) {
 
 				//add and register listeners to the new text field
@@ -132,25 +164,24 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 				this.view.getResourcePanel().getCurrentChemTextField().addFocusListener(this);
 				this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
 				this.view.getResourcePanel().getCurrentChemTextField().requestFocus();
-				
 				this.view.getResourcePanel().getErrorLabel().setText("");
 			
 				
-			} else if (!existsInDatabase(tf.getText()) 
-					&& !tf.getText().isEmpty()) {
-				this.view.getResourcePanel().setErrorColor(Color.RED);
-				this.view.getFocus().setBackground(CUSTOM_RED);
-				this.view.getResourcePanel().getErrorLabel().setText("Formula doesn't exist in database");
-				
-			} else if (view.getResourcePanel().getResourceMap().containsValue(view.getFocus().getText())) {
-				tf.setBackground(CUSTOM_RED);
-				this.view.getResourcePanel().getErrorLabel().setBackground(CUSTOM_RED);
-				this.view.getResourcePanel().getErrorLabel().setText("Chemical already listed");
-				
-			} else if (view.getResourcePanel().getChemList().size() == 5) {
-				tf.setBackground(CUSTOM_GREEN);
-				this.view.getResourcePanel().setErrorColor(CUSTOM_GREEN);
-				this.view.getResourcePanel().getErrorLabel().setText("Resource limit reached");	
+//			} else if (!existsInDatabase(tf.getText()) 
+//					&& !tf.getText().isEmpty()) {
+//				this.view.getResourcePanel().setErrorColor(Color.RED);
+//				this.view.getFocus().setBackground(CUSTOM_RED);
+//				this.view.getResourcePanel().getErrorLabel().setText("Formula doesn't exist in database");
+//				
+//			} else if (view.getResourcePanel().getResourceMap().containsValue(view.getFocus().getText())) {
+//				tf.setBackground(CUSTOM_RED);
+//				this.view.getResourcePanel().getErrorLabel().setBackground(CUSTOM_RED);
+//				this.view.getResourcePanel().getErrorLabel().setText("Chemical already listed");
+//				
+//			} else if (view.getResourcePanel().getChemList().size() == 5) {
+//				tf.setBackground(CUSTOM_GREEN);
+//				this.view.getResourcePanel().setErrorColor(CUSTOM_GREEN);
+//				this.view.getResourcePanel().getErrorLabel().setText("Resource limit reached");	
 				
 			} else {
 				this.view.getResourcePanel().requestFocus();
@@ -160,8 +191,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 
 	private boolean existsInDatabase(String resource) {
 		boolean exists = true;
-		
-		String sql = "select formula from compound where formula='" + resource.trim() + "'";
+		String sql = "select formula from reactants where formula='" + resource.trim() + "'";
 		// checks if there is any information returned from the sql statement
 		if (model.getDatabase().select("formula", sql).isEmpty()) {
 			exists = false;

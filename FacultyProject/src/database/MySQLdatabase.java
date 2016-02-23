@@ -26,10 +26,18 @@ public class MySQLdatabase {
 		
 		try{
 			connection = this.connect();
+			// TODO : Better change to PreparedStatement for SQL security purposes.
 			statement = connection.createStatement();
 			
-		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
-		    statement.executeUpdate(sql);
+//		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
+		    String sql2 = "create table if not exists reactants (reactionID integer, formula varchar(30), amount integer, PRIMARY KEY(reactionID, formula))";
+		    String sql3 = "create table if not exists products (reactionID integer, formula varchar(30), amount integer, PRIMARY KEY(reactionID, formula))";
+			
+//		    String sql = "drop table reactants";
+//		    String sql4 = "drop table products";
+		   
+		    statement.executeUpdate(sql2);
+		    statement.executeUpdate(sql3);
 		    
 		    System.out.println("Created table");
 
@@ -71,6 +79,7 @@ public class MySQLdatabase {
 		try {
 			connection = this.connect();
 			statement = connection.createStatement();
+			
 			ResultSet resultSet = statement.executeQuery(sql);
 	      
 			while (resultSet.next()) {
@@ -84,7 +93,7 @@ public class MySQLdatabase {
 			disconnect();
 		      
 		} catch (SQLException e){
-				System.err.println("No attribute with that name: '" + attribute + "'");
+				System.err.println("No attribute ('" + attribute + "') with that name");
 		} 
 		
 		return info;
@@ -120,7 +129,7 @@ public class MySQLdatabase {
 		}
 	}
 	
-	public ArrayList<String> getAttributeNames(){
+	public ArrayList<String> getAttributeNames(String table){
 		
 		ArrayList<String> attributeNames = new ArrayList<String>();
 		try{
@@ -128,7 +137,7 @@ public class MySQLdatabase {
 			statement = connection.createStatement();
 			
 			// Only used to get a ResultSet object back, of which we get the MetaData
-			ResultSet rs = statement.executeQuery("select * from compound");	
+			ResultSet rs = statement.executeQuery("select * from " + table);	
 			
 			ResultSetMetaData rsmd = rs.getMetaData();		// this is what we're after
 			int columnCount = rsmd.getColumnCount();

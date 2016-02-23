@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -47,6 +48,7 @@ public class ResourcePanel extends JPanel{
 	private JLabel chemLabel = new JLabel("Chemicals");
 	private JLabel desireLabel = new JLabel("Desiring");
 	private JLabel errorLabel = new JLabel("");
+	private JLabel readyLabel = new JLabel("");
 	
 	private JButton synthButton = new JButton("Synthesize");
 
@@ -74,6 +76,7 @@ public class ResourcePanel extends JPanel{
 		
 		synthButton.setBounds(SIZE-250, SIZE-100, 200, 50);
 		synthButton.setFont(new Font("Arial", Font.BOLD, 18));
+		synthButton.setEnabled(false);
 		
 		desireTextField.setBounds(SIZE/2-100, SIZE-200, 200, 50);
 		desireTextField.setFont(new Font("Plain", Font.ITALIC, 16));
@@ -81,6 +84,9 @@ public class ResourcePanel extends JPanel{
 		errorLabel.setFont(new Font("Roman", Font.ITALIC, 15));
 		errorLabel.setBounds(60, SIZE/2-150+50*6, 300, 30);
 		errorLabel.setForeground(Color.RED);
+		
+		readyLabel.setFont(new Font("Roman", Font.ITALIC, 18));
+		readyLabel.setBounds(SIZE-200, SIZE-150, 200, 50);
 		
 //		// Dark theme
 //		chemLabel.setForeground(Color.WHITE);
@@ -94,6 +100,7 @@ public class ResourcePanel extends JPanel{
 		this.add(desireLabel);
 		this.add(synthButton);
 		this.add(errorLabel);
+		this.add(readyLabel);
 		this.add(desireTextField);
 		this.addChemTextField();
 		
@@ -114,6 +121,7 @@ public class ResourcePanel extends JPanel{
 		
 		JTextField chemTextField = new JTextField(chemTextPlaceholder);
 		resourceMap.put(chemTextField, "");
+		resourceMap.put(desireTextField, "");
 		//always pair one chemical with an amount
 		chemList.add(chemTextField);
 		
@@ -159,6 +167,15 @@ public class ResourcePanel extends JPanel{
 
 	public HashMap<JTextField,String> getResourceMap() {
 		return resourceMap;
+	}
+
+	public JLabel getReadyLabel() {
+		return readyLabel;
+	}
+
+	public JButton getSynthButton() {
+		return synthButton;
+		
 	}
 
 }
