@@ -160,11 +160,6 @@ public class ResourcePanel extends JPanel{
 		return this.errorLabel;
 	}
 
-	public void setErrorColor(Color c) {
-		errorLabel.setForeground(c);
-		
-	}
-
 	public HashMap<JTextField,String> getResourceMap() {
 		return resourceMap;
 	}

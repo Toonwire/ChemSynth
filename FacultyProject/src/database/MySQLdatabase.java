@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -72,18 +73,21 @@ public class MySQLdatabase {
 		}
 	}
 	
-	public ArrayList<String> select(String attribute, String sql){
+	public boolean checkResource(String sql, String resource){
 
-		ArrayList<String> info = new ArrayList<String>();
+//		ArrayList<String> info = new ArrayList<String>();
+		boolean exists = false;
 		
 		try {
 			connection = this.connect();
 			statement = connection.createStatement();
+			PreparedStatement prepStmt = connection.prepareStatement(sql);
+			prepStmt.setString(1, resource);
 			
-			ResultSet resultSet = statement.executeQuery(sql);
+			ResultSet resultSet = prepStmt.executeQuery();
 	      
-			while (resultSet.next()) {
-				info.add(resultSet.getString(attribute));
+			if (resultSet.next()) {
+				exists = true;
 			}
 			      
 			resultSet.close();
@@ -93,10 +97,10 @@ public class MySQLdatabase {
 			disconnect();
 		      
 		} catch (SQLException e){
-				System.err.println("No attribute ('" + attribute + "') with that name");
+				e.printStackTrace();
 		} 
 		
-		return info;
+		return exists;
 	}
 		
 	private Connection connect(){
