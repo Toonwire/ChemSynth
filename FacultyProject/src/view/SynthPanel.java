@@ -32,6 +32,7 @@ public class SynthPanel extends JPanel {
 	public SynthPanel(Model model){
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
 		this.setLayout(null);
+		this.setBackground(Color.LIGHT_GRAY);
 		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
