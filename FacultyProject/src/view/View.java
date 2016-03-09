@@ -51,7 +51,6 @@ public class View extends JFrame{
 	
 	public void update(){
 		resourcePanel.update();
-		synthPanel.update();
 	}
 
 	public JTextField getFocus(){

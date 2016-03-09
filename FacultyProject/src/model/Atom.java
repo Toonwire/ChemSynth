@@ -11,5 +11,8 @@ public class Atom {
 	public String getElement(){
 		return element;
 	}
-
+	
+	public String toString(){
+		return element;
+	}
 }

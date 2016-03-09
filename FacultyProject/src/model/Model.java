@@ -1,35 +1,34 @@
 package model;
 
-import java.awt.Component;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
 
 import database.MySQLdatabase;
 
 public class Model {
 
 	private MySQLdatabase db = null;
-	private ArrayList<Formula> formulaResourceList = new ArrayList<Formula>();
+	private ArrayList<String> resourceList = new ArrayList<String>();
+	private LinkedList<Integer> reactionIDs = new LinkedList<Integer>();
+	private String desired;
 	
+	boolean goalReached = false;
+	private Stack<String> resourceStack;
+	private int depth, maxDepth;
 	
 	public Model(){
 		
 		db = new MySQLdatabase();
 		
-//		SELECT METHOD TEST
-//		String attribute = "formula", sql = "select * from compound;";
+//		Formula formula = new Formula("C6H2(NO2)3CH3");
+//		System.out.println("----------");
+////		Formula formula2 = new Formula("Co3(Fe(CN)6)2");
+////		formulaResourceList.add(formula);
 //		
-//		ArrayList<String> list = db.select(attribute, sql);
-//		System.out.println("\nDisplaying information:");
-//		for (String s : list){
-//			System.out.println("\t" + attribute + ": " + s);
-//		}
-//		
-//		for (String att : db.getAttributeNames()){
-//			System.out.println(att);
-//		}
+//		System.exit(0);
+		
+		
 		
 	}
 
@@ -37,8 +36,9 @@ public class Model {
 		return db;
 	}
 
-	public void setUpSynth() {
-
-		
+	
+	public void setUpSynth(ArrayList<String> resources, String desired){
+		this.resourceList = resources;
+		this.desired = desired;
 	}
 }

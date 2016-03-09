@@ -7,6 +7,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.JTextField;
@@ -25,9 +27,11 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	public ResourceController(Model model, View view){
 		this.model = model;
 		this.view = view;
-		
+		 
 		this.view.getResourcePanel().registerListeners(this);
 		this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
+		
+		
 	}
 
 	@Override
@@ -37,12 +41,13 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		if (actionCommand.equals("Synthesize")){
 			
 			
-			model.setUpSynth();
-			
 			this.view.remove(view.getResourcePanel());
 			this.view.add(view.getSynthPanel());
 			this.view.pack();
 			this.view.setLocationRelativeTo(null);
+			
+			model.setUpSynth(view.getResourcePanel().getResourceList(), view.getResourcePanel().getDesiredTextField().getText().trim());
+			view.getSynthPanel().runAnimation();
 
 		}
 	}
@@ -80,11 +85,14 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 				view.getResourcePanel().getSynthButton().setEnabled(false);
 			}
 			
-		// no need to look up in the database if the textfield losing focus has not changed.
+		// no need to look up in the database if the text of the text field losing focus has not changed.
 		} else if (view.getResourcePanel().getResourceMap().containsKey(tf) 
-				&& view.getResourcePanel().getResourceMap().get(tf).equals(tf.getText().trim())){
+				&& view.getResourcePanel().getResourceMap().get(tf).equals(tf.getText().trim())
+				&& tf.getBackground().equals(CUSTOM_GREEN)){
 			
 			// do nothing
+			// TODO: Better way of catching these if statements?
+			// could just merge with the below else statement and NOT it (!)
 			
 		} else {
 			boolean exists = existsInDatabase(tf.getText());
@@ -94,7 +102,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 				if (!view.getResourcePanel().getResourceMap().containsValue(tf.getText().trim())
 						|| view.getResourcePanel().getResourceMap().get(tf).equals(tf.getText().trim())) {
 					tf.setBackground(CUSTOM_GREEN);
-					this.view.getResourcePanel().getResourceMap().put((JTextField) e.getComponent(), tf.getText().trim());
+					this.view.getResourcePanel().getResourceMap().put(tf, tf.getText().trim());
 					this.view.getResourcePanel().getErrorLabel().setText("");
 					
 				} else {
@@ -157,6 +165,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 					&& view.getResourcePanel().getChemList().contains(tf)
 					&& (view.getResourcePanel().getChemList().size() < 5)
 					&& !view.getResourcePanel().getResourceMap().containsValue(tf.getText())
+					&& tf.equals(view.getResourcePanel().getChemList().getLast())
 					&& exists
 					|| (tf.getBackground().equals(CUSTOM_GREEN) && view.getResourcePanel().getChemList().getLast().equals(tf))) {
 				
@@ -168,7 +177,6 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 					
 				} else {
 					//add and register listeners to the new text field
-				
 					this.view.getResourcePanel().addChemTextField();
 					this.view.getResourcePanel().getCurrentChemTextField().addFocusListener(this);
 					this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
@@ -190,6 +198,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		// checks if there is any information returned from the sql statement
 		exists = model.getDatabase().checkResource(sql, resource.trim());
 		
+//		System.out.println(lookups);
 		return exists;
 	}
 

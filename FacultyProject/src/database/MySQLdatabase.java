@@ -10,6 +10,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class MySQLdatabase {
@@ -27,18 +28,24 @@ public class MySQLdatabase {
 		
 		try{
 			connection = this.connect();
-			// TODO : Better change to PreparedStatement for SQL security purposes.
 			statement = connection.createStatement();
 			
 //		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
-		    String sql2 = "create table if not exists reactants (reactionID integer, formula varchar(30), amount integer, PRIMARY KEY(reactionID, formula))";
-		    String sql3 = "create table if not exists products (reactionID integer, formula varchar(30), amount integer, PRIMARY KEY(reactionID, formula))";
-			
-//		    String sql = "drop table reactants";
-//		    String sql4 = "drop table products";
+		    String reactantTable = "create table if not exists reactants (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
+		    String productTable = "create table if not exists products (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
+			String reactionTable = "create table if not exists reactions (reactionID integer, cost integer, PRIMARY KEY(reactionID));";
+		    
+			statement.executeUpdate(reactantTable);
+			statement.executeUpdate(productTable);
+			statement.executeUpdate(reactionTable);
 		   
-		    statement.executeUpdate(sql2);
-		    statement.executeUpdate(sql3);
+
+//			String sql = "drop table reactants";
+//			String sql4 = "drop table products";
+//			String sql2 = "drop table reactions";
+//		    statement.executeUpdate(sql);
+//		    statement.executeUpdate(sql4);
+//		    statement.executeUpdate(sql2);
 		    
 		    System.out.println("Created table");
 
@@ -75,7 +82,6 @@ public class MySQLdatabase {
 	
 	public boolean checkResource(String sql, String resource){
 
-//		ArrayList<String> info = new ArrayList<String>();
 		boolean exists = false;
 		
 		try {
@@ -155,6 +161,68 @@ public class MySQLdatabase {
 		}
 		
 		return attributeNames;
+	}
+	
+	public String toString(){
+		return "Da fuck you doin' mon'";
+	}
+
+	public LinkedList<Integer> getReactionIDs(String desired) {
+		LinkedList<Integer> reactionIDs = new LinkedList<Integer>();
+		
+		String sql = "select reactionID from products where formula=?;";
+		
+		try {
+			connection = this.connect();
+			PreparedStatement prepStmt = connection.prepareStatement(sql);
+			prepStmt.setString(1, desired);
+			
+			ResultSet resultSet = prepStmt.executeQuery();
+	      
+			if (resultSet.next()) {
+				reactionIDs.add(resultSet.getInt("reactionID"));
+			}
+			      
+			resultSet.close();
+			resultSet = null;
+			
+			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				e.printStackTrace();
+		} 
+		
+		return reactionIDs;
+	}
+
+	public LinkedList<String> getReactants(Integer reactionID) {
+		LinkedList<String> reactants = new LinkedList<String>();
+		
+		String sql = "select * from reactants where reactionID=?;";
+		
+		try {
+			connection = this.connect();
+			PreparedStatement prepStmt = connection.prepareStatement(sql);
+			prepStmt.setInt(1, reactionID);
+			
+			ResultSet resultSet = prepStmt.executeQuery();
+	      
+			if (resultSet.next()) {
+				reactants.add(resultSet.getString("formula"));
+			}
+			      
+			resultSet.close();
+			resultSet = null;
+			
+			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				e.printStackTrace();
+		} 
+		
+		return reactants;
 	}
 }
 

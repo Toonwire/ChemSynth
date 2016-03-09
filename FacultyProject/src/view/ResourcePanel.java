@@ -118,16 +118,15 @@ public class ResourcePanel extends JPanel{
 	}
 	
 	public void addChemTextField(){
-		
+		 
 		JTextField chemTextField = new JTextField(chemTextPlaceholder);
 		resourceMap.put(chemTextField, "");
 		resourceMap.put(desireTextField, "");
 		//always pair one chemical with an amount
 		chemList.add(chemTextField);
 		
-		int n = chemList.size();
 		chemTextField.setFont(new Font("Plain", Font.ITALIC, 14));
-		chemTextField.setBounds(60, SIZE/2-150+50*n, 200, 30);
+		chemTextField.setBounds(60, SIZE/2-150+50*chemList.size(), 200, 30);
 		this.add(chemTextField);
 		
 	}
@@ -171,6 +170,16 @@ public class ResourcePanel extends JPanel{
 	public JButton getSynthButton() {
 		return synthButton;
 		
+	}
+	
+	public ArrayList<String> getResourceList(){
+		ArrayList<String> resourceList = new ArrayList<String>();
+		
+		for (JTextField tf : chemList){
+			resourceList.add(tf.getText());
+		}
+		
+		return resourceList;
 	}
 
 }
