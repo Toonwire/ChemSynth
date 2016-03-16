@@ -184,13 +184,10 @@ public class Model {
  				if (nettoReaction.containsKey(chem))
  					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
  				else
- 					nettoReaction.put(chem, coefficientPM);
+ 					nettoReaction.put(chem, coefficientPM);					
  				
- 				System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "\tCoefficient = " + coefficientPM);
-					
- 				
- 				if (coefficientPM < 0 && stop < 40) {
- 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "\tCoefficient = " + coefficientPM);
+ 				if (coefficientPM < 0 && stop <= 20) {
+ 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
  					stop++;
  					test(chem);
  				}
