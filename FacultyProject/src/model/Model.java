@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -14,10 +15,13 @@ public class Model {
 	private ArrayList<String> resourceList = new ArrayList<String>();
 	private ArrayList<ReactionCell> reactionCells = new ArrayList<ReactionCell>();
 	private Map<String, ArrayList<ReactionCell>> matrix = new HashMap<String, ArrayList<ReactionCell>>();
+	private Map<Integer, ReactionCol> map = new HashMap<>();
+	private Map<String, Integer> nettoReaction = new HashMap<>();
+	private Stack<Integer> stack = new Stack<Integer>();
 	
 	private static final int maxDepth = 10;
 	private String desired;
-	
+	private int stop = 1;
 	
 	private boolean goalFound = false;
 //	private Stack<Integer> reactionStack;
@@ -163,6 +167,36 @@ public class Model {
  				stack.push(reactantRC);
 	 				
  			}
+ 		}
+ 	}
+ 	
+ 	public void test(String formula){
+ 		for(Integer reactionID : db.getReactionIDs(formula)){
+ 			stack.push(reactionID);
+ 		}
+ 		int currentID = stack.pop(); 		
+ 		if(!map.containsKey(currentID)){
+ 			List<Pair> list = new ArrayList<>();
+ 			for(String chem : db.getChemicals(currentID)){
+ 				int coefficientPM = db.getCoefficient(currentID, chem);
+ 				list.add(new Pair(chem, coefficientPM));
+ 				
+ 				if (nettoReaction.containsKey(chem))
+ 					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
+ 				else
+ 					nettoReaction.put(chem, coefficientPM);
+ 				
+ 				System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "\tCoefficient = " + coefficientPM);
+					
+ 				
+ 				if (coefficientPM < 0 && stop < 40) {
+ 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "\tCoefficient = " + coefficientPM);
+ 					stop++;
+ 					test(chem);
+ 				}
+ 			}
+ 			
+ 			map.put(currentID, new ReactionCol(currentID, list));
  		}
  	}
 }

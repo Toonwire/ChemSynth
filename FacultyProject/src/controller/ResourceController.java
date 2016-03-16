@@ -48,14 +48,17 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			
 //			model.setUpSynth(view.getResourcePanel().getResourceList(), view.getResourcePanel().getDesiredTextField().getText().trim());
 			
-			List<Integer> reactionIDList = new ArrayList<Integer>();
-			reactionIDList = model.getDatabase().getReactionIDs(view.getResourcePanel().getDesiredTextField().getText().trim());
-			String formula = view.getResourcePanel().getDesiredTextField().getText().trim();
-			int coefficient = model.getDatabase().getCoefficient(reactionIDList.get(0), formula);
+//			List<Integer> reactionIDList = new ArrayList<Integer>();
+//			reactionIDList = model.getDatabase().getReactionIDs(view.getResourcePanel().getDesiredTextField().getText().trim());
+//			String formula = view.getResourcePanel().getDesiredTextField().getText().trim();
+//			int coefficient = model.getDatabase().getCoefficient(reactionIDList.get(0), formula);
 			
-			model.runDeepeningSearch(new Node(reactionIDList.get(0), formula, coefficient));
+//			model.runDeepeningSearch(new Node(reactionIDList.get(0), formula, coefficient));
+			
+			model.test(view.getResourcePanel().getDesiredTextField().getText().trim());
 			view.getSynthPanel().runAnimation();
 
+			
 		}
 	}
 
