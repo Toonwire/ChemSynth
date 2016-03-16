@@ -7,14 +7,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTextField;
 
-import view.View;
 import model.Model;
+import model.Node;
+import view.View;
 
 public class ResourceController implements FocusListener, ActionListener, KeyListener {
 
@@ -46,7 +46,14 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			this.view.pack();
 			this.view.setLocationRelativeTo(null);
 			
-			model.setUpSynth(view.getResourcePanel().getResourceList(), view.getResourcePanel().getDesiredTextField().getText().trim());
+//			model.setUpSynth(view.getResourcePanel().getResourceList(), view.getResourcePanel().getDesiredTextField().getText().trim());
+			
+			List<Integer> reactionIDList = new ArrayList<Integer>();
+			reactionIDList = model.getDatabase().getReactionIDs(view.getResourcePanel().getDesiredTextField().getText().trim());
+			String formula = view.getResourcePanel().getDesiredTextField().getText().trim();
+			int coefficient = model.getDatabase().getCoefficient(reactionIDList.get(0), formula);
+			
+			model.runDeepeningSearch(new Node(reactionIDList.get(0), formula, coefficient));
 			view.getSynthPanel().runAnimation();
 
 		}
@@ -92,7 +99,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			
 			// do nothing
 			// TODO: Better way of catching these if statements?
-			// could just merge with the below else statement and NOT it (!)
+			// could just merge with the below else statement and NOT it (!)  ???
 			
 		} else {
 			boolean exists = existsInDatabase(tf.getText());
@@ -134,12 +141,12 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	private boolean allSet() {
 		boolean ready = true;
 		
-		for (JTextField tf : view.getResourcePanel().getChemList()){
-			if (tf.getBackground().equals(CUSTOM_RED)) {
-				ready = false;
-				break;
-			}
-		}
+//		for (JTextField tf : view.getResourcePanel().getChemList()){
+//			if (tf.getBackground().equals(CUSTOM_RED)) {
+//				ready = false;
+//				break;
+//			}
+//		}
 		
 		if (!view.getResourcePanel().getDesiredTextField().getBackground().equals(CUSTOM_GREEN))
 			ready = false;
