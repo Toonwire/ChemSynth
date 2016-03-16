@@ -280,7 +280,7 @@ public class MySQLdatabase {
 			System.out.println("Extracted information from database");
 			disconnect();
 		      
-		} catch (SQLException e){
+		} catch (SQLException e) {
 				e.printStackTrace();
 		} 
 		
