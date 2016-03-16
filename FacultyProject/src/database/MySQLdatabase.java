@@ -51,7 +51,7 @@ public class MySQLdatabase {
 //		    statement.executeUpdate(sql4);
 //		    statement.executeUpdate(sql2);
 		    
-		    System.out.println("Created table");
+//		    System.out.println("Created table");
 
 		    disconnect();
 		    
@@ -127,7 +127,7 @@ public class MySQLdatabase {
 		
 			s.close();
 			
-			System.out.println("Inserted into table");
+//			System.out.println("Inserted into table");
 			disconnect();
 			
 		} catch (SQLException | FileNotFoundException e){
@@ -154,7 +154,7 @@ public class MySQLdatabase {
 			resultSet.close();
 			resultSet = null;
 			
-			System.out.println("Extracted information from database");
+//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
@@ -169,7 +169,7 @@ public class MySQLdatabase {
 			
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:chemSynth.db");
-			System.out.println("---> Connected to database");
+//			System.out.println("---> Connected to database");
 			
 		} catch (Exception e){
 			System.err.println("---> Could not connect to the database");
@@ -194,7 +194,7 @@ public class MySQLdatabase {
 			statement = null;
 			prepStmt = null;
 			
-			System.out.println("---> Disconnected from database\n");
+//			System.out.println("---> Disconnected from database\n");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -248,7 +248,7 @@ public class MySQLdatabase {
 			resultSet.close();
 			resultSet = null;
 			
-			System.out.println("Extracted information from database");
+//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
@@ -277,7 +277,7 @@ public class MySQLdatabase {
 			resultSet.close();
 			resultSet = null;
 			
-			System.out.println("Extracted information from database");
+//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e) {
@@ -319,7 +319,7 @@ public class MySQLdatabase {
 			
 			resultSet = null;
 			
-			System.out.println("Extracted information from database");
+//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
@@ -349,7 +349,7 @@ public class MySQLdatabase {
 			resultSet.close();
 			resultSet = null;
 			
-			System.out.println("Extracted information from database");
+//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
