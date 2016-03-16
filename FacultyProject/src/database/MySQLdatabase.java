@@ -290,21 +290,33 @@ public class MySQLdatabase {
 	public int getCoefficient(int reactionID, String formula) {
 		int coefficient = 1;
 		
-		String sql = "select coefficient from products where reactionID=? and formula=?;";
+		String productSql = "select coefficient from products where reactionID=? and formula=?;";
+		String reactantSql = "select coefficient from reactants where reactionID=? and formula=?;";
 		
 		try {
 			connection = this.connect();
-			prepStmt = connection.prepareStatement(sql);
+			prepStmt = connection.prepareStatement(reactantSql);
 			prepStmt.setInt(1, reactionID);
 			prepStmt.setString(2, formula);
-			
+
 			ResultSet resultSet = prepStmt.executeQuery();
 	      
 			if (resultSet.next()) {
-				coefficient = resultSet.getInt("coefficient");
+				coefficient = -resultSet.getInt("coefficient") ;
 			}
 			      
 			resultSet.close();
+			
+			prepStmt = connection.prepareStatement(productSql);
+			prepStmt.setInt(1, reactionID);
+			prepStmt.setString(2, formula);
+			
+			resultSet = prepStmt.executeQuery();
+			
+			if (resultSet.next()) {
+				coefficient = resultSet.getInt("coefficient");
+			}
+			
 			resultSet = null;
 			
 			System.out.println("Extracted information from database");
@@ -330,7 +342,7 @@ public class MySQLdatabase {
 			
 			ResultSet resultSet = prepStmt.executeQuery();
 	      
-			if (resultSet.next()) {
+			while (resultSet.next()) {
 				chemicals.add(resultSet.getString("formula"));
 			}
 			      
