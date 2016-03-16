@@ -2,6 +2,7 @@ package database;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,11 +13,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MySQLdatabase {
 
 	private Connection connection = null;
 	private Statement statement = null;
+	private PreparedStatement prepStmt = null;
 	
 	public MySQLdatabase() {
 		
@@ -62,13 +66,65 @@ public class MySQLdatabase {
 		try{
 			
 			connection = this.connect();
-			statement = connection.createStatement();
 			
-			// read all inserts from text file to avoid big ass code spam
-			Scanner s = new Scanner(new File("inserts_into_table.txt"));
-			while(s.hasNextLine()){
-				statement.executeUpdate(s.nextLine());
+			Scanner s = new Scanner(new File("reactions.txt"));
+			PrintStream insertFile = new PrintStream(new File("insertFile.txt"));
+			
+			int reactionID = 1;
+			while(s.hasNextLine()) {
+				String[] reaction = s.nextLine().trim().split("->");
+				
+				Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
+				Matcher m = p.matcher(reaction[0]);
+				
+				while(m.find()) {
+					String formula = m.group();
+					int coefficient;
+					try {
+						coefficient = Integer.parseInt(formula.split("\\D")[0]);
+						formula = formula.split("\\d", 2)[1];
+					} catch (Exception e) {
+						coefficient = 1;
+					}
+					
+					String reactantInsert = "insert or ignore into reactants(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
+					insertFile.println(reactantInsert);
+					
+					prepStmt = connection.prepareStatement("insert or ignore into reactants(reactionID, formula, coefficient) values(?,?,?);");
+					prepStmt.setInt(1, reactionID);
+					prepStmt.setString(2, formula);
+					prepStmt.setInt(3, coefficient);
+					prepStmt.execute();
+				}
+				
+				Matcher m2 = p.matcher(reaction[1]);
+				
+				while(m2.find()) {
+					String formula = m2.group();
+					int coefficient;
+					try {
+						coefficient = Integer.parseInt(formula.split("\\D")[0]);
+						formula = formula.split("\\d", 2)[1];
+					} catch (Exception e) {
+						coefficient = 1;
+					}
+					
+					String productInsert = "insert or ignore into products(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
+					insertFile.println(productInsert);
+					
+					prepStmt = connection.prepareStatement("insert or ignore into products(reactionID, formula, coefficient) values(?,?,?);");
+					prepStmt.setInt(1, reactionID);
+					prepStmt.setString(2, formula);
+					prepStmt.setInt(3, coefficient);
+					prepStmt.execute();
+				}
+
+//				Need to add a cost to each reaction for below to be relevant
+//				insert or ignore into reactions(reactionID, cost) values(1, 7);
+				
+				reactionID++;
 			}
+		
 			s.close();
 			
 			System.out.println("Inserted into table");
@@ -86,8 +142,7 @@ public class MySQLdatabase {
 		
 		try {
 			connection = this.connect();
-			statement = connection.createStatement();
-			PreparedStatement prepStmt = connection.prepareStatement(sql);
+			prepStmt = connection.prepareStatement(sql);
 			prepStmt.setString(1, resource);
 			
 			ResultSet resultSet = prepStmt.executeQuery();
@@ -126,11 +181,18 @@ public class MySQLdatabase {
 		
 	private void disconnect() {
 		try {
-			statement.close();
+			if (statement != null) 
+				statement.close();
+			else if (prepStmt != null){
+				prepStmt.close();
+			}
+			
+			
 			connection.close();
 			
 			connection = null;
 			statement = null;
+			prepStmt = null;
 			
 			System.out.println("---> Disconnected from database\n");
 			
@@ -174,7 +236,7 @@ public class MySQLdatabase {
 		
 		try {
 			connection = this.connect();
-			PreparedStatement prepStmt = connection.prepareStatement(sql);
+			prepStmt = connection.prepareStatement(sql);
 			prepStmt.setString(1, desired);
 			
 			ResultSet resultSet = prepStmt.executeQuery();
@@ -203,7 +265,7 @@ public class MySQLdatabase {
 		
 		try {
 			connection = this.connect();
-			PreparedStatement prepStmt = connection.prepareStatement(sql);
+			prepStmt = connection.prepareStatement(sql);
 			prepStmt.setInt(1, reactionID);
 			
 			ResultSet resultSet = prepStmt.executeQuery();
@@ -223,6 +285,127 @@ public class MySQLdatabase {
 		} 
 		
 		return reactants;
+	}
+
+	public int getCoefficient(int reactionID, String formula) {
+		int coefficient = 1;
+		
+		String sql = "select coefficient from products where reactionID=? and formula=?;";
+		
+		try {
+			connection = this.connect();
+			prepStmt = connection.prepareStatement(sql);
+			prepStmt.setInt(1, reactionID);
+			prepStmt.setString(2, formula);
+			
+			ResultSet resultSet = prepStmt.executeQuery();
+	      
+			if (resultSet.next()) {
+				coefficient = resultSet.getInt("coefficient");
+			}
+			      
+			resultSet.close();
+			resultSet = null;
+			
+			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				e.printStackTrace();
+		} 
+		
+		return coefficient;
+	}
+
+	public ArrayList<String> getChemicals(int reactionID) {
+		ArrayList<String> chemicals = new ArrayList<String>();
+		
+		String sql = "select distinct formula from reactants where reactionID=? union select distinct formula from products where reactionID=?;";
+		
+		try {
+			connection = this.connect();
+			prepStmt = connection.prepareStatement(sql);
+			prepStmt.setInt(1, reactionID);
+			prepStmt.setInt(2, reactionID);
+			
+			ResultSet resultSet = prepStmt.executeQuery();
+	      
+			if (resultSet.next()) {
+				chemicals.add(resultSet.getString("formula"));
+			}
+			      
+			resultSet.close();
+			resultSet = null;
+			
+			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				e.printStackTrace();
+		} 
+		
+		return chemicals;
+	}
+
+	public void prepInserts() {
+		try {
+			Scanner s = new Scanner(new File("reactions.txt"));
+			
+			PrintStream insertFile = new PrintStream(new File("insertFile.txt"));
+			
+			
+			int reactionID = 1;
+			while(s.hasNextLine()) {
+				String[] reaction = s.nextLine().trim().split("->");
+				
+				
+				Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
+				Matcher m = p.matcher(reaction[0]);
+				
+				while(m.find()) {
+					String formula = m.group();
+					int coefficient;
+					try {
+						coefficient = Integer.parseInt(formula.split("\\D")[0]);
+						formula = formula.split("\\d", 2)[1];
+					} catch (Exception e) {
+						coefficient = 1;
+					}
+					
+					String reactantInsert = "insert or ignore into reactants(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
+					insertFile.println(reactantInsert);
+				}
+				
+				Matcher m2 = p.matcher(reaction[1]);
+				
+				while(m2.find()) {
+					String formula = m2.group();
+					int coefficient;
+					try {
+						coefficient = Integer.parseInt(formula.split("\\D")[0]);
+						formula = formula.split("\\d", 2)[1];
+					} catch (Exception e) {
+						coefficient = 1;
+					}
+					
+					String productInsert = "insert or ignore into products(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
+					insertFile.println(productInsert);
+				}
+
+//				Need to add a cost to each reaction for below to be relevant
+//				insert or ignore into reactions(reactionID, cost) values(1, 7);
+				
+				reactionID++;
+			}
+			
+			s.close();
+			
+		} catch (FileNotFoundException e) {
+			System.err.println("File not found");
+			e.printStackTrace();
+		}
+		
+		
 	}
 }
 
