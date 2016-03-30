@@ -11,7 +11,7 @@ import database.MySQLdatabase;
 
 public class Model {
 	
-	private static final int maxDepth = 10;
+	private static final int maxDepth = 20;
 
 	private MySQLdatabase db = null;
 	private Map<Integer, ReactionCol> map = new HashMap<>();
@@ -54,30 +54,34 @@ public class Model {
  		for(Integer reactionID : db.getReactionIDs(formula)){
  			stack.push(reactionID);
  		}
- 		int currentID = stack.pop(); 		
- 		if(!map.containsKey(currentID) && currentID != 73){
- 			List<Pair> list = new ArrayList<>();
- 			for(String chem : db.getChemicals(currentID)){
-// 				System.out.println("chem = " + chem);
- 				int coefficientPM = db.getCoefficient(currentID, chem);
- 				list.add(new Pair(chem, coefficientPM));
- 				
- 				if (nettoReaction.containsKey(chem))
- 					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
- 				else {
- 					nettoReaction.put(chem, coefficientPM);					
- 				
-	 				if (coefficientPM < 0 /* reactant */ && count <= 20 && !abundant(chem)) {
-	 					
-	 					this.reactionIDSeq.add(currentID);
-	 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
-	 					count++;
-	 					test(chem);
+ 		
+ 		if (!stack.isEmpty()) {
+	 		int currentID = stack.pop();
+	 		System.out.println("ID = " + currentID);
+	 		if(!map.containsKey(currentID)){
+	 			List<Pair> list = new ArrayList<>();
+	 			for(String chem : db.getChemicals(currentID)){
+//	 				System.out.println("id = "+ currentID + "\t chem = " + chem);
+	 				int coefficientPM = db.getCoefficient(currentID, chem);
+	 				list.add(new Pair(chem, coefficientPM));
+	 				
+	 				if (nettoReaction.containsKey(chem))
+	 					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
+	 				else {
+	 					nettoReaction.put(chem, coefficientPM);					
+	 				
+		 				if (coefficientPM < 0 /* reactant */ && count <= maxDepth && !abundant(chem) && !reactionIDSeq.contains(currentID)) {
+		 					
+		 					this.reactionIDSeq.add(currentID);
+//		 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
+		 					count++;
+		 					test(chem);
+		 				}
 	 				}
- 				}
- 			}
- 			
- 			map.put(currentID, new ReactionCol(currentID, list));
+	 			}
+	 			map.put(currentID, new ReactionCol(currentID, list));
+	 		}
+	 		return;
  		}
  	}
 

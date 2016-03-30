@@ -40,22 +40,25 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		String actionCommand = e.getActionCommand();
 		
 		if (actionCommand.equals("Synthesize")){
-			
-			this.view.remove(view.getResourcePanel());
-			this.view.add(view.getSynthPanel());
-			this.view.pack();
-			this.view.setLocationRelativeTo(null);
-			
-			String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
-			model.setDesiredChemical(desired);
-			model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
-			view.getSynthPanel().runAnimation();
-				
-			System.out.println();
-			printNetReaction();
-			
+			startSynth();
 			
 		}
+	}
+	
+	private void startSynth() {
+		this.view.remove(view.getResourcePanel());
+		this.view.add(view.getSynthPanel());
+		this.view.pack();
+		this.view.setLocationRelativeTo(null);
+		
+		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
+		model.setDesiredChemical(desired);
+		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
+		view.getSynthPanel().runAnimation();
+			
+		System.out.println();
+		printNetReaction();
+		
 	}
 
 	private void printNetReaction() {
@@ -71,9 +74,9 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 				
 			}
 		}
-		builder.append(reactantBuilder.toString().substring(0,reactantBuilder.toString().length()-3) 
+		builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
 				+ " --> " 
-				+ productBuilder.toString().substring(0,productBuilder.toString().length()-3));
+				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		System.out.println(builder.toString());
 		
 	}
@@ -183,35 +186,41 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		
 		int key = e.getKeyCode();
 		if (key == KeyEvent.VK_ENTER) {
-			JTextField tf = (JTextField) e.getComponent();
-			boolean exists = existsInDatabase(tf.getText());
 			
-			// create a new text field
-			if(!tf.getText().trim().isEmpty() 
-					&& view.getResourcePanel().getChemList().contains(tf)
-					&& (view.getResourcePanel().getChemList().size() < 5)
-					&& !view.getResourcePanel().getResourceMap().containsValue(tf.getText())
-					&& tf.equals(view.getResourcePanel().getChemList().getLast())
-					&& exists
-					|| (tf.getBackground().equals(CUSTOM_GREEN) && view.getResourcePanel().getChemList().getLast().equals(tf))) {
+			if (!e.getComponent().getName().equals("ResourcePanel")) {
+				JTextField tf = (JTextField) e.getComponent();
+				boolean exists = existsInDatabase(tf.getText());
 				
-				// to catch the '||' part of the above if statement in case resource limit reached.
-				if (view.getResourcePanel().getChemList().size() == 5) {
-					tf.setBackground(CUSTOM_GREEN);
-					this.view.getResourcePanel().getErrorLabel().setForeground(CUSTOM_GREEN);
-					this.view.getResourcePanel().getErrorLabel().setText("Resource limit reached");	
+				// create a new text field
+				if(!tf.getText().trim().isEmpty() 
+						&& view.getResourcePanel().getChemList().contains(tf)
+						&& (view.getResourcePanel().getChemList().size() < 5)
+						&& !view.getResourcePanel().getResourceMap().containsValue(tf.getText())
+						&& tf.equals(view.getResourcePanel().getChemList().getLast())
+						&& exists
+						|| (tf.getBackground().equals(CUSTOM_GREEN) && view.getResourcePanel().getChemList().getLast().equals(tf))) {
+					
+					// to catch the '||' part of the above if statement in case resource limit reached.
+					if (view.getResourcePanel().getChemList().size() == 5) {
+						tf.setBackground(CUSTOM_GREEN);
+						this.view.getResourcePanel().getErrorLabel().setForeground(CUSTOM_GREEN);
+						this.view.getResourcePanel().getErrorLabel().setText("Resource limit reached");	
+						
+					} else {
+						//add and register listeners to the new text field
+						this.view.getResourcePanel().addChemTextField();
+						this.view.getResourcePanel().getCurrentChemTextField().addFocusListener(this);
+						this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
+						this.view.getResourcePanel().getCurrentChemTextField().requestFocus();
+						this.view.getResourcePanel().getErrorLabel().setText("");
+						
+					}
 					
 				} else {
-					//add and register listeners to the new text field
-					this.view.getResourcePanel().addChemTextField();
-					this.view.getResourcePanel().getCurrentChemTextField().addFocusListener(this);
-					this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
-					this.view.getResourcePanel().getCurrentChemTextField().requestFocus();
-					this.view.getResourcePanel().getErrorLabel().setText("");
+					this.view.getResourcePanel().requestFocus();
 				}
-				
-			} else {
-				this.view.getResourcePanel().requestFocus();
+			} else if (e.getComponent().getName().equals("ResourcePanel") && view.getResourcePanel().getSynthButton().isEnabled()) {
+				startSynth();
 			}
 		}		
 	}

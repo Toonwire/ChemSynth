@@ -31,12 +31,15 @@ public class View extends JFrame{
 		
 		this.setResizable(false);
 		this.setLayout(new CardLayout());
-		
-		
+
 		this.add(resourcePanel);
 
 		this.pack();
 		this.setLocationRelativeTo(null);
+
+		// initial focus component
+		resourcePanel.getDesiredTextField().requestFocusInWindow();
+		
 		this.setVisible(true);
 
 	}
@@ -49,10 +52,6 @@ public class View extends JFrame{
 		return synthPanel;
 	}
 	
-	public void update(){
-		resourcePanel.update();
-	}
-
 	public JTextField getFocus(){
 		return (JTextField) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 	}

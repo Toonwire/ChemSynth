@@ -80,6 +80,7 @@ public class ResourcePanel extends JPanel{
 		
 		desireTextField.setBounds(SIZE/2-100, SIZE-200, 200, 50);
 		desireTextField.setFont(new Font("Plain", Font.ITALIC, 16));
+		desireTextField.setName("DesireTextField");
 
 		errorLabel.setFont(new Font("Roman", Font.ITALIC, 15));
 		errorLabel.setBounds(60, SIZE/2-150+50*6, 300, 30);
@@ -103,7 +104,7 @@ public class ResourcePanel extends JPanel{
 		this.add(readyLabel);
 		this.add(desireTextField);
 		this.addChemTextField();
-		
+				
 	}
 
 	public void registerListeners(ResourceController controller) {
@@ -111,6 +112,7 @@ public class ResourcePanel extends JPanel{
 		desireTextField.addFocusListener(controller);
 		desireTextField.addKeyListener(controller);
 		synthButton.addActionListener(controller);
+		this.addKeyListener(controller);
 	}
 	
 	public JTextField getCurrentChemTextField(){
@@ -120,6 +122,7 @@ public class ResourcePanel extends JPanel{
 	public void addChemTextField(){
 		 
 		JTextField chemTextField = new JTextField(chemTextPlaceholder);
+		chemTextField.setName("ChemTextField");
 		resourceMap.put(chemTextField, "");
 		resourceMap.put(desireTextField, "");
 		//always pair one chemical with an amount
@@ -128,15 +131,11 @@ public class ResourcePanel extends JPanel{
 		chemTextField.setFont(new Font("Plain", Font.ITALIC, 14));
 		chemTextField.setBounds(60, SIZE/2-150+50*chemList.size(), 200, 30);
 		this.add(chemTextField);
-		
+				
 	}
 
 	public String getChemPlaceholderText() {
 		return this.chemTextPlaceholder;
-	}
-
-	public void update() {
-		
 	}
 
 	public LinkedList<JTextField> getChemList() {
@@ -180,6 +179,11 @@ public class ResourcePanel extends JPanel{
 		}
 		
 		return resourceList;
+	}
+	
+	@Override
+	public String getName() {
+		return "ResourcePanel";
 	}
 
 }
