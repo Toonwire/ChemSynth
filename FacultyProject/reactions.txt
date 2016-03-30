@@ -89,3 +89,12 @@ CaCl2 + 2NaOH -> Ca(OH)2 + 2NaCl
 2CuCl2 + Pd -> 2CuCl + PdCl2
 4CuCl + 4HCl + O2 -> 4CuCl2 + 2H2O
 C2H4 + H2O + PdCl2 -> CH3CHO + 2HCl + Pd
+2NO + O2 -> 2NO2
+Mg + 2HCl -> MgCl2 + H2
+2NH3 -> N2 + 3H2
+2ClO -> Cl2 + O2
+2C2H6 + 7O2 -> 4CO2 + 6H2O
+H2 + Cl2 -> 2HCl
+CH4 + H2O -> CO + 3H2
+CO + H2O -> CO2 + H2
+CH4 + 2H2O -> CO2 + 4H2
