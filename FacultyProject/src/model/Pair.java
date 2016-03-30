@@ -23,3 +23,5 @@ public class Pair {
 		return "Formula = " + this.formula + ", Coefficient = " + this.coefficient;
 	}
 }
+
+

@@ -12,6 +12,5 @@ public class SynthController {
 		this.model = model;
 		this.view = view;
 	
-		
 	}
 }

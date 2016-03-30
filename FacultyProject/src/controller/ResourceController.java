@@ -41,30 +41,17 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		
 		if (actionCommand.equals("Synthesize")){
 			
-			
 			this.view.remove(view.getResourcePanel());
 			this.view.add(view.getSynthPanel());
 			this.view.pack();
 			this.view.setLocationRelativeTo(null);
 			
-//			model.setUpSynth(view.getResourcePanel().getResourceList(), view.getResourcePanel().getDesiredTextField().getText().trim());
-			
-//			List<Integer> reactionIDList = new ArrayList<Integer>();
-//			reactionIDList = model.getDatabase().getReactionIDs(view.getResourcePanel().getDesiredTextField().getText().trim());
-//			String formula = view.getResourcePanel().getDesiredTextField().getText().trim();
-//			int coefficient = model.getDatabase().getCoefficient(reactionIDList.get(0), formula);
-			
-//			model.runDeepeningSearch(new Pair(reactionIDList.get(0), formula, coefficient));
-			
-			model.setDesiredChemical(view.getResourcePanel().getDesiredTextField().getText().trim());
-			model.test(view.getResourcePanel().getDesiredTextField().getText().trim());
+			String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
+			model.setDesiredChemical(desired);
+			model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
 			view.getSynthPanel().runAnimation();
-			
-			for (Integer i : model.getReactionIDSeq()) {
-				System.out.println(i);
-			}
-			
-//			System.out.println("NetReaction:\t" + model.getNetReactionMap().toString());
+				
+			System.out.println();
 			printNetReaction();
 			
 			
