@@ -45,7 +45,7 @@ public class ResourcePanel extends JPanel{
 	private final String desiredTextPlaceholder = " Enter desired chemical";
 	
 	private JLabel titleLabel = new JLabel("Resources");
-	private JLabel chemLabel = new JLabel("Chemicals");
+	private JLabel chemLabel = new JLabel("Chemicals (optional)");
 	private JLabel desireLabel = new JLabel("Desiring");
 	private JLabel errorLabel = new JLabel("");
 	private JLabel readyLabel = new JLabel("");

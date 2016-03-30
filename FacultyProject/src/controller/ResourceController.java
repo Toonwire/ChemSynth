@@ -222,7 +222,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			} else if (e.getComponent().getName().equals("ResourcePanel") && view.getResourcePanel().getSynthButton().isEnabled()) {
 				startSynth();
 			}
-		}		
+		}	
 	}
 
 	private boolean existsInDatabase(String resource) {
