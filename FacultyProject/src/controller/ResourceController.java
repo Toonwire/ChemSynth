@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 
 import model.Model;
 import model.Node;
+import model.Pair;
 import view.View;
 
 public class ResourceController implements FocusListener, ActionListener, KeyListener {
@@ -53,13 +54,41 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 //			String formula = view.getResourcePanel().getDesiredTextField().getText().trim();
 //			int coefficient = model.getDatabase().getCoefficient(reactionIDList.get(0), formula);
 			
-//			model.runDeepeningSearch(new Node(reactionIDList.get(0), formula, coefficient));
+//			model.runDeepeningSearch(new Pair(reactionIDList.get(0), formula, coefficient));
 			
+			model.setDesiredChemical(view.getResourcePanel().getDesiredTextField().getText().trim());
 			model.test(view.getResourcePanel().getDesiredTextField().getText().trim());
 			view.getSynthPanel().runAnimation();
-
+			
+			for (Integer i : model.getReactionIDSeq()) {
+				System.out.println(i);
+			}
+			
+//			System.out.println("NetReaction:\t" + model.getNetReactionMap().toString());
+			printNetReaction();
+			
 			
 		}
+	}
+
+	private void printNetReaction() {
+		StringBuilder builder = new StringBuilder();
+		StringBuilder reactantBuilder = new StringBuilder();
+		StringBuilder productBuilder = new StringBuilder();
+		
+		for (String formula : model.getNetReactionMap().keySet()) {
+			int coef = model.getNetReactionMap().get(formula);
+			if (coef != 0) {
+				if (coef < 0) reactantBuilder.append(Math.abs(coef) + formula + " + ");
+				else if (coef > 0) productBuilder.append(Math.abs(coef) + formula + " + ");
+				
+			}
+		}
+		builder.append(reactantBuilder.toString().substring(0,reactantBuilder.toString().length()-3) 
+				+ " --> " 
+				+ productBuilder.toString().substring(0,productBuilder.toString().length()-3));
+		System.out.println(builder.toString());
+		
 	}
 
 	@Override

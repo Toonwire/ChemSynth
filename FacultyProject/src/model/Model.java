@@ -18,6 +18,7 @@ public class Model {
 	private Map<Integer, ReactionCol> map = new HashMap<>();
 	private Map<String, Integer> nettoReaction = new HashMap<>();
 	private Stack<Integer> stack = new Stack<Integer>();
+	private List<Integer> reactionIDSeq = new ArrayList<>();
 	
 	private static final int maxDepth = 10;
 	private String desired;
@@ -29,16 +30,7 @@ public class Model {
 	
 	public Model(){
 		
-		db = new MySQLdatabase();
-		
-//		Formula formula = new Formula("C6H2(NO2)3CH3");
-//		System.out.println("----------");
-////		Formula formula2 = new Formula("Co3(Fe(CN)6)2");
-////		formulaResourceList.add(formula);
-//		
-//		System.exit(0);
-		
-		
+		db = new MySQLdatabase();		
 		
 	}
 
@@ -175,25 +167,46 @@ public class Model {
  			stack.push(reactionID);
  		}
  		int currentID = stack.pop(); 		
- 		if(!map.containsKey(currentID)){
+ 		if(!map.containsKey(currentID) && currentID != 73){
  			List<Pair> list = new ArrayList<>();
  			for(String chem : db.getChemicals(currentID)){
+// 				System.out.println("chem = " + chem);
  				int coefficientPM = db.getCoefficient(currentID, chem);
  				list.add(new Pair(chem, coefficientPM));
  				
  				if (nettoReaction.containsKey(chem))
  					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
- 				else
+ 				else {
  					nettoReaction.put(chem, coefficientPM);					
  				
- 				if (coefficientPM < 0 && stop <= 20) {
- 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
- 					stop++;
- 					test(chem);
+	 				if (coefficientPM < 0 /* reactant */ && stop <= 20 && !abundant(chem)) {
+	 					
+	 					this.reactionIDSeq.add(currentID);
+	 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
+	 					stop++;
+	 					test(chem);
+	 				}
  				}
  			}
  			
  			map.put(currentID, new ReactionCol(currentID, list));
  		}
  	}
+
+	private boolean abundant(String chem) {
+		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O"));
+	}
+ 	
+	public void setDesiredChemical(String formula) {
+		this.desired = formula;
+	}
+	
+	public List<Integer> getReactionIDSeq() {
+		return this.reactionIDSeq;
+	}
+	
+	public Map<String, Integer> getNetReactionMap() {
+		return this.nettoReaction;
+	}
+ 	
 }
