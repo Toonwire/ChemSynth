@@ -213,7 +213,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			} else {
 				this.view.getResourcePanel().requestFocus();
 			}
-		}		
+		}	
 	}
 
 	private boolean existsInDatabase(String resource) {

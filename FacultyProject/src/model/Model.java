@@ -79,6 +79,7 @@ public class Model {
  			
  			map.put(currentID, new ReactionCol(currentID, list));
  		}
+ 		return;
  	}
 
 	private boolean abundant(String chem) {
