@@ -228,10 +228,8 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	private boolean existsInDatabase(String resource) {
 		boolean exists = false;
 		
-		String sql = "select formula from (select distinct formula from reactants UNION select distinct formula from products) where formula=?;"; 
-		
 		// checks if there is any information returned from the sql statement
-		exists = model.getDatabase().checkResource(sql, resource.trim());
+		exists = model.getDatabase().checkResource(resource.trim());
 		
 //		System.out.println(lookups);
 		return exists;
