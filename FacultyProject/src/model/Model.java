@@ -18,6 +18,7 @@ public class Model {
 	private Map<String, Integer> nettoReaction = new HashMap<>();
 	private Stack<Integer> stack = new Stack<Integer>();
 	private List<Integer> reactionIDSeq = new ArrayList<>(maxDepth);
+	private List<String> recursiveList = new ArrayList<>(maxDepth);
 	
 	private int count = 1;
 	
@@ -46,13 +47,16 @@ public class Model {
 //			depth++;
 //		}
 		
+		
 		test(desired);
 		
 	}
  	
  	public void test(String formula){
  		for(Integer reactionID : db.getReactionIDs(formula)){
- 			stack.push(reactionID);
+ 			System.out.println("push = " + reactionID);
+ 			if (!stack.contains(reactionID))
+ 				stack.push(reactionID);
  		}
  		
  		if (!stack.isEmpty()) {
@@ -64,20 +68,27 @@ public class Model {
 //	 				System.out.println("id = "+ currentID + "\t chem = " + chem);
 	 				int coefficientPM = db.getCoefficient(currentID, chem);
 	 				list.add(new Pair(chem, coefficientPM));
+	 				System.out.println("    " + chem + "  " + coefficientPM);
+	 				
 	 				
 	 				if (nettoReaction.containsKey(chem))
 	 					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
-	 				else {
+	 				else 
 	 					nettoReaction.put(chem, coefficientPM);					
 	 				
-		 				if (coefficientPM < 0 /* reactant */ && count <= maxDepth && !abundant(chem) && !reactionIDSeq.contains(currentID)) {
-		 					
-		 					this.reactionIDSeq.add(currentID);
+	 				if (coefficientPM < 0 /* reactant */ && count <= maxDepth && !abundant(chem)  && !singleAtom(chem)) {
+	 					
+	 					this.reactionIDSeq.add(currentID);
 //		 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
-		 					count++;
-		 					test(chem);
-		 				}
+	 					count++;
+	 					
+	 					if (!recursiveList.contains(chem)) {
+	 						recursiveList.add(chem);
+	 						System.out.println("recursive on " + chem);
+	 						test(chem);
+	 					}
 	 				}
+	 				
 	 			}
 	 			map.put(currentID, new ReactionCol(currentID, list));
 	 		}
@@ -88,6 +99,18 @@ public class Model {
 
 	private boolean abundant(String chem) {
 		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O"));
+	}
+	
+	private boolean singleAtom(String chem) {
+		int upCount = 0;
+		
+		for (int k = 0; k < chem.length(); k++) {
+		    
+		    // Check for uppercase letters.
+		    if (Character.isUpperCase(chem.charAt(k)))
+		    	upCount++;
+		}
+		return upCount == 1;
 	}
  	
 	public void setDesiredChemical(String formula) {

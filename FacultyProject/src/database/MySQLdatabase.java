@@ -126,6 +126,7 @@ public class MySQLdatabase {
 			}
 		
 			s.close();
+			insertFile.close();
 			
 //			System.out.println("Inserted into table");
 			disconnect();
@@ -136,9 +137,9 @@ public class MySQLdatabase {
 		}
 	}
 	
-	public boolean checkResource(String sql, String resource){
-
+	public boolean checkResource(String resource){
 		boolean exists = false;
+		String sql = "select formula from (select distinct formula from reactants UNION select distinct formula from products) where formula=?;"; 
 		
 		try {
 			connection = this.connect();
@@ -229,8 +230,8 @@ public class MySQLdatabase {
 		return "Da fuck you doin' mon'";
 	}
 
-	public LinkedList<Integer> getReactionIDs(String desired) {
-		LinkedList<Integer> reactionIDs = new LinkedList<Integer>();
+	public ArrayList<Integer> getReactionIDs(String desired) {
+		ArrayList<Integer> reactionIDs = new ArrayList<Integer>();
 		
 		String sql = "select reactionID from products where formula=?;";
 		
@@ -241,7 +242,7 @@ public class MySQLdatabase {
 			
 			ResultSet resultSet = prepStmt.executeQuery();
 	      
-			if (resultSet.next()) {
+			while (resultSet.next()) {
 				reactionIDs.add(resultSet.getInt("reactionID"));
 			}
 			      
