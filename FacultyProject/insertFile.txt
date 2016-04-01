@@ -372,3 +372,9 @@ insert or ignore into reactants(reactionID, formula, coefficient) values(100,'CH
 insert or ignore into reactants(reactionID, formula, coefficient) values(100,'H2O',2);
 insert or ignore into products(reactionID, formula, coefficient) values(100,'CO2',1);
 insert or ignore into products(reactionID, formula, coefficient) values(100,'H2',4);
+insert or ignore into reactants(reactionID, formula, coefficient) values(101,'NO',2);
+insert or ignore into reactants(reactionID, formula, coefficient) values(101,'O2',1);
+insert or ignore into products(reactionID, formula, coefficient) values(101,'NO2',2);
+insert or ignore into reactants(reactionID, formula, coefficient) values(102,'O2',1);
+insert or ignore into reactants(reactionID, formula, coefficient) values(102,'N2',1);
+insert or ignore into products(reactionID, formula, coefficient) values(102,'NO',2);
