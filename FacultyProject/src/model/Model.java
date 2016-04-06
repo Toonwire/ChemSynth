@@ -83,6 +83,7 @@ public class Model {
 			map.put(bestID, rCol);
  			
 			netReaction.updateForward(formula, rCol);
+			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.updateBackward(rCol);
 				test(formula);
@@ -106,9 +107,8 @@ public class Model {
 			for (String c : chemList) {
 				test(c);
 			}
- 		}
  		return;
- 		
+ 		}
  	}
 
 	private int prioritize(ArrayList<Integer> reactionIDs) {

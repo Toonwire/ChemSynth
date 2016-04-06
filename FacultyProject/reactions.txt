@@ -100,3 +100,5 @@ CO + H2O -> CO2 + H2
 CH4 + 2H2O -> CO2 + 4H2
 2NO + O2 -> 2NO2
 O2 + N2 -> 2NO
+2KNO3 -> 2KNO2 + O2
+NaNO3 + KCl -> NaCl + KNO3
