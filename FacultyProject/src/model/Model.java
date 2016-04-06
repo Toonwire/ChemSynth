@@ -19,6 +19,7 @@ public class Model {
 	private Stack<Integer> stack = new Stack<Integer>();
 	private List<Integer> reactionIDSeq = new ArrayList<>(maxDepth);
 	private List<String> recursiveList = new ArrayList<>(maxDepth);
+	private NettoReaction netReaction;
 	
 	private int count = 1;
 	
@@ -26,7 +27,8 @@ public class Model {
 	
 	public Model(){
 		
-		db = new MySQLdatabase();		
+		db = new MySQLdatabase();
+		this.netReaction = new NettoReaction();
 		
 	}
 
@@ -54,7 +56,7 @@ public class Model {
 		
 	}
  	
- 	public void test(String formula){
+	public void test(String formula){
  		int bestID = prioritize(db.getReactionIDs(formula));
 // 		for(Integer reactionID : db.getReactionIDs(formula)){
 // 			System.out.println("push = " + reactionID);
@@ -62,73 +64,78 @@ public class Model {
 // 				stack.push(reactionID);
 // 			}
 // 		}
- 		stack.push(bestID);
+ 		if (bestID == -1 || isAbundant(formula)) {
+ 			return;
+ 		}
+ 		System.out.println("recursive on " + formula);
  		
- 		if (!stack.isEmpty()) {
-	 		int currentID = stack.pop();
-	 		if(!map.containsKey(currentID)){
-	 			System.out.println("ID = " + currentID);
-	 			List<Pair> list = new ArrayList<>();
-	 			for(String chem : db.getChemicals(currentID)){
-//	 				System.out.println("id = "+ currentID + "\t chem = " + chem);
-	 				int coefficientPM = db.getCoefficient(currentID, chem);
-	 				list.add(new Pair(chem, coefficientPM));
-	 				System.out.println("    " + chem + "  " + coefficientPM);
-	 				
-	 				
-	 				if (nettoReaction.containsKey(chem))
-	 					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
-	 				else 
-	 					nettoReaction.put(chem, coefficientPM);					
-	 				
-	 				if (coefficientPM < 0 /* reactant */ && count <= maxDepth && !abundant(chem)  && !singleAtom(chem)) {
-	 					
-	 					this.reactionIDSeq.add(currentID);
-//		 					System.out.println("ReactionID = " + currentID + "\tFormula = " + chem + "     \tCoefficient = " + coefficientPM);
-	 					count++;
-	 					
-	 					if (!recursiveList.contains(chem)) {
-	 						recursiveList.add(chem);
-	 						System.out.println("recursive on " + chem);
-	 						map.put(currentID, new ReactionCol(currentID, list));
-	 						printNetReaction();
-	 						test(chem);
-	 					}
-	 				}
-	 				
-	 			}
-//	 			for (Integer id : map.keySet()) {
-// 		 			System.out.println("map has id:\t" + id);
-// 		 		}
-	 		}
-	 		return;
+ 		if(!map.containsKey(bestID)){
+ 			System.out.println("ID = " + bestID);
+ 			List<Pair> list = new ArrayList<>();		
+ 			List<String> chemList = new ArrayList<>();		
+ 			
+ 			for (String chem : db.getChemicals(bestID)) {
+ 				int coefficientPM = db.getCoefficient(bestID, chem);
+ 				list.add(new Pair(chem, coefficientPM));
+ 			}
+
+ 			ReactionCol rCol = new ReactionCol(bestID, list);
+			map.put(bestID, rCol);
+ 			
+			netReaction.updateForward(formula, rCol);
+			if (!netReaction.getMap().containsKey(desired)) {
+				netReaction.updateBackward(rCol);
+				test(formula);
+				return;
+			}
+			
+			System.out.println(netReaction);
+ 			
+ 			for(String chem : netReaction.getMap().keySet()){
+ 				
+ 				if (netReaction.getMap().get(chem) < 0 /* reactant */ && count <= maxDepth && !isAbundant(chem)  && !singleAtom(chem)) {
+ 					
+ 					if (!recursiveList.contains(chem)) {
+ 						recursiveList.add(chem);
+ 						chemList.add(chem);
+ 					}
+ 				}
+ 				
+ 			}
+
+			for (String c : chemList) {
+				test(c);
+			}
  		}
  		return;
+ 		
  	}
 
 	private int prioritize(ArrayList<Integer> reactionIDs) {
-		Map<Integer, Integer> map = new HashMap<>();
+		Map<Integer, Integer> similarityMap = new HashMap<>();
 		int sim = 0;
 		int chemCount = 0;
 		int max = -1;
 		int bestID = -1;
 		for (Integer id : reactionIDs) {
 			for (String chem : db.getChemicals(id)) {
-				if (nettoReaction.containsKey(chem))
+				if (netReaction.getMap().containsKey(chem))
 					sim++;
 				chemCount++;
 			}
-			map.put(id, chemCount);
-			if (sim >= max) {
-				if (sim == max) {
-					if (map.get(id) < map.get(bestID))
+			if (!map.containsKey(id)) {
+				similarityMap.put(id, chemCount);
+				if (sim >= max) {
+					if (sim == max) {
+						if (similarityMap.get(id) < similarityMap.get(bestID))
+							bestID = id;
+							max = sim;
+							sim = 0;
+					} else {
 						bestID = id;
 						max = sim;
 						sim = 0;
-				} else {
-					bestID = id;
-					max = sim;
-					sim = 0;
+					}
 				}
 			}
 		}
@@ -136,8 +143,8 @@ public class Model {
 		return bestID;
 	}
 
-	private boolean abundant(String chem) {
-		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O") || chem.equals("HCl") || chem.equals("CO2") || chem.equals("NaOH") || chem.equals("H2SO4") || chem.equals("HNO3"));
+	private boolean isAbundant(String chem) {
+		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O") || chem.equals("HCl") || chem.equals("CO2") || chem.equals("NaOH"));
 	}
 	
 	private boolean singleAtom(String chem) {

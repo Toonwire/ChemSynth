@@ -28,4 +28,8 @@ public class ReactionCol {
 	    }
 	    return builder.toString();
 	}
+
+	public int getCurrentID() {
+		return this.currentID;
+	}
 }

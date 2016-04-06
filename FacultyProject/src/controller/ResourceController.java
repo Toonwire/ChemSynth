@@ -56,8 +56,8 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
 		view.getSynthPanel().runAnimation();
 			
-		System.out.println();
-		printNetReaction();
+//		System.out.println();
+//		printNetReaction();
 		
 	}
 

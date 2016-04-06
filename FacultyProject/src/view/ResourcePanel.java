@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -40,6 +41,9 @@ public class ResourcePanel extends JPanel{
 //	-											   -
 //	-                                   SYNTHESIZE -
 //	------------------------------------------------
+	private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	private final int screenWidth = (int) screenSize.getWidth()-(int)screenSize.getWidth()/3;
+	private final int screenHeight = (int) screenSize.getHeight()-(int)screenSize.getHeight()/3;
 	private final int SIZE = 800;
 	private final String chemTextPlaceholder = " Enter chemical resource";
 	private final String desiredTextPlaceholder = " Enter desired chemical";
@@ -59,7 +63,8 @@ public class ResourcePanel extends JPanel{
 	private HashMap<JTextField,String> resourceMap = new HashMap<JTextField,String>();
 	
 	public ResourcePanel(Model model){
-		this.setPreferredSize(new Dimension(SIZE,SIZE));
+//		this.setPreferredSize(new Dimension(screenWidth,screenHeight));
+		this.setPreferredSize(new Dimension(SIZE, SIZE));
 		this.setLayout(null);
 		
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
