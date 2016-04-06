@@ -47,22 +47,27 @@ public class Model {
 //			depth++;
 //		}
 		
+//		Formula formula = new Formula("(CH3)16(Tc(H2O)3CO(BrFe3(ReCl)3(SO4)2)2)2MnO4");
+//		formula.printAtoms();
 		
 		test(desired);
 		
 	}
  	
  	public void test(String formula){
- 		for(Integer reactionID : db.getReactionIDs(formula)){
- 			System.out.println("push = " + reactionID);
- 			if (!stack.contains(reactionID))
- 				stack.push(reactionID);
- 		}
+ 		int bestID = prioritize(db.getReactionIDs(formula));
+// 		for(Integer reactionID : db.getReactionIDs(formula)){
+// 			System.out.println("push = " + reactionID);
+// 			if (!stack.contains(reactionID)) {
+// 				stack.push(reactionID);
+// 			}
+// 		}
+ 		stack.push(bestID);
  		
  		if (!stack.isEmpty()) {
 	 		int currentID = stack.pop();
-	 		System.out.println("ID = " + currentID);
 	 		if(!map.containsKey(currentID)){
+	 			System.out.println("ID = " + currentID);
 	 			List<Pair> list = new ArrayList<>();
 	 			for(String chem : db.getChemicals(currentID)){
 //	 				System.out.println("id = "+ currentID + "\t chem = " + chem);
@@ -85,20 +90,54 @@ public class Model {
 	 					if (!recursiveList.contains(chem)) {
 	 						recursiveList.add(chem);
 	 						System.out.println("recursive on " + chem);
+	 						map.put(currentID, new ReactionCol(currentID, list));
+	 						printNetReaction();
 	 						test(chem);
 	 					}
 	 				}
 	 				
 	 			}
-	 			map.put(currentID, new ReactionCol(currentID, list));
+//	 			for (Integer id : map.keySet()) {
+// 		 			System.out.println("map has id:\t" + id);
+// 		 		}
 	 		}
 	 		return;
  		}
  		return;
  	}
 
+	private int prioritize(ArrayList<Integer> reactionIDs) {
+		Map<Integer, Integer> map = new HashMap<>();
+		int sim = 0;
+		int chemCount = 0;
+		int max = -1;
+		int bestID = -1;
+		for (Integer id : reactionIDs) {
+			for (String chem : db.getChemicals(id)) {
+				if (nettoReaction.containsKey(chem))
+					sim++;
+				chemCount++;
+			}
+			map.put(id, chemCount);
+			if (sim >= max) {
+				if (sim == max) {
+					if (map.get(id) < map.get(bestID))
+						bestID = id;
+						max = sim;
+						sim = 0;
+				} else {
+					bestID = id;
+					max = sim;
+					sim = 0;
+				}
+			}
+		}
+		
+		return bestID;
+	}
+
 	private boolean abundant(String chem) {
-		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O"));
+		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O") || chem.equals("HCl") || chem.equals("CO2") || chem.equals("NaOH") || chem.equals("H2SO4") || chem.equals("HNO3"));
 	}
 	
 	private boolean singleAtom(String chem) {
@@ -124,5 +163,26 @@ public class Model {
 	public Map<String, Integer> getNetReactionMap() {
 		return this.nettoReaction;
 	}
+	
+	private void printNetReaction() {
+		StringBuilder builder = new StringBuilder();
+		StringBuilder reactantBuilder = new StringBuilder();
+		StringBuilder productBuilder = new StringBuilder();
+		
+		for (String formula : getNetReactionMap().keySet()) {
+			int coef = getNetReactionMap().get(formula);
+			if (coef != 0) {
+				if (coef < 0) reactantBuilder.append(Math.abs(coef) + formula + " + ");
+				else if (coef > 0) productBuilder.append(Math.abs(coef) + formula + " + ");
+				
+			}
+		}
+		builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
+				+ " --> " 
+				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
+		System.out.println(builder.toString());
+		
+	}
+
  	
 }

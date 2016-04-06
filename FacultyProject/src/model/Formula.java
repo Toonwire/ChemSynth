@@ -27,8 +27,18 @@ public class Formula {
 		
 		parseFormula(formula, amount);
 		cleanUpAtomCount();
-		getAtoms();
 		
+	}
+	
+	public void printAtoms() {
+		
+		if (finalAtomMap != null) {
+			System.out.println("Total amount of single atoms in formula " + name + ":");
+			for (String atom : finalAtomMap.keySet()){
+				System.out.println("--> " + atom + "\t: " + finalAtomMap.get(atom));
+			}
+			System.out.println();
+		}
 	}
 	
 	public Map<String, Integer> getAtoms() {

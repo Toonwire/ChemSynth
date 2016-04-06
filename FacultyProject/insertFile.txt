@@ -9,7 +9,7 @@ insert or ignore into products(reactionID, formula, coefficient) values(2,'NH4Cl
 insert or ignore into reactants(reactionID, formula, coefficient) values(3,'NH3',2);
 insert or ignore into reactants(reactionID, formula, coefficient) values(3,'CO2',2);
 insert or ignore into reactants(reactionID, formula, coefficient) values(3,'H2O',2);
-insert or ignore into products(reactionID, formula, coefficient) values(3,'NH4HCO3',1);
+insert or ignore into products(reactionID, formula, coefficient) values(3,'NH4HCO3',2);
 insert or ignore into reactants(reactionID, formula, coefficient) values(4,'Ca(OH)2',1);
 insert or ignore into reactants(reactionID, formula, coefficient) values(4,'NH4Cl',2);
 insert or ignore into products(reactionID, formula, coefficient) values(4,'CaCl2',1);
