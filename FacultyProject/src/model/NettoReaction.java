@@ -146,15 +146,13 @@ public class NettoReaction {
 		
 		if( a== 0 || b == 0) return max;
 		
-		while(true){
+		rest = max % min;
+		while(rest !=0){
+			max = min;
+			min = rest;
 			rest = max % min;
-			if(rest == 0)
-				return min;
-			else{
-				max = min;
-				min = rest;
-			}
 		}
+		return min;
 	}
 	
 	public Map<String, Integer> getMap(){
@@ -194,5 +192,9 @@ public class NettoReaction {
 				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		
 		return builder.toString();
-	}	
+	}
+	
+
+
+	
 }
