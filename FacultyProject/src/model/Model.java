@@ -69,13 +69,12 @@ public class Model {
 	 		if(!map.containsKey(currentID)){
 	 			System.out.println("ID = " + currentID);
 	 			List<Pair> list = new ArrayList<>();
+	 			List<String> chemList = new ArrayList<>();
 	 			for(String chem : db.getChemicals(currentID)){
 //	 				System.out.println("id = "+ currentID + "\t chem = " + chem);
 	 				int coefficientPM = db.getCoefficient(currentID, chem);
 	 				list.add(new Pair(chem, coefficientPM));
 	 				System.out.println("    " + chem + "  " + coefficientPM);
-	 				
-	 				
 	 				if (nettoReaction.containsKey(chem))
 	 					nettoReaction.put(chem, nettoReaction.get(chem) + coefficientPM);
 	 				else 
@@ -90,6 +89,11 @@ public class Model {
 	 					if (!recursiveList.contains(chem)) {
 	 						recursiveList.add(chem);
 	 						System.out.println("recursive on " + chem);
+	 						for(String storeChem : db.getReactants(currentID)){
+	 							if(storeChem != chem)
+	 								chemList.add(storeChem);
+	 							System.out.println(chemList + " HER! " + storeChem + " " + chem);
+	 						}
 	 						map.put(currentID, new ReactionCol(currentID, list));
 	 						printNetReaction();
 	 						test(chem);
