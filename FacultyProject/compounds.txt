@@ -1,5 +1,4 @@
-
-Ag $4
+Ag$4
 AgCl $3
 AgI $8
 AgNO3 $7
