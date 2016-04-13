@@ -35,9 +35,9 @@ public class NetReaction {
 			InitialUpdate(currentCol);
 		}else{
 			
-			//finds the coefficients of matterToExpand in the net reaction
+			//finds the coefficients of formula in the net reaction
 
-			//finds the coefficient of matterToExpand in currReaction
+			//finds the coefficient of formula in currReaction
 			int reactantCoef = Math.abs(netReaction.get(formula));
 			int productCoef = 0;
 			for(Pair pair : currentCol.getPairs()){
@@ -72,7 +72,7 @@ public class NetReaction {
 				if(newNettoReacCoef == 0){
 					netReaction.remove(pair.getFormula());
 				}else{
-					netReaction.put(pair.getFormula(),  newNettoReacCoef);
+					netReaction.put(pair.getFormula(), newNettoReacCoef);
 				}
 			}
 		}
@@ -109,7 +109,7 @@ public class NetReaction {
 	}
 
 	private int gcd(int a, int b){
-		//finds greatest common divisor af a and b 
+		//finds greatest common divisor of a and b 
 		//a or b zero, sfd = other
 		//a,b >=0
 		int max, min, rest;
@@ -122,10 +122,10 @@ public class NetReaction {
 			min = a;
 		}
 		
-		if( a== 0 || b == 0) return max;
+		if( a == 0 || b == 0) return max;
 		
 		rest = max % min;
-		while(rest !=0){
+		while(rest != 0){
 			max = min;
 			min = rest;
 			rest = max % min;
