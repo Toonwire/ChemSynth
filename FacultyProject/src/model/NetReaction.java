@@ -146,12 +146,6 @@ public class NetReaction {
 	}
 	
 	public String toString(){
-//		String s = "";
-//		for( String key : netReaction.keySet()){
-//			s += netReaction.get(key) + "." + key + " "; 
-//		}
-//		return s;
-		
 		
 		StringBuilder builder = new StringBuilder();
 		StringBuilder reactantBuilder = new StringBuilder();
@@ -170,9 +164,5 @@ public class NetReaction {
 				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		
 		return builder.toString();
-	}
-	
-
-
-	
+	}	
 }

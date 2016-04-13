@@ -1,10 +1,8 @@
 package model;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +24,9 @@ public class Model {
 	private NetReaction netReaction;
 	
 	private int count = 1;
-	private double time;
 	private String desired;
+
+	private HashMap<String, Integer> costMap;
 	
 	public Model(){
 		
@@ -56,26 +55,16 @@ public class Model {
 //		Formula formula = new Formula("(CH3)16(Tc(H2O)3CO(BrFe3(ReCl)3(SO4)2)2)2MnO4");
 //		formula.printAtoms();
 		
-		test(desired);
+		costMap = db.getCompoundCosts();
+		retroSynth(desired);
 		
-//		Writer writer = null;
-//
-//		try {
-//		    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("compounds.txt"), "utf-8"));
-//		    for (String formula : db.getAllCompounds())
-//		    	writer.write(formula +"\n");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} finally {
-//		   try {
-//			   writer.close();
-//		   } catch (Exception e) {
-//			   e.printStackTrace();
-//		   }
-//		}
+
+ 		printNetCost();
+		
 	}
- 	
-	public void test(String formula){
+ 
+
+	public void retroSynth(String formula){
  		int bestID = prioritize(db.getReactionIDs(formula));
  		
  		if (bestID == -1 || isAbundant(formula)) {
@@ -101,7 +90,7 @@ public class Model {
 			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.rollback(rCol);
-				test(formula);
+				retroSynth(formula);
 				return;
 			}
 			
@@ -117,11 +106,12 @@ public class Model {
  			}
 
 			for (String c : chemList) {
-				test(c);
+				retroSynth(c);
 			}
- 		return;
+			return;
  		
  		}
+ 		
  	}
 
 	private int prioritize(ArrayList<Integer> reactionIDs) {
@@ -172,6 +162,17 @@ public class Model {
 		}
 		return upCount == 1;
 	}
+	
+	public void printNetCost() {
+		int totalCost = 0;
+		for (String chem : netReaction.getMap().keySet()) {
+			int cost = costMap.get(chem);
+			if (cost < 0 || !chem.equals(desired))
+				totalCost += costMap.get(chem);
+		}
+		
+		System.out.println("\nTotal cost of the net reaction is : " + totalCost);
+	}
  	
 	public void setDesiredChemical(String formula) {
 		this.desired = formula;
@@ -185,23 +186,4 @@ public class Model {
 		return this.nettoReaction;
 	}
 	
-	private void printNetReaction() {
-		StringBuilder builder = new StringBuilder();
-		StringBuilder reactantBuilder = new StringBuilder();
-		StringBuilder productBuilder = new StringBuilder();
-		
-		for (String formula : getNetReactionMap().keySet()) {
-			int coef = getNetReactionMap().get(formula);
-			if (coef != 0) {
-				if (coef < 0) reactantBuilder.append(Math.abs(coef) + formula + " + ");
-				else if (coef > 0) productBuilder.append(Math.abs(coef) + formula + " + ");
-				
-			}
-		}
-		builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
-				+ " --> " 
-				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
-		System.out.println(builder.toString());
-		
-	} 	
 }
