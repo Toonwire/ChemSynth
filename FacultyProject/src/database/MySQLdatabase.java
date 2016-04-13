@@ -126,7 +126,7 @@ public class MySQLdatabase {
 				reactionID++;
 			}
 			
-			s = new Scanner(new File("compounds.txt"));
+			s = new Scanner(new File("compoundCosts.txt"));
 			
 			while(s.hasNextLine()) {
 				String[] compoundCost = s.nextLine().trim().split("\\$");
