@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import database.MySQLdatabase;
+import database.SQLiteDatabase;
 
 public class Model {
 	
 	private static final int maxDepth = 20;
 
-	private MySQLdatabase db = null;
+	private SQLiteDatabase db = null;
 	private Map<Integer, ReactionCol> map = new HashMap<>();
 	private Map<String, Integer> nettoReaction = new HashMap<>();
 	private Stack<Integer> stack = new Stack<Integer>();
@@ -30,12 +30,12 @@ public class Model {
 	
 	public Model(){
 		
-		db = new MySQLdatabase();
+		db = new SQLiteDatabase();
 		this.netReaction = new NetReaction();
 		
 	}
 
-	public MySQLdatabase getDatabase() {
+	public SQLiteDatabase getDatabase() {
 		return db;
 	}
 
@@ -44,23 +44,11 @@ public class Model {
 //		this.resourceList = resources;
 		this.desired = desired;		
 		
-//		// the iterative part
-//		int depth = 0;
-//		while (!goalFound) {
-//			retroSynth(desiredDepth, depth);
-//			System.out.println();
-//			depth++;
-//		}
-//		
-//		Formula formula = new Formula("(CH3)16(Tc(H2O)3CO(BrFe3(ReCl)3(SO4)2)2)2MnO4");
-//		formula.printAtoms();
-		
 		costMap = db.getCompoundCosts();
 		retroSynth(desired);
 		
 
  		printNetCost();
-		
 	}
  
 
@@ -108,10 +96,8 @@ public class Model {
 			for (String c : chemList) {
 				retroSynth(c);
 			}
-			return;
- 		
+			// should probably do rollback stuff or evaluate cost here
  		}
- 		
  	}
 
 	private int prioritize(ArrayList<Integer> reactionIDs) {
