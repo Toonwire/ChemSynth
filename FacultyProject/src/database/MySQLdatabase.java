@@ -11,6 +11,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -37,19 +38,19 @@ public class MySQLdatabase {
 //		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
 		    String reactantTable = "create table if not exists reactants (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
 		    String productTable = "create table if not exists products (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
-			String reactionTable = "create table if not exists reactions (reactionID integer, cost integer, PRIMARY KEY(reactionID));";
-		    
+		    String costTable = "create table if not exists costs(formula varchar(30), cost integer, PRIMARY KEY(formula));";
+			
 			statement.executeUpdate(reactantTable);
 			statement.executeUpdate(productTable);
-			statement.executeUpdate(reactionTable);
+			statement.executeUpdate(costTable);
 		   
 
-//			String sql = "drop table reactants";
-//			String sql4 = "drop table products";
-//			String sql2 = "drop table reactions";
-//		    statement.executeUpdate(sql);
-//		    statement.executeUpdate(sql4);
+//			String sql1 = "drop table reactans";
+//			String sql2 = "drop table cost";
+//			String sql3 = "drop table costs";
+//		    statement.executeUpdate(sql1);
 //		    statement.executeUpdate(sql2);
+//		    statement.executeUpdate(sql3);
 		    
 //		    System.out.println("Created table");
 
@@ -124,7 +125,29 @@ public class MySQLdatabase {
 				
 				reactionID++;
 			}
-		
+			
+			s = new Scanner(new File("compoundCosts.txt"));
+			
+			while(s.hasNextLine()) {
+				String[] compoundCost = s.nextLine().trim().split("\\$");
+				String compound = compoundCost[0];
+				int cost = 0;
+				try {
+					cost = Integer.parseInt(compoundCost[1]);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				}
+				
+					
+				String costInsert = "insert or ignore into costs(formula, cost) values('" + compound + "', " + cost + ");";
+				insertFile.println(costInsert);
+				
+				prepStmt = connection.prepareStatement("insert or ignore into costs(formula, cost) values(?,?);");
+				prepStmt.setString(1, compound);
+				prepStmt.setInt(2, cost);
+				prepStmt.execute();
+			}
+
 			s.close();
 			insertFile.close();
 			
@@ -359,6 +382,69 @@ public class MySQLdatabase {
 		
 		return chemicals;
 	}
+	
+	
+	public ArrayList<String> getAllCompounds() {
+		ArrayList<String> result = new ArrayList<String>();
+		
+		String sql = "select formula from reactants union select formula from products;";
+		
+		try {
+			connection = this.connect();
+			prepStmt = connection.prepareStatement(sql);
+			
+			ResultSet resultSet = prepStmt.executeQuery();
+	      
+			while (resultSet.next()) {
+				result.add(resultSet.getString("formula"));
+			}
+			      
+			resultSet.close();
+			resultSet = null;
+			
+//			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				e.printStackTrace();
+		} 
+		
+		return result;
+	}
+
+	public HashMap<String, Integer> getCompoundCosts() {
+		HashMap<String, Integer> result = new HashMap<>();
+		
+		String sql = "select * from costs;";
+		
+		try {
+			connection = this.connect();
+			prepStmt = connection.prepareStatement(sql);
+			ResultSet resultSet = prepStmt.executeQuery();
+			
+			int column1Pos = resultSet.findColumn("formula");
+			int column2Pos = resultSet.findColumn("cost");
+			
+			while (resultSet.next()) {
+			    String formula = resultSet.getString(column1Pos);
+			    int cost = resultSet.getInt(column2Pos);
+			    result.put(formula, cost);
+			}
+	      
+			resultSet.close();
+			resultSet = null;
+			
+//			System.out.println("Extracted information from database");
+			disconnect();
+		      
+		} catch (SQLException e){
+				e.printStackTrace();
+		} 
+		
+		return result;
+	}
+	
+	
 
 }
 

@@ -1,8 +1,10 @@
 package model;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -19,16 +21,17 @@ public class Model {
 	private Stack<Integer> stack = new Stack<Integer>();
 	private List<Integer> reactionIDSeq = new ArrayList<>(maxDepth);
 	private List<String> recursiveList = new ArrayList<>(maxDepth);
-	private NettoReaction netReaction;
+	private NetReaction netReaction;
 	
 	private int count = 1;
-	
 	private String desired;
+
+	private HashMap<String, Integer> costMap;
 	
 	public Model(){
 		
 		db = new MySQLdatabase();
-		this.netReaction = new NettoReaction();
+		this.netReaction = new NetReaction();
 		
 	}
 
@@ -48,22 +51,22 @@ public class Model {
 //			System.out.println();
 //			depth++;
 //		}
-		
+//		
 //		Formula formula = new Formula("(CH3)16(Tc(H2O)3CO(BrFe3(ReCl)3(SO4)2)2)2MnO4");
 //		formula.printAtoms();
 		
-		test(desired);
+		costMap = db.getCompoundCosts();
+		retroSynth(desired);
+		
+
+ 		printNetCost();
 		
 	}
- 	
-	public void test(String formula){
+ 
+
+	public void retroSynth(String formula){
  		int bestID = prioritize(db.getReactionIDs(formula));
-// 		for(Integer reactionID : db.getReactionIDs(formula)){
-// 			System.out.println("push = " + reactionID);
-// 			if (!stack.contains(reactionID)) {
-// 				stack.push(reactionID);
-// 			}
-// 		}
+ 		
  		if (bestID == -1 || isAbundant(formula)) {
  			return;
  		}
@@ -71,31 +74,30 @@ public class Model {
  		
  		if(!map.containsKey(bestID)){
  			System.out.println("ID = " + bestID);
- 			List<Pair> list = new ArrayList<>();		
+ 			List<Pair> pairList = new ArrayList<>();		
  			List<String> chemList = new ArrayList<>();		
  			
  			for (String chem : db.getChemicals(bestID)) {
  				int coefficientPM = db.getCoefficient(bestID, chem);
- 				list.add(new Pair(chem, coefficientPM));
+ 				pairList.add(new Pair(chem, coefficientPM));
  			}
 
- 			ReactionCol rCol = new ReactionCol(bestID, list);
+ 			ReactionCol rCol = new ReactionCol(bestID, pairList);
 			map.put(bestID, rCol);
  			
-			netReaction.updateForward(formula, rCol);
+			
+			netReaction.update(formula, rCol);
 			
 			if (!netReaction.getMap().containsKey(desired)) {
-				netReaction.updateBackward(rCol);
-				test(formula);
+				netReaction.rollback(rCol);
+				retroSynth(formula);
 				return;
 			}
 			
 			System.out.println(netReaction);
  			
- 			for(String chem : netReaction.getMap().keySet()){
- 				
+ 			for(String chem : netReaction.getMap().keySet()) {
  				if (netReaction.getMap().get(chem) < 0 /* reactant */ && count <= maxDepth && !isAbundant(chem)  && !singleAtom(chem)) {
- 					
  					if (!recursiveList.contains(chem)) {
  						recursiveList.add(chem);
  						chemList.add(chem);
@@ -104,15 +106,18 @@ public class Model {
  			}
 
 			for (String c : chemList) {
-				test(c);
+				retroSynth(c);
 			}
- 		return;
+			return;
+ 		
  		}
+ 		
  	}
 
 	private int prioritize(ArrayList<Integer> reactionIDs) {
+		
 		Map<Integer, Integer> similarityMap = new HashMap<>();
-		int sim = 0;
+		int sim = 0;	// similarity count
 		int chemCount = 0;
 		int max = -1;
 		int bestID = -1;
@@ -157,6 +162,17 @@ public class Model {
 		}
 		return upCount == 1;
 	}
+	
+	public void printNetCost() {
+		int totalCost = 0;
+		for (String chem : netReaction.getMap().keySet()) {
+			int cost = costMap.get(chem);
+			if (cost < 0 || !chem.equals(desired))
+				totalCost += costMap.get(chem);
+		}
+		
+		System.out.println("\nTotal cost of the net reaction is : " + totalCost);
+	}
  	
 	public void setDesiredChemical(String formula) {
 		this.desired = formula;
@@ -170,25 +186,4 @@ public class Model {
 		return this.nettoReaction;
 	}
 	
-	private void printNetReaction() {
-		StringBuilder builder = new StringBuilder();
-		StringBuilder reactantBuilder = new StringBuilder();
-		StringBuilder productBuilder = new StringBuilder();
-		
-		for (String formula : getNetReactionMap().keySet()) {
-			int coef = getNetReactionMap().get(formula);
-			if (coef != 0) {
-				if (coef < 0) reactantBuilder.append(Math.abs(coef) + formula + " + ");
-				else if (coef > 0) productBuilder.append(Math.abs(coef) + formula + " + ");
-				
-			}
-		}
-		builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
-				+ " --> " 
-				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
-		System.out.println(builder.toString());
-		
-	}
-
- 	
 }
