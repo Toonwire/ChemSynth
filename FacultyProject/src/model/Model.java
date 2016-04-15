@@ -101,7 +101,6 @@ public class Model {
  						chemList.add(chem);
  					}
  				}
- 				
  			}
 
 			for (String c : chemList) {
