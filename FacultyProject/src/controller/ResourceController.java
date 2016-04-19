@@ -54,32 +54,12 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
 		model.setDesiredChemical(desired);
 		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
-		view.getSynthPanel().runAnimation();
+		System.exit(0);
+//		view.getSynthPanel().runAnimation();
 			
-//		System.out.println();
-//		printNetReaction();
 		
 	}
 
-	private void printNetReaction() {
-		StringBuilder builder = new StringBuilder();
-		StringBuilder reactantBuilder = new StringBuilder();
-		StringBuilder productBuilder = new StringBuilder();
-		
-		for (String formula : model.getNetReactionMap().keySet()) {
-			int coef = model.getNetReactionMap().get(formula);
-			if (coef != 0) {
-				if (coef < 0) reactantBuilder.append(Math.abs(coef) + formula + " + ");
-				else if (coef > 0) productBuilder.append(Math.abs(coef) + formula + " + ");
-				
-			}
-		}
-		builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
-				+ " --> " 
-				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
-		System.out.println(builder.toString());
-		
-	}
 
 	@Override
 	public void focusGained(FocusEvent e) {
