@@ -21,6 +21,8 @@ public class Model {
 	private List<String> recursiveList = new ArrayList<>(maxDepth);
 	private NetReaction netReaction;
 	
+	private Map<NetReaction, Integer> netMap = new HashMap<>();
+	
 	private int depth = 0;
 	private int count = 1;
 	private String desired;
@@ -28,7 +30,7 @@ public class Model {
 	private HashMap<String, Integer> costMap;
 
 	private Map<Integer, Integer> initialReactionCosts = new HashMap<>();
-	private int initialBestID = Integer.MAX_VALUE;
+	private int initialBestID = -1;
 	
 	public Model(){
 		
@@ -57,7 +59,21 @@ public class Model {
 				minCost = initialReactionCosts.get(initialID);
 		}
 		
-		System.out.println("minCost = " + minCost);
+		
+		
+		System.out.println("Minimum cost for a synthesis is : " + minCost +"\nAchieved by the sequence of reactions:");
+		List<Integer> netIDs = new ArrayList<>();
+		for (NetReaction nr : netMap.keySet()) {
+			if (netMap.get(nr) == minCost) {
+				netIDs = nr.getUsedReactions();
+			}
+		}
+		
+		for (int usedID : netIDs) {
+			System.out.println(usedID);
+//			translate reactionIDs into reactions for easier perception
+			
+		}
 	}
  
 
@@ -71,9 +87,9 @@ public class Model {
  		if (bestID == -1 || isAbundant(formula)) {
  			return;
  		}
- 		System.out.println("recursive on " + formula);
 	
  		if (!map.containsKey(bestID)) {
+ 			System.out.println("recursive on " + formula);
 			System.out.println("ID = " + bestID);
 			List<Pair> pairList = new ArrayList<>();		
 			List<String> chemList = new ArrayList<>();		
@@ -92,6 +108,7 @@ public class Model {
 			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.rollback(rCol);
+				depth++;
 				retroSynth(formula);
 				return;
 			}
@@ -108,18 +125,18 @@ public class Model {
 	
 			for (String c : chemList) {
 				retroSynth(c);
+				depth--;
 			}
  		}
 		
- 		depth--;
- 		
 		if (depth == 1) {
 			System.out.println("id = " + initialBestID + " cost = " + getNetCost());
 			initialReactionCosts.put(initialBestID, getNetCost());
 			System.out.println("\n\n\n");
-			netReaction = new NetReaction();
-			map.clear();
-			recursiveList.clear();
+			netMap.put(netReaction, getNetCost());
+			this.netReaction = new NetReaction();
+			this.map.clear();
+			this.recursiveList.clear();
 			depth = 0;
 			
 			retroSynth(desired);
