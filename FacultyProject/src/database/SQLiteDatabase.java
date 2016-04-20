@@ -17,13 +17,13 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MySQLdatabase {
+public class SQLiteDatabase {
 
 	private Connection connection = null;
 	private Statement statement = null;
 	private PreparedStatement prepStmt = null;
 	
-	public MySQLdatabase() {
+	public SQLiteDatabase() {
 		
 		createTable();
 		insertIntoTable();
@@ -126,7 +126,7 @@ public class MySQLdatabase {
 				reactionID++;
 			}
 			
-			s = new Scanner(new File("compounds.txt"));
+			s = new Scanner(new File("compoundCosts.txt"));
 			
 			while(s.hasNextLine()) {
 				String[] compoundCost = s.nextLine().trim().split("\\$");

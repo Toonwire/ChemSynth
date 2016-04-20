@@ -11,7 +11,7 @@ public class NetReaction {
 	private List<Integer> usedReactions;
 	private List<Integer> oldReacCoef;
 	private List<Integer> newReacCoef;
-	private int steps;
+	private int steps = 0;
 	
 	public NetReaction() {
 		netReaction = new HashMap<String, Integer>();
@@ -159,10 +159,11 @@ public class NetReaction {
 				
 			}
 		}
-		builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
-				+ " --> " 
-				+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
-		
+		if (reactantBuilder.toString().length() != 0 && productBuilder.toString().length() != 0) {
+			builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
+					+ " --> " 
+					+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
+		}
 		return builder.toString();
 	}	
 }
