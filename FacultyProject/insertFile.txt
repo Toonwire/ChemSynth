@@ -402,6 +402,8 @@ insert or ignore into reactants(reactionID, formula, coefficient) values(108,'HN
 insert or ignore into products(reactionID, formula, coefficient) values(108,'Cu(NO3)2',3);
 insert or ignore into products(reactionID, formula, coefficient) values(108,'NO',2);
 insert or ignore into products(reactionID, formula, coefficient) values(108,'H2O',4);
+<<<<<<< HEAD
+=======
 insert or ignore into costs(formula, cost) values('Ag', 4);
 insert or ignore into costs(formula, cost) values('AgCl', 3);
 insert or ignore into costs(formula, cost) values('AgI', 8);
@@ -521,3 +523,4 @@ insert or ignore into costs(formula, cost) values('SnO2', 2);
 insert or ignore into costs(formula, cost) values('Zn', 1);
 insert or ignore into costs(formula, cost) values('ZnCl2', 7);
 insert or ignore into costs(formula, cost) values('ZnSO4', 7);
+>>>>>>> 9878e943b470b61642221d9daedf3533a9d0f449
