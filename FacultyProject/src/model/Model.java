@@ -52,7 +52,11 @@ public class Model {
 		
 		costMap = db.getCompoundCosts();
 		retroSynth(desired);
+		computeNetReaction();
 		
+	}
+ 
+	private void computeNetReaction() {
 		int minCost = Integer.MAX_VALUE;
 		for (int initialID : initialReactionCosts.keySet()) {
 			if (initialReactionCosts.get(initialID) < minCost)
@@ -61,27 +65,36 @@ public class Model {
 		
 		
 		
-		System.out.println("Minimum cost for a synthesis is : " + minCost +"\nAchieved by the sequence of reactions:");
 		List<Integer> netIDs = new ArrayList<>();
+		int minChemCount = Integer.MAX_VALUE;
 		for (NetReaction nr : netMap.keySet()) {
 			if (netMap.get(nr) == minCost) {
-				netIDs = nr.getUsedReactions();
-				/*
-				 * this still takes in multiple minimum costs ids
-				 * TODO: seperate them, offering both as a solution (perhaps rank them according to chemCount or the like)
-				 * 
-				 */
-				
+				int currentChemCount = Integer.MAX_VALUE;
+				for (String chem : nr.getMap().keySet()) {
+					if (!isAbundant(chem) && !singleAtom(chem))
+						currentChemCount++;
+				}
+				if (currentChemCount < minChemCount) {
+					netIDs = nr.getUsedReactions();
+					minChemCount = nr.getMap().size();
+				}
 			}
 		}
 		
-		for (int usedID : netIDs) {
-			System.out.println(usedID);
-//			translate reactionIDs into reactions for easier perception
+		if (!netIDs.isEmpty()) {
+			System.out.println("Minimum cost for a synthesis is : " + minCost +"\nAchieved by the sequence of reactions:");
+			for (int usedID = netIDs.size()-1; usedID >= 0; usedID--) {
+				System.out.println("ID = " + netIDs.get(usedID) + ": \t" + db.getReactionsIDMap().get(netIDs.get(usedID)));			
+			}
 			
+		} else if (desired.equals("H2O")) {
+
+			System.err.println("CRY ME A FUCKING RIVER... LITERALLY!");
+		} else {
+			System.err.println("Seriously?...");
 		}
+		
 	}
- 
 
 	public void retroSynth(String formula){
 		depth++;
@@ -136,7 +149,6 @@ public class Model {
  		}
 		
 		if (depth == 1) {
-			System.out.println("id = " + initialBestID + " cost = " + getNetCost());
 			initialReactionCosts.put(initialBestID, getNetCost());
 			System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());
@@ -201,17 +213,6 @@ public class Model {
 		return upCount == 1;
 	}
 	
-	public void printNetCost() {
-		int totalCost = 0;
-		for (String chem : netReaction.getMap().keySet()) {
-			if (netReaction.getMap().get(chem) > 0)	{
-				if (!chem.equals(desired))
-					totalCost += costMap.get(chem);
-			}
-		}
-		
-		System.out.println("\nTotal cost of the net reaction is : " + totalCost);
-	}
 	
 	private int getNetCost() {
 		int totalCost = 0;

@@ -22,14 +22,15 @@ public class SQLiteDatabase {
 	private Connection connection = null;
 	private Statement statement = null;
 	private PreparedStatement prepStmt = null;
+	private HashMap<Integer, String> reactionToID = new HashMap<Integer, String>();
 	
 	public SQLiteDatabase() {
 		
-		createTable();
+		createTables();
 		insertIntoTable();
 	}
 	
-	public void createTable(){
+	public void createTables(){
 		
 		try{
 			connection = this.connect();
@@ -73,7 +74,9 @@ public class SQLiteDatabase {
 			
 			int reactionID = 1;
 			while(s.hasNextLine()) {
-				String[] reaction = s.nextLine().trim().split("->");
+				String line = s.nextLine();
+				reactionToID .put(reactionID, line);
+				String[] reaction = line.trim().split("->");
 				
 				Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
 				Matcher m = p.matcher(reaction[0]);
@@ -341,6 +344,7 @@ public class SQLiteDatabase {
 				coefficient = resultSet.getInt("coefficient");
 			}
 			
+			resultSet.close();
 			resultSet = null;
 			
 //			System.out.println("Extracted information from database");
@@ -444,6 +448,9 @@ public class SQLiteDatabase {
 		return result;
 	}
 	
+	public HashMap<Integer, String> getReactionsIDMap() {
+		return reactionToID;
+	}
 	
 
 }
