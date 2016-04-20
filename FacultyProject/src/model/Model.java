@@ -70,12 +70,12 @@ public class Model {
 			if (netMap.get(nr) == minCost) {
 				int currentChemCount = Integer.MAX_VALUE;
 				for (String chem : nr.getMap().keySet()) {
-					if (isAbundant(chem))
+					if (!isAbundant(chem))
 						currentChemCount++;
 				}
 				if (currentChemCount < minChemCount) {
 					netIDs = nr.getUsedReactions();
-					minChemCount = nr.getMap().size();
+					minChemCount = currentChemCount;
 					finalNetReaction = nr;
 				}
 			}
