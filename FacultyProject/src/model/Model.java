@@ -57,13 +57,12 @@ public class Model {
 	}
  
 	private void computeNetReaction() {
+		NetReaction finalNetReaction = null;
 		int minCost = Integer.MAX_VALUE;
 		for (int initialID : initialReactionCosts.keySet()) {
 			if (initialReactionCosts.get(initialID) < minCost)
 				minCost = initialReactionCosts.get(initialID);
 		}
-		
-		
 		
 		List<Integer> netIDs = new ArrayList<>();
 		int minChemCount = Integer.MAX_VALUE;
@@ -71,27 +70,31 @@ public class Model {
 			if (netMap.get(nr) == minCost) {
 				int currentChemCount = Integer.MAX_VALUE;
 				for (String chem : nr.getMap().keySet()) {
-					if (!isAbundant(chem) && !singleAtom(chem))
+					if (isAbundant(chem))
 						currentChemCount++;
 				}
 				if (currentChemCount < minChemCount) {
 					netIDs = nr.getUsedReactions();
 					minChemCount = nr.getMap().size();
+					finalNetReaction = nr;
 				}
 			}
 		}
 		
 		if (!netIDs.isEmpty()) {
-			System.out.println("Minimum cost for a synthesis is : " + minCost +"\nAchieved by the sequence of reactions:");
+			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost +"\nAchieved by the sequence of reactions:");
 			for (int usedID = netIDs.size()-1; usedID >= 0; usedID--) {
 				System.out.println("ID = " + netIDs.get(usedID) + ": \t" + db.getReactionsIDMap().get(netIDs.get(usedID)));			
 			}
 			
+			System.out.println("\nResulting in the net reaction: \n" + finalNetReaction);
 		} else if (desired.equals("H2O")) {
 
 			System.err.println("CRY ME A FUCKING RIVER... LITERALLY!");
 		} else {
-			System.err.println("Seriously?...");
+			System.err.println("A retro synthesis was not deemed possible. See reasons below:"
+					+ "\n- You have initiated a retro synthesis for an abundant chemical"
+					+ "\n- No reaction product matches your desired chemical");
 		}
 		
 	}
@@ -121,13 +124,14 @@ public class Model {
 			ReactionCol rCol = new ReactionCol(bestID, pairList);
 			map.put(bestID, rCol);
 			
-			
 			netReaction.update(formula, rCol);
 			System.out.println(netReaction);
+			System.out.println(depth);
 			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.rollback(rCol);
-				depth++;
+				System.out.println("rollback");
+				depth--;
 				retroSynth(formula);
 				return;
 			}
@@ -145,10 +149,11 @@ public class Model {
 			for (String c : chemList) {
 				retroSynth(c);
 				depth--;
+				System.out.println(depth);
 			}
  		}
 		
-		if (depth == 1) {
+		if (depth == 1 && !initialReactionCosts.containsKey(initialBestID)) {
 			initialReactionCosts.put(initialBestID, getNetCost());
 			System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());
