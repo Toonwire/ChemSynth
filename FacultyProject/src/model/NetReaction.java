@@ -11,7 +11,7 @@ public class NetReaction {
 	private List<Integer> usedReactions;
 	private List<Integer> oldReacCoef;
 	private List<Integer> newReacCoef;
-	private int steps = 0;
+	private int steps = 0, initialID = -1;
 	
 	public NetReaction() {
 		netReaction = new HashMap<String, Integer>();
@@ -21,7 +21,7 @@ public class NetReaction {
 	}
 	
 	private void InitialUpdate(ReactionCol rCol){		
-		
+		initialID = rCol.getCurrentID();
 		//strips first reaction
 		for( Pair pair : rCol.getPairs()){				
 			netReaction.put(pair.getFormula(), pair.getCoefficient());
@@ -143,6 +143,10 @@ public class NetReaction {
 	
 	public int getLastReaction(){
 		return usedReactions.get(steps-1);
+	}
+	
+	public int getInitialID() {
+		return initialID;
 	}
 	
 	public String toString(){

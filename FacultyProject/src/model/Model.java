@@ -66,6 +66,12 @@ public class Model {
 		for (NetReaction nr : netMap.keySet()) {
 			if (netMap.get(nr) == minCost) {
 				netIDs = nr.getUsedReactions();
+				/*
+				 * this still takes in multiple minimum costs ids
+				 * TODO: seperate them, offering both as a solution (perhaps rank them according to chemCount or the like)
+				 * 
+				 */
+				
 			}
 		}
 		
