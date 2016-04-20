@@ -112,25 +112,30 @@ public class NetReaction {
 		//finds greatest common divisor of a and b 
 		//a or b zero, sfd = other
 		//a,b >=0
-		int max, min, rest;
-		
-		if(a > b){
-			max = a;
-			min = b;
-		} else{
-			max = b;
-			min = a;
-		}
-		
-		if( a == 0 || b == 0) return max;
-		
-		rest = max % min;
-		while(rest != 0){
-			max = min;
-			min = rest;
-			rest = max % min;
-		}
-		return min;
+//		int max, min, rest;
+//		
+//		if(a > b){
+//			max = a;
+//			min = b;
+//		} else{
+//			max = b;
+//			min = a;
+//		}
+//		
+//		if( a == 0 || b == 0) return max;
+//		
+//		rest = max % min;
+//		while(rest != 0){
+//			max = min;
+//			min = rest;
+//			rest = max % min;
+//		}
+//		return min;
+			 
+		if (b == 0)
+			return a;
+		else
+			return gcd(b, a%b);	
 	}
 	
 	public Map<String, Integer> getMap(){
