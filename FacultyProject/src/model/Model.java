@@ -31,6 +31,8 @@ public class Model {
 
 	private Map<Integer, Integer> initialReactionCosts = new HashMap<>();
 	private int initialBestID = -1;
+
+	private ArrayList<String> resourceList;
 	
 	public Model(){
 		
@@ -47,8 +49,18 @@ public class Model {
 
 	
 	public void setUpSynth(ArrayList<String> resources, String desired){
-//		this.resourceList = resources;
-		this.desired = desired;		
+		this.resourceList = resources;
+		this.desired = desired;	
+
+		/*
+		 * adding default resources (abundant)
+		 */
+		resourceList.add("NaCl");
+		resourceList.add("O2");
+		resourceList.add("H2O");
+		resourceList.add("HCl");
+		resourceList.add("CO2");
+		resourceList.add("NaOH");
 		
 		costMap = db.getCompoundCosts();
 		retroSynth(desired);
@@ -96,7 +108,6 @@ public class Model {
 					+ "\n- You have initiated a retro synthesis for an abundant chemical"
 					+ "\n- No reaction product matches your desired chemical");
 		}
-		
 	}
 
 	public void retroSynth(String formula){
@@ -203,7 +214,7 @@ public class Model {
 	}
 
 	private boolean isAbundant(String chem) {
-		return (chem.equals("NaCl") || chem.equals("O2") || chem.equals("H2O") || chem.equals("HCl") || chem.equals("CO2") || chem.equals("NaOH"));
+		return resourceList.contains(chem);
 	}
 	
 	private boolean singleAtom(String chem) {
