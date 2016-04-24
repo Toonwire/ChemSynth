@@ -35,7 +35,7 @@ public class View extends JFrame{
 		this.add(resourcePanel);
 
 		this.pack();
-		this.setLocationRelativeTo(null);
+		this.setLocationByPlatform(true);
 
 		// initial focus component
 		resourcePanel.getDesiredTextField().requestFocusInWindow();

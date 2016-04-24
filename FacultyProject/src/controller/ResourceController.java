@@ -7,14 +7,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JTextField;
 
 import model.Model;
-import model.Node;
-import model.Pair;
 import view.View;
 
 public class ResourceController implements FocusListener, ActionListener, KeyListener {
@@ -28,9 +24,9 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	public ResourceController(Model model, View view){
 		this.model = model;
 		this.view = view;
-		 
-		this.view.getResourcePanel().registerListeners(this);
-		this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
+		
+		view.getResourcePanel().registerListeners(this);
+		view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
 		
 		
 	}
@@ -49,10 +45,8 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		this.view.remove(view.getResourcePanel());
 		this.view.add(view.getSynthPanel());
 		this.view.pack();
-		this.view.setLocationRelativeTo(null);
 		
 		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
-		model.setDesiredChemical(desired);
 		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
 		view.getSynthPanel().runAnimation();
 			
@@ -99,10 +93,9 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 				&& tf.getBackground().equals(CUSTOM_GREEN)){
 			
 			// do nothing
-			// TODO: Better way of catching these if statements?
-			// could just merge with the below else statement and NOT it (!)  ???
 			
 		} else {
+			
 			boolean exists = existsInDatabase(tf.getText());
 			
 			if (exists) {
@@ -206,11 +199,9 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 
 	private boolean existsInDatabase(String resource) {
 		boolean exists = false;
-		
 		// checks if there is any information returned from the sql statement
 		exists = model.getDatabase().checkResource(resource.trim());
 		
-//		System.out.println(lookups);
 		return exists;
 	}
 
