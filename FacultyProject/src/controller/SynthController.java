@@ -27,7 +27,11 @@ public class SynthController implements PropertyChangeListener, ActionListener{
 
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
-		view.getSynthPanel().addReactionToPath((String) e.getNewValue());
+		/*
+		 * newValue = reaction
+		 * oldValue = recursiveOnFormula
+		 */
+		view.getSynthPanel().addReactionToPath(Integer.parseInt(e.getPropertyName()), (String) e.getOldValue(), (String) e.getNewValue());
 		
 	}
 

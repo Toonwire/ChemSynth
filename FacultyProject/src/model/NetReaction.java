@@ -16,6 +16,7 @@ public class NetReaction {
 	private List<Integer> oldReacCoef;
 	private List<Integer> newReacCoef;
 	private int steps = 0, initialID = -1;
+	private List<String> recursiveList = new ArrayList<>();
 	
 	public NetReaction() {
 		
@@ -39,7 +40,9 @@ public class NetReaction {
 	public void update(String formula, ReactionCol currentCol) {
 		if(steps == 0){
 			InitialUpdate(currentCol);
-		}else{
+			recursiveList.add(formula);
+		} else {
+			recursiveList.add(formula);
 			
 			//finds the coefficients of formula in the net reaction
 
@@ -154,6 +157,10 @@ public class NetReaction {
 			builder.append(productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		}
 		return builder.toString();
+	}
+	
+	public List<String> getRecursiveList() {
+		return this.recursiveList;
 	}
 
 }
