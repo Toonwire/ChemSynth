@@ -1,48 +1,54 @@
 package model;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-import java.util.Vector;
 
+import controller.SynthController;
 import database.SQLiteDatabase;
 
 public class Model {
+	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 	
 	private static final int maxDepth = 20;
 
-	private SQLiteDatabase db = null;
-	private Map<Integer, ReactionCol> map = new HashMap<>();
-	private List<String> recursiveList = new ArrayList<>(maxDepth);
-	private NetReaction netReaction;
-	NetReaction finalNetReaction = null;
-	List<Integer> usedNetIDs = new ArrayList<>();
+	private SQLiteDatabase db;
 	
-	private Map<NetReaction, Integer> netMap = new HashMap<>();
+	private Map<Integer, ReactionCol> map;
+	private Map<String, Integer> costMap;
+	private Map<Integer, String> reactionsIDMap;
+	private Map<NetReaction, Integer> netMap;
+	private Map<Integer, Integer> initialReactionCosts;
 	
-	private int depth = 0;
-	private int count = 1;
-	private String desired;
-
-	private HashMap<String, Integer> costMap;
-
-	private Map<Integer, Integer> initialReactionCosts = new HashMap<>();
-	private int initialBestID = -1;
-
 	private ArrayList<String> resourceList;
+	private List<String> recursiveList;
+	private NetReaction netReaction;
+	
+	private String desired;
+	private int initialBestID;
+	private int recursiveDepth;
+	private int depth;
 	
 	public Model(){
 		
 		db = new SQLiteDatabase();
-		this.netReaction = new NetReaction();
-//		Formula f = new Formula("Ca(OH(Cl2Fe3(Co(PO4)3)2)4)2");
-//		f.printAtoms();
 		
+		this.map = new HashMap<>();
+		this.netMap = new HashMap<>();
+		this.initialReactionCosts = new HashMap<>();
+		
+		this.recursiveList = new ArrayList<>(maxDepth);
+		this.resourceList = new ArrayList<>();
+		this.netReaction = new NetReaction();
+		
+		this.initialBestID = -1;
+		this.recursiveDepth = 0;
+		this.depth = 1;
+		
+		this.costMap = db.getCompoundCosts();
+		this.reactionsIDMap = db.getReactionsFromID();
 	}
 
 	public SQLiteDatabase getDatabase() {
@@ -54,9 +60,7 @@ public class Model {
 		this.resourceList = resources;
 		this.desired = desired;	
 
-		/*
-		 * adding default resources (abundant)
-		 */
+		// adding default resources (abundant)
 		resourceList.add("NaCl");
 		resourceList.add("O2");
 		resourceList.add("H2O");
@@ -64,7 +68,6 @@ public class Model {
 		resourceList.add("CO2");
 		resourceList.add("NaOH");
 		
-		costMap = db.getCompoundCosts();
 		retroSynth(desired);
 		computeNetReaction();
 		
@@ -77,6 +80,7 @@ public class Model {
 				minCost = initialReactionCosts.get(initialID);
 		}
 		
+		List<Integer> netIDs = new ArrayList<>();
 		int minChemCount = Integer.MAX_VALUE;
 		for (NetReaction nr : netMap.keySet()) {
 			if (netMap.get(nr) == minCost) {
@@ -86,23 +90,24 @@ public class Model {
 						currentChemCount++;
 				}
 				if (currentChemCount < minChemCount) {
-					this.usedNetIDs = nr.getUsedReactions();
+					netIDs = nr.getUsedReactions();
 					minChemCount = currentChemCount;
-					this.finalNetReaction = nr;
+					this.netReaction = nr;
 				}
 			}
 		}
 		
-		if (!usedNetIDs.isEmpty()) {
-			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost +"\nAchieved by the sequence of reactions:");
-			for (int i = usedNetIDs.size()-1; i >= 0; i--) {
-				System.out.println("ID = " + usedNetIDs.get(i) + ": \t" + db.getReactionsFromID().get(usedNetIDs.get(i)));			
+		if (!netIDs.isEmpty()) {
+			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost + "\nAchieved by the sequence of reactions:");
+			String reaction = null;
+			for (int usedID = netIDs.size()-1; usedID >= 0; usedID--) {
+				rememberPath(reaction, reactionsIDMap.get(netIDs.get(usedID)));
+				reaction = reactionsIDMap.get(netIDs.get(usedID));
+				System.out.println("ID = " + netIDs.get(usedID) + ": \t" + reaction);			
 			}
+			rememberPath(reaction, netReaction.toString());
+			System.out.println("\nResulting in the net reaction: \n" + netReaction);
 			
-			System.out.println("\nResulting in the net reaction: \n" + finalNetReaction);
-		} else if (desired.equals("H2O")) {
-
-			System.err.println("CRY ME A FUCKING RIVER... LITERALLY!");
 		} else {
 			System.err.println("A retro synthesis was not deemed possible. See reasons below:"
 					+ "\n- You have initiated a retro synthesis for an abundant chemical"
@@ -110,8 +115,9 @@ public class Model {
 		}
 	}
 
+
 	public void retroSynth(String formula){
-		depth++;
+		recursiveDepth++;
  		int bestID = prioritize(db.getReactionIDs(formula));
  		
  		if (formula.equals(desired))
@@ -137,19 +143,18 @@ public class Model {
 			
 			netReaction.update(formula, rCol);
 			System.out.println(netReaction);
-			System.out.println(depth);
 			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.rollback(rCol);
 				System.out.println("rollback");
-				depth--;
+				recursiveDepth--;
 				retroSynth(formula);
 				return;
 			}
 			
 			
 			for(String chem : netReaction.getMap().keySet()) {
-				if (netReaction.getMap().get(chem) < 0 /* reactant */ && count <= maxDepth && !isAbundant(chem)  && !singleAtom(chem)) {
+				if (netReaction.getMap().get(chem) < 0 /* reactant */ && depth <= maxDepth && !isAbundant(chem)  && !singleAtom(chem)) {
 					if (!recursiveList.contains(chem)) {
 						recursiveList.add(chem);
 						chemList.add(chem);
@@ -159,19 +164,18 @@ public class Model {
 	
 			for (String c : chemList) {
 				retroSynth(c);
-				depth--;
-				System.out.println(depth);
+				recursiveDepth--;
 			}
  		}
 		
-		if (depth == 1 && !initialReactionCosts.containsKey(initialBestID)) {
+		if (recursiveDepth == 1 && !initialReactionCosts.containsKey(initialBestID)) {
 			initialReactionCosts.put(initialBestID, getNetCost());
 			System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());
 			this.netReaction = new NetReaction();
 			this.map.clear();
 			this.recursiveList.clear();
-			depth = 0;
+			recursiveDepth = 0;
 			
 			retroSynth(desired);
 		}
@@ -241,16 +245,30 @@ public class Model {
 		
 		return totalCost;
 	}
- 	
-	public void setDesiredChemical(String formula) {
-		this.desired = formula;
-	}
 
-	public NetReaction getFinalNetReaction() {
-		return finalNetReaction;
+	public void registerListeners(SynthController controller) {
+		this.addPropertyChangeListener(controller);
 	}
+	
+	public void addPropertyChangeListener(SynthController controller) {
+		changeSupport.addPropertyChangeListener(controller);
+		
+	}
+	
+	public void reset() {
+		this.map = new HashMap<>();
+		this.netMap = new HashMap<>();
+		this.initialReactionCosts = new HashMap<>();
+		this.recursiveList = new ArrayList<>(maxDepth);
+		this.netReaction = new NetReaction();
+		this.initialBestID = -1;
+		this.recursiveDepth = 0;
+		this.depth = 1;
+	}
+	
 
-	public List<Integer> getUsedIDs() {
-		return usedNetIDs;
-	}
+
+	public void rememberPath(String oldReaction, String newReaction) {
+		changeSupport.firePropertyChange("NetReaction", oldReaction, newReaction);
+	}	
 }

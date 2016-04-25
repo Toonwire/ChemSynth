@@ -1,11 +1,15 @@
 package model;
 
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import controller.SynthController;
+
 public class NetReaction {
+	
 	private Map<String, Integer> netReaction;
 	//to store history
 	private List<Integer> usedReactions;
@@ -14,10 +18,12 @@ public class NetReaction {
 	private int steps = 0, initialID = -1;
 	
 	public NetReaction() {
+		
 		netReaction = new HashMap<String, Integer>();
 		oldReacCoef = new ArrayList<Integer>();
 		newReacCoef = new ArrayList<Integer>();
 		usedReactions = new ArrayList<Integer>();
+		
 	}
 	
 	private void InitialUpdate(ReactionCol rCol){		
@@ -109,33 +115,7 @@ public class NetReaction {
 	}
 
 	private int gcd(int a, int b){
-		//finds greatest common divisor of a and b 
-		//a or b zero, sfd = other
-		//a,b >=0
-//		int max, min, rest;
-//		
-//		if(a > b){
-//			max = a;
-//			min = b;
-//		} else{
-//			max = b;
-//			min = a;
-//		}
-//		
-//		if( a == 0 || b == 0) return max;
-//		
-//		rest = max % min;
-//		while(rest != 0){
-//			max = min;
-//			min = rest;
-//			rest = max % min;
-//		}
-//		return min;
-			 
-		if (b == 0)
-			return a;
-		else
-			return gcd(b, a%b);	
+		return (b == 0) ? a : gcd(b, a%b);
 	}
 	
 	public Map<String, Integer> getMap(){
@@ -169,10 +149,11 @@ public class NetReaction {
 			}
 		}
 		if (reactantBuilder.toString().length() != 0 && productBuilder.toString().length() != 0) {
-			builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3) 
-					+ " --> " 
-					+ productBuilder.toString().substring(0, productBuilder.toString().length()-3));
+			builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3));
+			builder.append(" --> ");
+			builder.append(productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		}
 		return builder.toString();
-	}	
+	}
+
 }

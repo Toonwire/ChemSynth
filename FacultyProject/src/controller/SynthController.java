@@ -4,9 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import view.View;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import model.Model;
 
-public class SynthController implements ActionListener {
+public class SynthController implements PropertyChangeListener, ActionListener{
 
 	private Model model;
 	private View view;
@@ -14,21 +20,27 @@ public class SynthController implements ActionListener {
 	public SynthController(Model model, View view){
 		this.model = model;
 		this.view = view;
+		
+		model.registerListeners(this);
+		view.getSynthPanel().registerListeners(this);
+	}
 
-		this.view.getSynthPanel().registerListeners(this);
+	@Override
+	public void propertyChange(PropertyChangeEvent e) {
+		view.getSynthPanel().addReactionToPath((String) e.getNewValue());
+		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String cmd = e.getActionCommand();
-		if (cmd.equals("Back")) {
+		String actionCommand = e.getActionCommand();
+		System.out.println(actionCommand);
+		if (actionCommand.equals("Back")) {
+			model.reset();
 			view.remove(view.getSynthPanel());
-			view.add(view.getResourcePanel());
-			view.pack();
-			view.setLocationRelativeTo(null);
+			this.view.add(view.getResourcePanel());
+			this.view.pack();
+			
 		}
-			
-			
-		
 	}
 }

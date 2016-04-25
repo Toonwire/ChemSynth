@@ -32,42 +32,41 @@ public class SynthPanel extends JPanel {
 	public SynthPanel(Model model){
 		this.model = model;
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
-		this.setLayout(new BorderLayout());
+		this.setLayout(null);
 		this.setBackground(Color.LIGHT_GRAY);
 		
 		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
+		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
 		
+		backButton.setBounds(SIZE-200, SIZE-100, 100, 60);
 		
-		this.add(backButton, BorderLayout.PAGE_END);
-		this.add(titleLabel, BorderLayout.PAGE_START);
-		
+		this.add(titleLabel);
+		this.add(backButton);
 		
 	}
 
 
 	public void runAnimation() {
-		reactionsPanel.setLayout(new GridLayout(model.getUsedIDs().size(), 1));
-		for (int i = model.getUsedIDs().size()-1; i >= 0; i--) {
-			String reaction = model.getDatabase().getReactionsFromID().get(model.getUsedIDs().get(i));		
-			/*
-			 * split each reaciton into verticies
-			 */
-			
-
-			String[] reacProd = reaction.trim().split("->");
-			Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
-			Matcher m = p.matcher(reacProd[0]);
-
-			while(m.find()) {
-//				Vertex
-			}
-		}
+		/*
+		 * Create a vertex for each chemical in the reaction being handled
+		 */
 		
 	}
-		
-	
+
+
 	public void registerListeners(SynthController controller) {
 		backButton.addActionListener(controller);
+	}
+
+
+	public void addReactionToPath(String reaction) {
+		System.out.println("added to path " + reaction);
+		
+		/*
+		 *  create new vertices based on each chemical found in the reaction (parameters)
+		 *  get the split regex from whereever we did it before
+		 */
+		
 	}
 }
