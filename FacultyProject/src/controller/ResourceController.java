@@ -32,7 +32,6 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		this.view.getResourcePanel().registerListeners(this);
 		this.view.getResourcePanel().getCurrentChemTextField().addKeyListener(this);
 		
-		
 	}
 
 	@Override
@@ -46,10 +45,10 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	}
 	
 	private void startSynth() {
-		this.view.remove(view.getResourcePanel());
-		this.view.add(view.getSynthPanel());
-		this.view.pack();
-		this.view.setLocationRelativeTo(null);
+		view.remove(view.getResourcePanel());
+		view.add(view.getSynthPanel());
+		view.pack();
+		view.setLocationRelativeTo(null);
 		
 		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
 		model.setDesiredChemical(desired);

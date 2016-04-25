@@ -22,7 +22,7 @@ public class SQLiteDatabase {
 	private Connection connection = null;
 	private Statement statement = null;
 	private PreparedStatement prepStmt = null;
-	private HashMap<Integer, String> reactionToID = new HashMap<Integer, String>();
+	private HashMap<Integer, String> reactionFromID = new HashMap<Integer, String>();
 	
 	public SQLiteDatabase() {
 		
@@ -75,7 +75,7 @@ public class SQLiteDatabase {
 			int reactionID = 1;
 			while(s.hasNextLine()) {
 				String line = s.nextLine();
-				reactionToID .put(reactionID, line);
+				reactionFromID .put(reactionID, line);
 				String[] reaction = line.trim().split("->");
 				
 				Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
@@ -448,8 +448,8 @@ public class SQLiteDatabase {
 		return result;
 	}
 	
-	public HashMap<Integer, String> getReactionsIDMap() {
-		return reactionToID;
+	public HashMap<Integer, String> getReactionsFromID() {
+		return reactionFromID;
 	}
 	
 

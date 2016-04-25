@@ -20,6 +20,8 @@ public class Model {
 	private Map<Integer, ReactionCol> map = new HashMap<>();
 	private List<String> recursiveList = new ArrayList<>(maxDepth);
 	private NetReaction netReaction;
+	NetReaction finalNetReaction = null;
+	List<Integer> usedNetIDs = new ArrayList<>();
 	
 	private Map<NetReaction, Integer> netMap = new HashMap<>();
 	
@@ -69,14 +71,12 @@ public class Model {
 	}
  
 	private void computeNetReaction() {
-		NetReaction finalNetReaction = null;
 		int minCost = Integer.MAX_VALUE;
 		for (int initialID : initialReactionCosts.keySet()) {
 			if (initialReactionCosts.get(initialID) < minCost)
 				minCost = initialReactionCosts.get(initialID);
 		}
 		
-		List<Integer> netIDs = new ArrayList<>();
 		int minChemCount = Integer.MAX_VALUE;
 		for (NetReaction nr : netMap.keySet()) {
 			if (netMap.get(nr) == minCost) {
@@ -86,17 +86,17 @@ public class Model {
 						currentChemCount++;
 				}
 				if (currentChemCount < minChemCount) {
-					netIDs = nr.getUsedReactions();
+					this.usedNetIDs = nr.getUsedReactions();
 					minChemCount = currentChemCount;
-					finalNetReaction = nr;
+					this.finalNetReaction = nr;
 				}
 			}
 		}
 		
-		if (!netIDs.isEmpty()) {
+		if (!usedNetIDs.isEmpty()) {
 			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost +"\nAchieved by the sequence of reactions:");
-			for (int usedID = netIDs.size()-1; usedID >= 0; usedID--) {
-				System.out.println("ID = " + netIDs.get(usedID) + ": \t" + db.getReactionsIDMap().get(netIDs.get(usedID)));			
+			for (int i = usedNetIDs.size()-1; i >= 0; i--) {
+				System.out.println("ID = " + usedNetIDs.get(i) + ": \t" + db.getReactionsFromID().get(usedNetIDs.get(i)));			
 			}
 			
 			System.out.println("\nResulting in the net reaction: \n" + finalNetReaction);
@@ -244,5 +244,13 @@ public class Model {
  	
 	public void setDesiredChemical(String formula) {
 		this.desired = formula;
+	}
+
+	public NetReaction getFinalNetReaction() {
+		return finalNetReaction;
+	}
+
+	public List<Integer> getUsedIDs() {
+		return usedNetIDs;
 	}
 }
