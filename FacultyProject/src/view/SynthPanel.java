@@ -61,12 +61,14 @@ public class SynthPanel extends JPanel {
 
 
 	public void addReactionToPath(String reaction) {
-		System.out.println("added to path " + reaction);
+//		System.out.println("added to path " + reaction);
 		
 		/*
 		 *  create new vertices based on each chemical found in the reaction (parameters)
 		 *  get the split regex from whereever we did it before
 		 */
+		
+		
 		
 	}
 }

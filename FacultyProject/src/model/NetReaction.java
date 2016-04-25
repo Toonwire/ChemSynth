@@ -155,5 +155,4 @@ public class NetReaction {
 		}
 		return builder.toString();
 	}
-
 }
