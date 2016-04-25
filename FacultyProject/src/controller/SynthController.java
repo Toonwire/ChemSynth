@@ -34,6 +34,7 @@ public class SynthController implements PropertyChangeListener, ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String actionCommand = e.getActionCommand();
+		System.out.println(actionCommand);
 		if (actionCommand.equals("Back")) {
 			model.reset();
 			view.remove(view.getSynthPanel());
