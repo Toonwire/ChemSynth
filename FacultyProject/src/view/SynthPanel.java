@@ -98,10 +98,9 @@ public class SynthPanel extends JPanel {
 				for (Integer id : vertexMap.keySet()) {
 					for (Vertex v : vertexMap.get(id)) {
 						if (v.getFormula().equals(vertex.getFormula())) {
-							boolean primaryLink = (v.getFormula().equals(recursiveChem)) ? true : false;
-							connections.add(v.formLink(vertex, primaryLink));
-							System.out.println("linked vertices " + v + " and " + vertex);
-							if (primaryLink) System.out.println("PRIMARY");
+							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
+							if (recursiveLink) /* remove to get all links */
+								connections.add(v.formLink(vertex, recursiveLink));
 						}
 					}
 				}

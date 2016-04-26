@@ -21,7 +21,7 @@ public class Vertex extends JPanel {
 	private String formula;
 	private int coef;
 	private int reactionID;
-	private boolean primaryLink;
+	private boolean recursiveLink;
 	
 	private JLabel coefLabel, formulaLabel;
 	
@@ -75,15 +75,15 @@ public class Vertex extends JPanel {
 		return coef;
 	}
 
-	public boolean isPrimaryLink() {
-		return primaryLink;
+	public boolean isRecursiveLink() {
+		return recursiveLink;
 	}
 
-	public Connection formLink(Vertex linkedVertex, boolean primaryLink) {
+	public Connection formLink(Vertex linkedVertex, boolean recursiveLink) {
 		this.linkedVertex = linkedVertex;
-		this.primaryLink = primaryLink;
+		this.recursiveLink = recursiveLink;
 		
-		if (primaryLink) {
+		if (recursiveLink) {
 			this.setBackground(Color.RED);
 			linkedVertex.setBackground(Color.YELLOW);
 			this.setPrimaryBorder();
