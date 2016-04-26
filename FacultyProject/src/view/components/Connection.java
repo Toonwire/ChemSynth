@@ -26,7 +26,7 @@ public class Connection extends JPanel {
     private Line line;
     private Color lineColor = Color.BLACK;
     private int lineArrow = Line.LINE_ARROW_DEST;
-    private int lineType = CONNECT_LINE_TYPE_RECTANGULAR;
+    private int lineType = CONNECT_LINE_TYPE_SIMPLE;
 
    
     public Connection(JComponent source, JComponent dest) {

@@ -168,27 +168,6 @@ public class Model {
  		}
 		
 		if (recursiveDepth == 1 && !initialReactionCosts.containsKey(initialBestID)) {
-//			String[] lastReaction = reactionsIDMap.get(netReaction.getLastReaction()).split("->");
-//			int reactantCount = 0; 	// check if all reactants of the last reaction is present in the net reaction
-//			
-//			Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
-//			Matcher m = p.matcher(lastReaction[0]);
-//			
-//			while(m.find()) {
-//				String lastReactant = m.group();
-//				int coefficient;
-//				try {
-//					coefficient = Integer.parseInt(formula.split("\\D")[0]);
-//					lastReactant = formula.split("\\d", 2)[1];
-//				} catch (Exception e) {
-//					coefficient = 1;
-//				}
-//				
-//				if (netReaction.getMap().containsKey(lastReactant) && netReaction.getMap().get(lastReactant) >= coefficient) {
-//					reactantCount++;
-//				}
-//			}
-			
 			initialReactionCosts.put(initialBestID, getNetCost());
 			System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());

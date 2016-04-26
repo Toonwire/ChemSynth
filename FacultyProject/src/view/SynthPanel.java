@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,11 +11,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
 
 import model.Model;
+import view.components.Connection;
+import view.components.ConnectionPanel;
 import view.components.Vertex;
 import controller.SynthController;
 
@@ -26,18 +31,17 @@ public class SynthPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final int SIZE = 800;
-	private final int VERTEX_SIZE = 40;
 	private final Model model;
 	
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
-	private JPanel reactionsPanel = new JPanel();
+	private ConnectionPanel connectionPanel;
+	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
-	
-	private Vertex latestVertex = null;
 	private String recursiveChem = null;
-	private int lastReactionID = -1;
+	private List<Connection> connections = new ArrayList<>();
 	
+	private int x = 20, y = 20;
 	
 	public SynthPanel(Model model){
 		this.model = model;
@@ -45,6 +49,11 @@ public class SynthPanel extends JPanel {
 		this.setLayout(null);
 		this.setBackground(Color.LIGHT_GRAY);
 		
+		connectionPanel = new ConnectionPanel();
+		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
+		connectionPanel.setBackground(Color.WHITE);
+		connectionPanel.setLayout(null);
+		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
@@ -53,6 +62,7 @@ public class SynthPanel extends JPanel {
 		
 		this.add(titleLabel);
 		this.add(backButton);
+		this.add(connectionPanel);
 		
 	}
 
@@ -73,10 +83,6 @@ public class SynthPanel extends JPanel {
 	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction) {
 		this.recursiveChem = recursiveOnFormula;
 
-		System.out.println("from the id of " + reactionID);
-		System.out.println("recursive on " + recursiveOnFormula);
-		System.out.println("added to path " + reaction);
-		
 		/*
 		 *  create new vertices based on each chemical found in the reaction (parameters)
 		 *  get the split regex from whereever we did it before
@@ -84,22 +90,32 @@ public class SynthPanel extends JPanel {
 		List<Vertex> vertexList = new ArrayList<Vertex>();
 		for (String formula : splitReaction(reaction)) {
 			Vertex vertex = new Vertex(reactionID, formula);
+			vertex.setBounds(x,y,100,35);
+			connectionPanel.add(vertex);
 			vertexList.add(vertex);
 			System.out.println("Created " + vertex);
 			if (!vertexMap.isEmpty()) {
-				for (Vertex v : vertexMap.get(lastReactionID)) {
-					if (v.getFormula().equals(vertex.getFormula())) {
-						boolean primaryLink = (v.getFormula().equals(recursiveChem)) ? true : false;
-						v.addLink(vertex, primaryLink);
-						System.out.println("linked vertices " + v + " and " + vertex);
-						if (primaryLink) System.out.println("PRIMARY");
+				for (Integer id : vertexMap.keySet()) {
+					for (Vertex v : vertexMap.get(id)) {
+						if (v.getFormula().equals(vertex.getFormula())) {
+							boolean primaryLink = (v.getFormula().equals(recursiveChem)) ? true : false;
+							connections.add(v.formLink(vertex, primaryLink));
+							System.out.println("linked vertices " + v + " and " + vertex);
+							if (primaryLink) System.out.println("PRIMARY");
+						}
 					}
 				}
 			}
+			
+			this.x += 120;
+			
 		}
+		
+		this.x = 20;
+		this.y += 80;
 
 		vertexMap.put(reactionID, vertexList);
-		this.lastReactionID = reactionID;
+		connectionPanel.setConnections(connections);
 		
 	}
 
