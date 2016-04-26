@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import model.Model;
+import view.components.Vertex;
 import controller.SynthController;
 
 public class SynthPanel extends JPanel {
@@ -30,7 +32,12 @@ public class SynthPanel extends JPanel {
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
 	private JPanel reactionsPanel = new JPanel();
-	private Map<Vertex, Vertex> vertexMap;
+	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
+	
+	private Vertex latestVertex = null;
+	private String recursiveChem = null;
+	private int lastReactionID = -1;
+	
 	
 	public SynthPanel(Model model){
 		this.model = model;
@@ -64,35 +71,50 @@ public class SynthPanel extends JPanel {
 
 
 	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction) {
+		this.recursiveChem = recursiveOnFormula;
+
 		System.out.println("from the id of " + reactionID);
-		System.out.println("added to path " + reaction);
 		System.out.println("recursive on " + recursiveOnFormula);
+		System.out.println("added to path " + reaction);
 		
 		/*
 		 *  create new vertices based on each chemical found in the reaction (parameters)
 		 *  get the split regex from whereever we did it before
 		 */
-//		for (String formula : splitReaction(reaction)) {
-//			Vertex vertex = new Vertex(reactionID, formula);
-//			vertexMap.put(vertex, new Vertex(recursiveOnFormula));
-//			
-//		}
-		
+		List<Vertex> vertexList = new ArrayList<Vertex>();
+		for (String formula : splitReaction(reaction)) {
+			Vertex vertex = new Vertex(reactionID, formula);
+			vertexList.add(vertex);
+			System.out.println("Created " + vertex);
+			if (!vertexMap.isEmpty()) {
+				for (Vertex v : vertexMap.get(lastReactionID)) {
+					if (v.getFormula().equals(vertex.getFormula())) {
+						boolean primaryLink = (v.getFormula().equals(recursiveChem)) ? true : false;
+						v.addLink(vertex, primaryLink);
+						System.out.println("linked vertices " + v + " and " + vertex);
+						if (primaryLink) System.out.println("PRIMARY");
+					}
+				}
+			}
+		}
+
+		vertexMap.put(reactionID, vertexList);
+		this.lastReactionID = reactionID;
 		
 	}
 
 
 	private List<String> splitReaction(String reaction) {
-		String[] arr = reaction.trim().split("->|\\+");
 		
 		Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
-		Matcher m = p.matcher(arr[0]);
-		System.out.println("after splitting : " + arr[0]);
+		Matcher m = p.matcher(reaction);
+		
 		List<String> formulas = new ArrayList<>();
 		while(m.find()) {
 			formulas.add(m.group().trim());
 			
 		}
+		
 		return formulas;
 	}
 }
