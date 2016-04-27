@@ -19,6 +19,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 import model.Model;
+import model.NetReaction;
 import view.components.Connection;
 import view.components.ConnectionPanel;
 import view.components.Vertex;
@@ -143,4 +144,19 @@ public class SynthPanel extends JPanel {
 
 		return formulas;
 	}
+
+
+	public void newConnectionPanel() {
+		this.connectionPanel = new ConnectionPanel();
+	}
+
+
+	public void newNetPanel() {
+		this.netPanel = new JPanel();
+	}
+
+	public void newVertexMap() {
+		this.vertexMap = new HashMap<>();
+	}
+	
 }

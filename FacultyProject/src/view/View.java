@@ -5,8 +5,10 @@ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import view.components.ConnectionPanel;
 import model.Model;
 
 public class View extends JFrame{
@@ -54,5 +56,11 @@ public class View extends JFrame{
 	
 	public JTextField getFocus(){
 		return (JTextField) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+	}
+	
+	public void resetSynth(){
+		synthPanel.newConnectionPanel();
+		synthPanel.newNetPanel();
+		synthPanel.newVertexMap();
 	}
 }
