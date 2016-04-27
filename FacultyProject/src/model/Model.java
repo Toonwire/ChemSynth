@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import controller.SynthController;
 import database.SQLiteDatabase;
@@ -29,7 +31,6 @@ public class Model {
 	private String desired;
 	private int initialBestID;
 	private int recursiveDepth;
-	private int depth;
 	
 	public Model(){
 		
@@ -45,7 +46,6 @@ public class Model {
 		
 		this.initialBestID = -1;
 		this.recursiveDepth = 0;
-		this.depth = 1;
 		
 		this.costMap = db.getCompoundCosts();
 		this.reactionsIDMap = db.getReactionsFromID();
@@ -99,18 +99,17 @@ public class Model {
 		
 		if (!netIDs.isEmpty()) {
 			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost + "\nAchieved by the sequence of reactions:");
-			String reaction = null;
-			for (int usedID = netIDs.size()-1; usedID >= 0; usedID--) {
-				rememberPath(reaction, reactionsIDMap.get(netIDs.get(usedID)));
-				reaction = reactionsIDMap.get(netIDs.get(usedID));
-				System.out.println("ID = " + netIDs.get(usedID) + ": \t" + reaction);			
+			for (int usedID = 0; usedID < netIDs.size(); usedID++) {
+				/*
+				 * SWING WORKER HERE MAYBE!?
+				 */
+				rememberPath(netIDs.get(usedID), netReaction.getRecursiveList().get(usedID), reactionsIDMap.get(netIDs.get(usedID)));
 			}
-			rememberPath(reaction, netReaction.toString());
 			System.out.println("\nResulting in the net reaction: \n" + netReaction);
 			
 		} else {
 			System.err.println("A retro synthesis was not deemed possible. See reasons below:"
-					+ "\n- You have initiated a retro synthesis for an abundant chemical"
+					+ "\n- You have initiated a retro synthesis for an abundant chemical (" + desired + ")"
 					+ "\n- No reaction product matches your desired chemical");
 		}
 	}
@@ -154,7 +153,7 @@ public class Model {
 			
 			
 			for(String chem : netReaction.getMap().keySet()) {
-				if (netReaction.getMap().get(chem) < 0 /* reactant */ && depth <= maxDepth && !isAbundant(chem)  && !singleAtom(chem)) {
+				if (netReaction.getMap().get(chem) < 0 /* reactant */ && recursiveDepth <= maxDepth && !isAbundant(chem)  && !singleAtom(chem)) {
 					if (!recursiveList.contains(chem)) {
 						recursiveList.add(chem);
 						chemList.add(chem);
@@ -172,6 +171,7 @@ public class Model {
 			initialReactionCosts.put(initialBestID, getNetCost());
 			System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());
+			
 			this.netReaction = new NetReaction();
 			this.map.clear();
 			this.recursiveList.clear();
@@ -263,12 +263,11 @@ public class Model {
 		this.netReaction = new NetReaction();
 		this.initialBestID = -1;
 		this.recursiveDepth = 0;
-		this.depth = 1;
 	}
 	
 
 
-	public void rememberPath(String oldReaction, String newReaction) {
-		changeSupport.firePropertyChange("NetReaction", oldReaction, newReaction);
+	public void rememberPath(int reactionID, String recursiveOnFormula, String newReaction) {
+		changeSupport.firePropertyChange("" + reactionID, recursiveOnFormula, newReaction);
 	}	
 }
