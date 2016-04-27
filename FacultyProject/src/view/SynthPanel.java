@@ -67,5 +67,6 @@ public class SynthPanel extends JPanel {
 		 *  get the split regex from whereever we did it before
 		 */
 		
+		
 	}
 }
