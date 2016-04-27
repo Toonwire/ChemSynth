@@ -23,9 +23,9 @@ public class Vertex extends JPanel {
 	private int reactionID;
 	private boolean recursiveLink;
 	
-	private JLabel coefLabel, formulaLabel;
-	
+	private JLabel coefLabel, formulaLabel;	
 
+	
 	public Vertex(int reactionID, String formula, int coef) {
 		this.reactionID = reactionID;
 		this.formula = formula;
@@ -54,7 +54,6 @@ public class Vertex extends JPanel {
 		this.add(formulaLabel);
 		
 	}
-
 	
 	public String getFormula() {
 		return formula;

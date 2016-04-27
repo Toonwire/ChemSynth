@@ -270,5 +270,9 @@ public class Model {
 
 	public void rememberPath(int reactionID, String recursiveOnFormula, String newReaction) {
 		changeSupport.firePropertyChange("" + reactionID, recursiveOnFormula, newReaction);
-	}	
+	}
+
+	public String getNetReaction() {
+		return netReaction.toString();
+	}
 }

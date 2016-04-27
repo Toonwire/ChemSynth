@@ -11,12 +11,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 import model.Model;
+import model.NetReaction;
 import view.components.Connection;
 import view.components.ConnectionPanel;
 import view.components.Vertex;
@@ -35,10 +38,13 @@ public class SynthPanel extends JPanel {
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
 	private ConnectionPanel connectionPanel;
+	private JLabel netLabel = new JLabel("Net Reaction");
+	private JPanel netPanel = new JPanel();
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private String recursiveChem = null;
 	private List<Connection> connections = new ArrayList<>();
+	private String netReaction = null;
 	
 	private int x = 20, y = 20;
 	
@@ -54,14 +60,21 @@ public class SynthPanel extends JPanel {
 		connectionPanel.setLayout(null);
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		
+		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		netPanel.setBounds(0, SIZE-65, SIZE, 100);
+		netLabel.setAlignmentX(SwingConstants.CENTER);
+		netPanel.setBackground(this.getBackground());
+		netPanel.add(netLabel);
+		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
 		
-		backButton.setBounds(SIZE-200, SIZE-100, 100, 60);
+		backButton.setBounds(SIZE-100, 30, 100, 60);
 		
 		this.add(titleLabel);
 		this.add(backButton);
 		this.add(connectionPanel);
+		this.add(netPanel);
 		
 	}
 
@@ -82,6 +95,7 @@ public class SynthPanel extends JPanel {
 		Map<String, Integer> splitMap = splitReaction(reaction);
 		Vertex recursiveVertex = null;
 		Vertex destVertex = null;
+		Vertex lastVertex = null;
 		
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
@@ -103,6 +117,32 @@ public class SynthPanel extends JPanel {
 					}
 				}
 			}
+
+			System.out.println("vx = " + x +" vy = " + y + " size = " + vertex.getWidth() + ", " + vertex.getHeight());
+			
+			if (lastVertex != null) {
+				JLabel opLabel = new JLabel();
+				opLabel.setFont(new Font("Cambria", Font.BOLD, 16));
+				opLabel.setBounds(x-15,y,15,35);
+				
+				if (vertex.getCoef() < 0) {
+					if (lastVertex.getCoef() < 0)
+						opLabel.setText("+");
+				}
+				else if (vertex.getCoef() > 0) {
+					if (lastVertex.getCoef() < 0) 
+						opLabel.setText("\u2192");
+					else if (lastVertex.getCoef() > 0) 
+						opLabel.setText("+");
+				}
+
+				System.out.println("Text = " + opLabel.getText());
+				System.out.println("x = " + (x-15) +" y = " + y + " size = " + opLabel.getWidth() + ", " + opLabel.getHeight());
+				
+				connectionPanel.add(opLabel);
+			}
+			lastVertex = vertex;
+			
 			
 			this.x += 120;
 			
@@ -114,7 +154,7 @@ public class SynthPanel extends JPanel {
 		updateCoefs(recursiveVertex, destVertex, vertexList);
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
-		
+		netLabel.setText("Net Reaction: " + model.getNetReaction());
 	}
 
 	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
@@ -122,7 +162,6 @@ public class SynthPanel extends JPanel {
 			if (Math.abs(recursiveVertex.getCoef()) > Math.abs(destVertex.getCoef())) {
 				for (Vertex v : vertexList) {
 					v.setCoef(Math.abs(recursiveVertex.getCoef()*v.getCoef()/gcd(v.getCoef(), recursiveVertex.getCoef())));
-					System.out.println("coef of " + v.getFormula() + " : "  + v.getCoef());
 				}
 			} 
 			else if (Math.abs(recursiveVertex.getCoef()) < Math.abs(destVertex.getCoef())) {
@@ -179,6 +218,22 @@ public class SynthPanel extends JPanel {
 		return map;
 	}
 
-
+	public void reset() {
+		connectionPanel.removeAll();
+		this.remove(connectionPanel);
+		this.connectionPanel = new ConnectionPanel();
+		this.netPanel = new JPanel();
+		this.vertexMap = new HashMap<>();
+		this.connections = new ArrayList<>();
+		this.x = 20;
+		this.y = 20;
+		
+		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
+		connectionPanel.setBackground(Color.WHITE);
+		connectionPanel.setLayout(null);
+		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+		this.add(connectionPanel);
+		
+	}
 	
 }
