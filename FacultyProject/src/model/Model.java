@@ -103,6 +103,7 @@ public class Model {
 				/*
 				 * SWING WORKER HERE MAYBE!?
 				 */
+				System.out.println(reactionsIDMap.get(netIDs.get(usedID)));
 				rememberPath(netIDs.get(usedID), netReaction.getRecursiveList().get(usedID), reactionsIDMap.get(netIDs.get(usedID)));
 			}
 			System.out.println("\nResulting in the net reaction: \n" + netReaction);

@@ -1,17 +1,16 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -67,14 +66,6 @@ public class SynthPanel extends JPanel {
 	}
 
 
-	public void runAnimation() {
-		/*
-		 * Create a vertex for each chemical in the reaction being handled
-		 */
-		
-	}
-
-
 	public void registerListeners(SynthController controller) {
 		backButton.addActionListener(controller);
 	}
@@ -88,19 +79,26 @@ public class SynthPanel extends JPanel {
 		 *  get the split regex from whereever we did it before
 		 */
 		List<Vertex> vertexList = new ArrayList<Vertex>();
-		for (String formula : splitReaction(reaction)) {
-			Vertex vertex = new Vertex(reactionID, formula);
+		Map<String, Integer> splitMap = splitReaction(reaction);
+		Vertex recursiveVertex = null;
+		Vertex destVertex = null;
+		
+		for (String formula : splitMap.keySet()) {
+			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
 			vertex.setBounds(x,y,100,35);
 			connectionPanel.add(vertex);
 			vertexList.add(vertex);
-			System.out.println("Created " + vertex);
 			if (!vertexMap.isEmpty()) {
 				for (Integer id : vertexMap.keySet()) {
 					for (Vertex v : vertexMap.get(id)) {
 						if (v.getFormula().equals(vertex.getFormula())) {
 							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
-							if (recursiveLink) /* remove to get all links */
+							if (recursiveLink) { /* remove to get all links */
 								connections.add(v.formLink(vertex, recursiveLink));
+								recursiveVertex = v;
+								destVertex = vertex;
+//								factor = vertex.getCoef()
+							}
 						}
 					}
 				}
@@ -112,24 +110,75 @@ public class SynthPanel extends JPanel {
 		
 		this.x = 20;
 		this.y += 80;
-
+		
+		updateCoefs(recursiveVertex, destVertex, vertexList);
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
 		
 	}
 
+	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
+		if (recursiveVertex != null && Math.abs(recursiveVertex.getCoef()) != Math.abs(destVertex.getCoef())) {
+			if (Math.abs(recursiveVertex.getCoef()) > Math.abs(destVertex.getCoef())) {
+				for (Vertex v : vertexList) {
+					v.setCoef(Math.abs(recursiveVertex.getCoef()*v.getCoef()/gcd(v.getCoef(), recursiveVertex.getCoef())));
+					System.out.println("coef of " + v.getFormula() + " : "  + v.getCoef());
+				}
+			} 
+			else if (Math.abs(recursiveVertex.getCoef()) < Math.abs(destVertex.getCoef())) {
+				for (List<Vertex> list : vertexMap.values()) {
+					for (Vertex v : list) {
+						v.setCoef(Math.abs(recursiveVertex.getCoef()*destVertex.getCoef()/gcd(destVertex.getCoef(), recursiveVertex.getCoef())));
+					}
+				}
+			}
+		}
+		
+	}
 
-	private List<String> splitReaction(String reaction) {
+
+	private int gcd(int a, int b){
+		return (b == 0) ? a : gcd(b, a%b);
+	}
+
+
+	private Map<String, Integer> splitReaction(String reaction) {
+		Map<String, Integer> map = new LinkedHashMap<>();
 		
+		String[] splitReaction = reaction.trim().split("->");
 		Pattern p = Pattern.compile("\\w+(\\(\\w+\\)\\w)*");
-		Matcher m = p.matcher(reaction);
+		Matcher m = p.matcher(splitReaction[0]);
 		
-		List<String> formulas = new ArrayList<>();
 		while(m.find()) {
-			formulas.add(m.group().trim());
+			String formula = m.group();
+			int coef;
+			try {
+				coef = Integer.parseInt(formula.split("\\D")[0]);
+				formula = formula.split("\\d", 2)[1];
+			} catch (Exception e) {
+				coef = 1;
+			}
+			map.put(formula, -coef);
 			
 		}
 		
-		return formulas;
+		Matcher m2 = p.matcher(splitReaction[1]);
+		
+		while(m2.find()) {
+			String formula = m2.group();
+			int coef;
+			try {
+				coef = Integer.parseInt(formula.split("\\D")[0]);
+				formula = formula.split("\\d", 2)[1];
+			} catch (Exception e) {
+				coef = 1;
+			}
+			map.put(formula, coef);
+		}
+		
+		return map;
 	}
+
+
+	
 }

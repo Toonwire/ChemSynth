@@ -26,28 +26,29 @@ public class Vertex extends JPanel {
 	private JLabel coefLabel, formulaLabel;
 	
 
-	public Vertex(int reactionID, String formula) {
+	public Vertex(int reactionID, String formula, int coef) {
 		this.reactionID = reactionID;
 		this.formula = formula;
+		this.coef = coef;
 		this.setLayout(null);
 		
-		try {
-			this.coef = Integer.parseInt(formula.split("\\D")[0]);
-			this.formula = formula.split("\\d", 2)[1];
-			
-		} catch (Exception e) {
-			this.coef = 1;
-		}
+//		try {
+//			this.coef = Integer.parseInt(formula.split("\\D")[0]);
+//			this.formula = formula.split("\\d", 2)[1];
+//			
+//		} catch (Exception e) {
+//			this.coef = 1;
+//		}
 		
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         this.setBackground(Color.GREEN);
 		
-		this.coefLabel = new JLabel("" + coef, SwingConstants.CENTER);
+		this.coefLabel = new JLabel("" + Math.abs(coef), SwingConstants.CENTER);
 		this.formulaLabel = new JLabel(this.formula);
 
-		coefLabel.setBounds(10,0,10,35);
-		formulaLabel.setBounds(25,0,90,35);
+		coefLabel.setBounds(10,0,15,35);
+		formulaLabel.setBounds(30,0,85,35);
 		
 		this.add(coefLabel);
 		this.add(formulaLabel);
@@ -73,6 +74,11 @@ public class Vertex extends JPanel {
 	
 	public int getCoef() {
 		return coef;
+	}
+	
+	public void setCoef(int coef) {
+		this.coef = coef;
+		this.coefLabel.setText("" + coef);
 	}
 
 	public boolean isRecursiveLink() {
