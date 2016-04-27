@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
 import model.Model;
@@ -36,10 +37,13 @@ public class SynthPanel extends JPanel {
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
 	private ConnectionPanel connectionPanel;
+	private JLabel netLabel = new JLabel("Net Reaction");
+	private JPanel netPanel = new JPanel();
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private String recursiveChem = null;
 	private List<Connection> connections = new ArrayList<>();
+	private String netReaction = null;
 	
 	private int x = 20, y = 20;
 	
@@ -55,14 +59,21 @@ public class SynthPanel extends JPanel {
 		connectionPanel.setLayout(null);
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		
+		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		netPanel.setBounds(0, SIZE-65, SIZE, 100);
+		netLabel.setAlignmentX(SwingConstants.CENTER);
+		netPanel.setBackground(this.getBackground());
+		netPanel.add(netLabel);
+		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
 		
-		backButton.setBounds(SIZE-200, SIZE-100, 100, 60);
+		backButton.setBounds(SIZE-100, 30, 100, 60);
 		
 		this.add(titleLabel);
 		this.add(backButton);
 		this.add(connectionPanel);
+		this.add(netPanel);
 		
 	}
 
@@ -115,7 +126,7 @@ public class SynthPanel extends JPanel {
 
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
-		
+		netLabel.setText("Net Reaction: " + model.getNetReaction());
 	}
 
 
