@@ -107,6 +107,7 @@ public class SynthPanel extends JPanel {
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
 			vertex.setBounds(x,y,100,35);
+			System.out.println("Created vertex " + vertex);
 			connectionPanel.add(vertex);
 			vertexList.add(vertex);
 			if (!vertexMap.isEmpty()) {
@@ -116,9 +117,9 @@ public class SynthPanel extends JPanel {
 							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
 							if (recursiveLink) { /* remove to get all links */
 								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
+								System.out.println("Linked " + vertex + " with " + v);
 								recursiveVertex = v;
 								destVertex = vertex;
-//								factor = vertex.getCoef()
 							}
 						}
 					}
