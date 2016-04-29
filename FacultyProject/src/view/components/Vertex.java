@@ -1,14 +1,11 @@
 package view.components;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 
 public class Vertex extends JPanel {
 
@@ -84,26 +81,28 @@ public class Vertex extends JPanel {
 		return recursiveLink;
 	}
 
-	public Connection formLink(Vertex linkedVertex, boolean recursiveLink) {
+	public Connection formLink(Vertex linkedVertex, boolean recursiveLink, Color linkColor) {
 		this.linkedVertex = linkedVertex;
 		this.recursiveLink = recursiveLink;
 		
 		if (recursiveLink) {
 			this.setBackground(Color.RED);
 			linkedVertex.setBackground(Color.YELLOW);
-			this.setPrimaryBorder();
-			linkedVertex.setPrimaryBorder();
+			this.setPrimaryBorder(linkColor);
+			linkedVertex.setPrimaryBorder(linkColor);
 			
 		} else {
 			this.setWasteBorder();
 			linkedVertex.setWasteBorder();
 		}
 		
-		return new Connection(this, linkedVertex);
+		Connection connection = new Connection(this, linkedVertex);
+		connection.setLineColor(linkColor);
+		return connection;
 	}
 
-	public void setPrimaryBorder() {
-		this.setBorder(BorderFactory.createLineBorder(Color.BLUE, 3));
+	public void setPrimaryBorder(Color linkColor) {
+		this.setBorder(BorderFactory.createLineBorder(linkColor, 3));
 	}
 	
 	public void setWasteBorder() {

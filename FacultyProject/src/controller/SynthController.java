@@ -2,15 +2,11 @@ package controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import view.View;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import model.Model;
+import view.View;
 
 public class SynthController implements PropertyChangeListener, ActionListener{
 

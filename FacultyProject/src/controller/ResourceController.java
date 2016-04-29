@@ -47,7 +47,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		
 		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
 		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
-			
+		view.getSynthPanel().getNetLabel().setText(model.getNetReaction());
 		
 	}
 

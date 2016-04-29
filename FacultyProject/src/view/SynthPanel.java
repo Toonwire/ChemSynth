@@ -11,15 +11,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.text.JTextComponent;
 
 import model.Model;
-import model.NetReaction;
 import view.components.Connection;
 import view.components.ConnectionPanel;
 import view.components.Vertex;
@@ -44,7 +43,8 @@ public class SynthPanel extends JPanel {
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private String recursiveChem = null;
 	private List<Connection> connections = new ArrayList<>();
-	private String netReaction = null;
+//	private JScrollPane scrollPane = new JScrollPane();
+	private Color connectionHighlightColor = Color.BLUE;
 	
 	private int x = 20, y = 20;
 	
@@ -56,6 +56,7 @@ public class SynthPanel extends JPanel {
 		
 		connectionPanel = new ConnectionPanel();
 		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
+//		connectionPanel.setSize(new Dimension(SIZE, 3000));
 		connectionPanel.setBackground(Color.WHITE);
 		connectionPanel.setLayout(null);
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
@@ -71,9 +72,15 @@ public class SynthPanel extends JPanel {
 		
 		backButton.setBounds(SIZE-100, 30, 100, 60);
 		
+//		scrollPane.setBounds(0,100, SIZE, SIZE-200);
+//		scrollPane.setViewportView(connectionPanel);
+//		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		
 		this.add(titleLabel);
 		this.add(backButton);
 		this.add(connectionPanel);
+//		this.add(scrollPane);
 		this.add(netPanel);
 		
 	}
@@ -108,7 +115,7 @@ public class SynthPanel extends JPanel {
 						if (v.getFormula().equals(vertex.getFormula())) {
 							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
 							if (recursiveLink) { /* remove to get all links */
-								connections.add(v.formLink(vertex, recursiveLink));
+								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
 								recursiveVertex = v;
 								destVertex = vertex;
 //								factor = vertex.getCoef()
@@ -118,8 +125,10 @@ public class SynthPanel extends JPanel {
 				}
 			}
 
-			System.out.println("vx = " + x +" vy = " + y + " size = " + vertex.getWidth() + ", " + vertex.getHeight());
 			
+			/*
+			 * adding '+' and '-->' between vertices
+			 */
 			if (lastVertex != null) {
 				JLabel opLabel = new JLabel();
 				opLabel.setFont(new Font("Cambria", Font.BOLD, 16));
@@ -135,9 +144,6 @@ public class SynthPanel extends JPanel {
 					else if (lastVertex.getCoef() > 0) 
 						opLabel.setText("+");
 				}
-
-				System.out.println("Text = " + opLabel.getText());
-				System.out.println("x = " + (x-15) +" y = " + y + " size = " + opLabel.getWidth() + ", " + opLabel.getHeight());
 				
 				connectionPanel.add(opLabel);
 			}
@@ -154,7 +160,6 @@ public class SynthPanel extends JPanel {
 		updateCoefs(recursiveVertex, destVertex, vertexList);
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
-		netLabel.setText("Net Reaction: " + model.getNetReaction());
 	}
 
 	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
@@ -234,6 +239,11 @@ public class SynthPanel extends JPanel {
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		this.add(connectionPanel);
 		
+	}
+
+
+	public JLabel getNetLabel() {
+		return netLabel;
 	}
 	
 }
