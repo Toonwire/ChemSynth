@@ -1,23 +1,19 @@
 package view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
-import controller.ResourceController;
 import model.Model;
+import controller.ResourceController;
 
 public class ResourcePanel extends JPanel{
 
@@ -41,9 +37,6 @@ public class ResourcePanel extends JPanel{
 //	-											   -
 //	-                                   SYNTHESIZE -
 //	------------------------------------------------
-	private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private final int screenWidth = (int) screenSize.getWidth()-(int)screenSize.getWidth()/3;
-	private final int screenHeight = (int) screenSize.getHeight()-(int)screenSize.getHeight()/3;
 	private final int SIZE = 800;
 	private final String chemTextPlaceholder = " Enter chemical resource";
 	private final String desiredTextPlaceholder = " Enter desired chemical";

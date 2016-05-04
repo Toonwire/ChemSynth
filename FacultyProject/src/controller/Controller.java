@@ -1,7 +1,7 @@
 package controller;
 
-import view.View;
 import model.Model;
+import view.View;
 
 public class Controller {
 	

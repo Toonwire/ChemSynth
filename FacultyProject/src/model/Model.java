@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import controller.SynthController;
 import database.SQLiteDatabase;
@@ -98,15 +96,15 @@ public class Model {
 		}
 		
 		if (!netIDs.isEmpty()) {
-			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost + "\nAchieved by the sequence of reactions:");
+			//System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost + "\nAchieved by the sequence of reactions:");
 			for (int usedID = 0; usedID < netIDs.size(); usedID++) {
 				/*
 				 * SWING WORKER HERE MAYBE!?
 				 */
-				System.out.println(reactionsIDMap.get(netIDs.get(usedID)));
+				//System.out.println(reactionsIDMap.get(netIDs.get(usedID)));
 				rememberPath(netIDs.get(usedID), netReaction.getRecursiveList().get(usedID), reactionsIDMap.get(netIDs.get(usedID)));
 			}
-			System.out.println("\nResulting in the net reaction: \n" + netReaction);
+			//System.out.println("\nResulting in the net reaction: \n" + netReaction);
 			
 		} else {
 			System.err.println("A retro synthesis was not deemed possible. See reasons below:"
@@ -128,8 +126,8 @@ public class Model {
  		}
 	
  		if (!map.containsKey(bestID)) {
- 			System.out.println("recursive on " + formula);
-			System.out.println("ID = " + bestID);
+ 			//System.out.println("recursive on " + formula);
+			//System.out.println("ID = " + bestID);
 			List<Pair> pairList = new ArrayList<>();		
 			List<String> chemList = new ArrayList<>();		
 			
@@ -142,11 +140,11 @@ public class Model {
 			map.put(bestID, rCol);
 			
 			netReaction.update(formula, rCol);
-			System.out.println(netReaction);
+			//System.out.println(netReaction);
 			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.rollback(rCol);
-				System.out.println("rollback");
+				//System.out.println("rollback");
 				recursiveDepth--;
 				retroSynth(formula);
 				return;
@@ -170,7 +168,7 @@ public class Model {
 		
 		if (recursiveDepth == 1 && !initialReactionCosts.containsKey(initialBestID)) {
 			initialReactionCosts.put(initialBestID, getNetCost());
-			System.out.println("\n\n\n");
+			//System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());
 			
 			this.netReaction = new NetReaction();

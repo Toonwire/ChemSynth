@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.geom.Line2D;
 
 import javax.swing.JComponent;
@@ -32,8 +31,9 @@ public class Connection extends JPanel {
 		this.dest = dest;
 	}
 	
-	public void paint(Graphics g) {
-		super.paint(g);
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		
 		Rectangle start = source.getBounds();
@@ -54,25 +54,10 @@ public class Connection extends JPanel {
 			g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 			g2d.setStroke(new BasicStroke(thickness));
 			
-			// draw the connection        
-			Shape clip = g2d.getClip();
-			g2d.setClip(getLineBounds());	/* to reduce rendering area local to the line */
+			// draw the connection
 			g2d.setColor(lineColor);
 			g2d.draw(line);
-			g2d.setClip(clip);
 		}   
-	}
-	
-
-	private Rectangle getLineBounds() {
-		int add = 10;
-		int maxX = Math.max(sourceMidBot.x, destMidTop.x);
-		int minX = Math.min(sourceMidBot.x, destMidTop.x);
-		int maxY = Math.max(sourceMidBot.y, destMidTop.y);
-		int minY = Math.min(sourceMidBot.y, destMidTop.y);
-		
-		Rectangle res = new Rectangle(minX - add, minY - add, maxX - minX + 2 * add, maxY - minY + 2 * add);
-		return res;
 	}
 
 	public Color getLineColor() {

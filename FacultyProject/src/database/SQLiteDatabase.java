@@ -46,8 +46,8 @@ public class SQLiteDatabase {
 			statement.executeUpdate(costTable);
 		   
 
-//			String sql1 = "drop table reactans";
-//			String sql2 = "drop table cost";
+//			String sql1 = "drop table reactants";
+//			String sql2 = "drop table products";
 //			String sql3 = "drop table costs";
 //		    statement.executeUpdate(sql1);
 //		    statement.executeUpdate(sql2);
