@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -39,8 +40,8 @@ public class SynthPanel extends JPanel {
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
 	private ConnectionPanel connectionPanel;
+	private JPanel netPanel;
 	private JLabel netLabel = new JLabel("Net Reaction");
-	private JPanel netPanel = new JPanel();
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private String recursiveChem = null;
@@ -48,17 +49,17 @@ public class SynthPanel extends JPanel {
 	private JScrollPane scrollPane = new JScrollPane();
 	private GridBagConstraints c;
 	
-	private Color connectionHighlightColor = new Color(0,0,255);
-	
+	private Color connectionHighlightColor = Color.BLUE;
+	private Color connectionPanelColor = new Color(91,192,222);
 	
 	public SynthPanel(Model model){
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
 		this.setLayout(null);
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setBackground(new Color(51,122,183));
 		
 		connectionPanel = new ConnectionPanel(new GridBagLayout());
 		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
-		connectionPanel.setBackground(Color.WHITE);
+		connectionPanel.setBackground(connectionPanelColor);
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		
 		this.c = new GridBagConstraints();
@@ -68,14 +69,16 @@ public class SynthPanel extends JPanel {
 		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		netLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
+		this.netPanel = new JPanel(new BorderLayout());
 		netPanel.setBounds(0, SIZE-65, SIZE, 100);
 		netPanel.setBackground(this.getBackground());
-		netPanel.add(netLabel);
+		netPanel.add(netLabel, BorderLayout.NORTH);
 		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
 		
-		backButton.setBounds(SIZE-100, 30, 100, 60);
+		backButton.setBounds(SIZE-100, 30, 80, 30);
+		backButton.setBackground(Color.CYAN);
 		
 		scrollPane.setBounds(0,100, SIZE, SIZE-200);
 		scrollPane.setViewportView(connectionPanel);
@@ -239,7 +242,7 @@ public class SynthPanel extends JPanel {
 		
 		this.connectionPanel = new ConnectionPanel(new GridBagLayout());
 		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
-		connectionPanel.setBackground(Color.WHITE);
+		connectionPanel.setBackground(connectionPanelColor);
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		
 		this.scrollPane = new JScrollPane();

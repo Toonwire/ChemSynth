@@ -19,9 +19,9 @@ public class Vertex extends JPanel {
 	private int coef;
 	private int reactionID;
 	private boolean recursiveLink;
-	private Color vertexColor = new Color(88,237,83);		// background
-	private Color sourceColor = new Color(242,71,63);
-	private Color destColor = new Color(255,215,0);
+	private Color vertexColor = new Color(92,184,92);		// Green
+	private Color sourceColor = new Color(217,83,79);		// Red
+	private Color destColor = new Color(240,173,78);		// Golden
 	
 	private JLabel coefLabel, formulaLabel;	
 
@@ -32,20 +32,14 @@ public class Vertex extends JPanel {
 		this.coef = coef;
 		this.setLayout(null);
 		
-//		try {
-//			this.coef = Integer.parseInt(formula.split("\\D")[0]);
-//			this.formula = formula.split("\\d", 2)[1];
-//			
-//		} catch (Exception e) {
-//			this.coef = 1;
-//		}
-		
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         this.setBackground(vertexColor);
 		
 		this.coefLabel = new JLabel("" + Math.abs(coef), SwingConstants.CENTER);
 		this.formulaLabel = new JLabel(this.formula);
+		coefLabel.setForeground(Color.WHITE);
+		formulaLabel.setForeground(Color.WHITE);
 
 		coefLabel.setBounds(10,0,15,35);
 		formulaLabel.setBounds(30,0,85,35);
