@@ -48,7 +48,7 @@ public class View extends JFrame{
 		return synthPanel;
 	}
 	
-	public JTextField getFocus(){
+	public JTextField getFocus() {
 		return (JTextField) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 	}
 	

@@ -16,20 +16,21 @@ public class ReactionCol {
 		return pairs;
 	}
 
-	public String toString() {
-		return "{ ReactionID = " + this.currentID + ", " + listToString(pairs) + "}";
-	}
-	
-	private String listToString(List<?> list) {
-	    StringBuilder builder = new StringBuilder();
-	   	    
-	    for (Pair p : pairs) {
-	    	builder.append(p.toString());
-	    }
-	    return builder.toString();
-	}
 
 	public int getCurrentID() {
 		return this.currentID;
 	}
+	
+//	public String toString() {
+//		return "{ ReactionID = " + this.currentID + ", " + listToString(pairs) + "}";
+//	}
+//	
+//	private String listToString(List<?> list) {
+//	    StringBuilder builder = new StringBuilder();
+//	   	    
+//	    for (Pair p : pairs) {
+//	    	builder.append(p.toString());
+//	    }
+//	    return builder.toString();
+//	}
 }

@@ -60,10 +60,6 @@ public class Connection extends JPanel {
 		}   
 	}
 
-	public Color getLineColor() {
-		return lineColor;
-	}
-
 	public void setLineColor(Color c) {
 		lineColor = c;
 	}

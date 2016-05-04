@@ -53,14 +53,6 @@ public class Vertex extends JPanel {
 		return formula;
 	}
 
-	public int getReactionID() {
-		return reactionID;
-	}
-	
-	public Vertex getLinkedVertex() {
-		return linkedVertex;
-	}
-	
 	public String toString() {
 		return "<" + reactionID + ", " + formula + ">";
 	}
@@ -87,10 +79,6 @@ public class Vertex extends JPanel {
 			linkedVertex.setBackground(destColor);
 			this.setPrimaryBorder(linkColor);
 			linkedVertex.setPrimaryBorder(linkColor);
-			
-		} else {
-			this.setWasteBorder();
-			linkedVertex.setWasteBorder();
 		}
 		
 		Connection connection = new Connection(this, linkedVertex);
@@ -102,20 +90,5 @@ public class Vertex extends JPanel {
 		this.setBorder(BorderFactory.createLineBorder(linkColor, 3));
 	}
 	
-	public void setWasteBorder() {
-		this.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-	}
-
-	public JLabel getCoefLabel() {
-		return coefLabel;
-	}
-	
-	public JLabel getFormulaLabel() {
-		return formulaLabel;
-	}
-	
-	public boolean isUsed() {
-		return coef == 0;
-	}
 	
 }

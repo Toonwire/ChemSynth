@@ -77,7 +77,7 @@ public class SynthPanel extends JPanel {
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
 		
-		backButton.setBounds(SIZE-100, 30, 80, 30);
+		backButton.setBounds(SIZE-100, 40, 80, 30);
 		backButton.setBackground(Color.CYAN);
 		
 		scrollPane.setBounds(0,100, SIZE, SIZE-200);

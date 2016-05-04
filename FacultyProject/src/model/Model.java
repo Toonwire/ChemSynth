@@ -270,7 +270,7 @@ public class Model {
 		changeSupport.firePropertyChange("" + reactionID, recursiveOnFormula, newReaction);
 	}
 
-	public String getNetReaction() {
-		return netReaction.toString();
+	public NetReaction getNetReaction() {
+		return netReaction;
 	}
 }

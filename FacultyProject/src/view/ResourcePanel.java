@@ -135,10 +135,6 @@ public class ResourcePanel extends JPanel{
 	public LinkedList<JTextField> getChemList() {
 		return this.chemList;
 	}
-
-	public JTextField getPreviousChemTextField() {
-		return this.chemList.get(chemList.size()-2);
-	}
 	
 	public JTextField getDesiredTextField() {
 		return this.desireTextField;

@@ -14,16 +14,9 @@ public class ConnectionPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	List<Connection> connections;
-	public ConnectionPanel() {
-		
-	}
 	
-	public ConnectionPanel(List<Connection> connections) {
-		this.connections = connections;
-	}
-	
-	public ConnectionPanel(LayoutManager layout) {
-		this.setLayout(layout);
+	public ConnectionPanel(LayoutManager layoutManager) {
+		this.setLayout(layoutManager);
 	}
 
 	public void setConnections(List<Connection> connections) {
