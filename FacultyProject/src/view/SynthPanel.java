@@ -16,13 +16,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.text.JTextComponent;
 
+import controller.SynthController;
 import model.Model;
 import view.components.Connection;
 import view.components.ConnectionPanel;
 import view.components.Vertex;
-import controller.SynthController;
 
 public class SynthPanel extends JPanel {
 	// Do something fancy in here, animation perhaps
