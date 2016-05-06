@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JTextField;
 
 import model.Model;
+import model.NetReaction;
 import view.View;
 
 public class ResourceController implements FocusListener, ActionListener, KeyListener {
@@ -20,6 +21,15 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	
 	private Color CUSTOM_RED = new Color(213,103,106);
 	private Color CUSTOM_GREEN = new Color(63,204,155);
+	
+	private String errorMsg = "<html><div style='text-align: center;'>"
+			+ 	"</h1>"
+			+ 	"<body>"
+			+		"<i style='font-size:14;'> A retro synthesis was not deemed possible. </i><br>"
+			+		"<i style='font-size:14;'> You have initiated a retro synthesis for an abundant chemical or no reaction product matches your desired chemical </i><br>"
+			+ 	"</body>"
+			+ "</html>"
+			;
 	
 	public ResourceController(Model model, View view){
 		this.model = model;
@@ -47,7 +57,20 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		
 		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
 		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
-		view.getSynthPanel().getNetLabel().setText(model.getNetReaction());
+		NetReaction netReaction = model.getNetReaction();
+		String netString = netReaction.toString();
+		
+		if (netReaction.toString().isEmpty()) {
+			view.getSynthPanel().getNetLabel().setForeground(new Color(255,128,0));
+			view.getSynthPanel().getNetLabel().setText(errorMsg);
+		}
+		else {
+			view.getSynthPanel().getNetLabel().setForeground(Color.WHITE);
+			netString = netString.replace("-->", "\u2192");
+			
+			netString = netString.replaceAll("(?<=\\D)*1(?=\\D)", "");
+			view.getSynthPanel().getNetLabel().setText(netString);
+		}
 		
 	}
 
@@ -77,7 +100,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			view.getResourcePanel().getErrorLabel().setText("");
 			
 			if (allSet()){
-				view.getResourcePanel().getReadyLabel().setForeground(CUSTOM_GREEN);
+				view.getResourcePanel().getReadyLabel().setForeground(Color.WHITE);
 				view.getResourcePanel().getReadyLabel().setText("Ready to go!");
 				view.getResourcePanel().getSynthButton().setEnabled(true);
 				
@@ -113,7 +136,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 				}
 					
 				if (allSet()){
-					view.getResourcePanel().getReadyLabel().setForeground(CUSTOM_GREEN);
+					view.getResourcePanel().getReadyLabel().setForeground(Color.WHITE);
 					view.getResourcePanel().getReadyLabel().setText("Ready to go!");
 					view.getResourcePanel().getSynthButton().setEnabled(true);
 					

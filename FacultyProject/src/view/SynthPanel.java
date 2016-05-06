@@ -1,8 +1,12 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,6 +18,7 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
@@ -31,55 +36,56 @@ public class SynthPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final int SIZE = 800;
-	private final Model model;
 	
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
 	private ConnectionPanel connectionPanel;
+	private JPanel netPanel;
 	private JLabel netLabel = new JLabel("Net Reaction");
-	private JPanel netPanel = new JPanel();
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private String recursiveChem = null;
 	private List<Connection> connections = new ArrayList<>();
-//	private JScrollPane scrollPane = new JScrollPane();
-	private Color connectionHighlightColor = Color.BLUE;
+	private JScrollPane scrollPane = new JScrollPane();
+	private GridBagConstraints c;
 	
-	private int x = 20, y = 20;
+	private Color connectionHighlightColor = Color.BLUE;
+	private Color connectionPanelColor = new Color(91,192,222);
 	
 	public SynthPanel(Model model){
-		this.model = model;
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
 		this.setLayout(null);
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setBackground(new Color(51,122,183));
 		
-		connectionPanel = new ConnectionPanel();
+		connectionPanel = new ConnectionPanel(new GridBagLayout());
 		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
-//		connectionPanel.setSize(new Dimension(SIZE, 3000));
-		connectionPanel.setBackground(Color.WHITE);
-		connectionPanel.setLayout(null);
+		connectionPanel.setBackground(connectionPanelColor);
 		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 		
+		this.c = new GridBagConstraints();
+		c.gridx = 0;
+		c.gridy = 0;
+		
 		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		netLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+		this.netPanel = new JPanel(new BorderLayout());
 		netPanel.setBounds(0, SIZE-65, SIZE, 100);
-		netLabel.setAlignmentX(SwingConstants.CENTER);
 		netPanel.setBackground(this.getBackground());
-		netPanel.add(netLabel);
+		netPanel.add(netLabel, BorderLayout.NORTH);
 		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
 		
-		backButton.setBounds(SIZE-100, 30, 100, 60);
+		backButton.setBounds(SIZE-100, 40, 80, 30);
+		backButton.setBackground(Color.CYAN);
 		
-//		scrollPane.setBounds(0,100, SIZE, SIZE-200);
-//		scrollPane.setViewportView(connectionPanel);
-//		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(0,100, SIZE, SIZE-200);
+		scrollPane.setViewportView(connectionPanel);
 		
 		this.add(titleLabel);
 		this.add(backButton);
-		this.add(connectionPanel);
-//		this.add(scrollPane);
+		this.add(scrollPane);
 		this.add(netPanel);
 		
 	}
@@ -103,11 +109,15 @@ public class SynthPanel extends JPanel {
 		Vertex destVertex = null;
 		Vertex lastVertex = null;
 		
+		c.gridx = 0;
+		c.insets = new Insets(20, 10, 20, 0);
+		
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
-			vertex.setBounds(x,y,100,35);
-			System.out.println("Created vertex " + vertex);
-			connectionPanel.add(vertex);
+			vertex.setPreferredSize(new Dimension(100,35));
+			//System.out.println("Created vertex " + vertex);
+			connectionPanel.add(vertex, c);
+			//System.out.println(c.gridx +"  " + c.gridy);
 			vertexList.add(vertex);
 			if (!vertexMap.isEmpty()) {
 				for (Integer id : vertexMap.keySet()) {
@@ -116,7 +126,7 @@ public class SynthPanel extends JPanel {
 							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
 							if (recursiveLink) { /* remove to get all links */
 								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
-								System.out.println("Linked " + vertex + " with " + v);
+//								System.out.println("Linked " + vertex + " with " + v);
 								recursiveVertex = v;
 								destVertex = vertex;
 							}
@@ -132,7 +142,7 @@ public class SynthPanel extends JPanel {
 			if (lastVertex != null) {
 				JLabel opLabel = new JLabel();
 				opLabel.setFont(new Font("Cambria", Font.BOLD, 16));
-				opLabel.setBounds(x-15,y,15,35);
+				opLabel.setPreferredSize(new Dimension(15,35));
 				
 				if (vertex.getCoef() < 0) {
 					if (lastVertex.getCoef() < 0)
@@ -144,18 +154,20 @@ public class SynthPanel extends JPanel {
 					else if (lastVertex.getCoef() > 0) 
 						opLabel.setText("+");
 				}
-				
-				connectionPanel.add(opLabel);
+				c.gridx--;
+				connectionPanel.add(opLabel, c);
+//				System.out.println("Created " + opLabel.getText());
+//				System.out.println(c.gridx +"  " + c.gridy);
+				c.gridx += 3;
+			} else {
+				c.gridx += 2;
 			}
+			
 			lastVertex = vertex;
-			
-			
-			this.x += 120;
 			
 		}
 		
-		this.x = 20;
-		this.y += 80;
+		c.gridy++;
 		
 		updateCoefs(recursiveVertex, destVertex, vertexList);
 		vertexMap.put(reactionID, vertexList);
@@ -225,19 +237,25 @@ public class SynthPanel extends JPanel {
 
 	public void reset() {
 		connectionPanel.removeAll();
-		this.remove(connectionPanel);
-		this.connectionPanel = new ConnectionPanel();
+		scrollPane.remove(connectionPanel);
+		this.remove(scrollPane);
+		
+		this.connectionPanel = new ConnectionPanel(new GridBagLayout());
+		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
+		connectionPanel.setBackground(connectionPanelColor);
+		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+		
+		this.scrollPane = new JScrollPane();
+		scrollPane.setBounds(0,100, SIZE, SIZE-200);
+		scrollPane.setViewportView(connectionPanel);
+		
 		this.netPanel = new JPanel();
 		this.vertexMap = new HashMap<>();
 		this.connections = new ArrayList<>();
-		this.x = 20;
-		this.y = 20;
+		c.gridx = 0;
+		c.gridy = 0;
 		
-		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
-		connectionPanel.setBackground(Color.WHITE);
-		connectionPanel.setLayout(null);
-		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-		this.add(connectionPanel);
+		this.add(scrollPane);
 		
 	}
 

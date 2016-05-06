@@ -1,23 +1,19 @@
 package view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
-import controller.ResourceController;
 import model.Model;
+import controller.ResourceController;
 
 public class ResourcePanel extends JPanel{
 
@@ -41,9 +37,6 @@ public class ResourcePanel extends JPanel{
 //	-											   -
 //	-                                   SYNTHESIZE -
 //	------------------------------------------------
-	private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-	private final int screenWidth = (int) screenSize.getWidth()-(int)screenSize.getWidth()/3;
-	private final int screenHeight = (int) screenSize.getHeight()-(int)screenSize.getHeight()/3;
 	private final int SIZE = 800;
 	private final String chemTextPlaceholder = " Enter chemical resource";
 	private final String desiredTextPlaceholder = " Enter desired chemical";
@@ -63,7 +56,6 @@ public class ResourcePanel extends JPanel{
 	private HashMap<JTextField,String> resourceMap = new HashMap<JTextField,String>();
 	
 	public ResourcePanel(Model model){
-//		this.setPreferredSize(new Dimension(screenWidth,screenHeight));
 		this.setPreferredSize(new Dimension(SIZE, SIZE));
 		this.setLayout(null);
 		
@@ -72,9 +64,6 @@ public class ResourcePanel extends JPanel{
 		
 		chemLabel.setBounds(40, SIZE/2-150, 200, 50);
 		chemLabel.setFont(new Font("Arial", Font.BOLD, 20));
-		
-//		amountLabel.setBounds(SIZE-200, SIZE/2-150, 200, 50);
-//		amountLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		
 		desireLabel.setBounds(SIZE/2-200, SIZE-200, 100, 50);
 		desireLabel.setFont(new Font("Arial", Font.BOLD, 20));
@@ -94,12 +83,12 @@ public class ResourcePanel extends JPanel{
 		readyLabel.setFont(new Font("Roman", Font.ITALIC, 18));
 		readyLabel.setBounds(SIZE-200, SIZE-150, 200, 50);
 		
-//		// Dark theme
-//		chemLabel.setForeground(Color.WHITE);
-//		titleLabel.setForeground(Color.WHITE);
-//		desireLabel.setForeground(Color.WHITE);
-//		synthButton.setForeground(Color.WHITE);
-//		this.setBackground(Color.BLACK);
+		readyLabel.setForeground(Color.WHITE);
+		chemLabel.setForeground(Color.WHITE);
+		titleLabel.setForeground(Color.WHITE);
+		desireLabel.setForeground(Color.WHITE);
+		synthButton.setForeground(Color.BLACK);
+		this.setBackground(new Color(91,192,222));
 		
 		this.add(titleLabel);
 		this.add(chemLabel);
@@ -145,10 +134,6 @@ public class ResourcePanel extends JPanel{
 
 	public LinkedList<JTextField> getChemList() {
 		return this.chemList;
-	}
-
-	public JTextField getPreviousChemTextField() {
-		return this.chemList.get(chemList.size()-2);
 	}
 	
 	public JTextField getDesiredTextField() {

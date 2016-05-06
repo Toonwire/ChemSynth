@@ -19,9 +19,9 @@ public class Pair {
 		return this.coefficient;
 	}
 	
-	public String toString() {
-		return "Formula = " + this.formula + ", Coefficient = " + this.coefficient;
-	}
+//	public String toString() {
+//		return "Formula = " + this.formula + ", Coefficient = " + this.coefficient;
+//	}
 }
 
 

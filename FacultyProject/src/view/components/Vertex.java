@@ -19,6 +19,9 @@ public class Vertex extends JPanel {
 	private int coef;
 	private int reactionID;
 	private boolean recursiveLink;
+	private Color vertexColor = new Color(92,184,92);		// Green
+	private Color sourceColor = new Color(217,83,79);		// Red
+	private Color destColor = new Color(240,173,78);		// Golden
 	
 	private JLabel coefLabel, formulaLabel;	
 
@@ -29,20 +32,14 @@ public class Vertex extends JPanel {
 		this.coef = coef;
 		this.setLayout(null);
 		
-//		try {
-//			this.coef = Integer.parseInt(formula.split("\\D")[0]);
-//			this.formula = formula.split("\\d", 2)[1];
-//			
-//		} catch (Exception e) {
-//			this.coef = 1;
-//		}
-		
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        this.setBackground(Color.GREEN);
+        this.setBackground(vertexColor);
 		
 		this.coefLabel = new JLabel("" + Math.abs(coef), SwingConstants.CENTER);
 		this.formulaLabel = new JLabel(this.formula);
+		coefLabel.setForeground(Color.WHITE);
+		formulaLabel.setForeground(Color.WHITE);
 
 		coefLabel.setBounds(10,0,15,35);
 		formulaLabel.setBounds(30,0,85,35);
@@ -56,14 +53,6 @@ public class Vertex extends JPanel {
 		return formula;
 	}
 
-	public int getReactionID() {
-		return reactionID;
-	}
-	
-	public Vertex getLinkedVertex() {
-		return linkedVertex;
-	}
-	
 	public String toString() {
 		return "<" + reactionID + ", " + formula + ">";
 	}
@@ -86,14 +75,10 @@ public class Vertex extends JPanel {
 		this.recursiveLink = recursiveLink;
 		
 		if (recursiveLink) {
-			this.setBackground(Color.RED);
-			linkedVertex.setBackground(Color.YELLOW);
+			this.setBackground(sourceColor);
+			linkedVertex.setBackground(destColor);
 			this.setPrimaryBorder(linkColor);
 			linkedVertex.setPrimaryBorder(linkColor);
-			
-		} else {
-			this.setWasteBorder();
-			linkedVertex.setWasteBorder();
 		}
 		
 		Connection connection = new Connection(this, linkedVertex);
@@ -105,20 +90,5 @@ public class Vertex extends JPanel {
 		this.setBorder(BorderFactory.createLineBorder(linkColor, 3));
 	}
 	
-	public void setWasteBorder() {
-		this.setBorder(BorderFactory.createLineBorder(Color.CYAN, 3));
-	}
-
-	public JLabel getCoefLabel() {
-		return coefLabel;
-	}
-	
-	public JLabel getFormulaLabel() {
-		return formulaLabel;
-	}
-	
-	public boolean isUsed() {
-		return coef == 0;
-	}
 	
 }

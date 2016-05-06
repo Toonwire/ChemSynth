@@ -15,8 +15,6 @@ public class View extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	
-	private Model model;
 	private ResourcePanel resourcePanel;
 	private SynthPanel synthPanel;
 	
@@ -24,7 +22,6 @@ public class View extends JFrame{
 		super("ChemSynth");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		this.model = model;
 		this.resourcePanel = new ResourcePanel(model);
 		this.synthPanel = new SynthPanel(model);
 		
@@ -51,7 +48,7 @@ public class View extends JFrame{
 		return synthPanel;
 	}
 	
-	public JTextField getFocus(){
+	public JTextField getFocus() {
 		return (JTextField) KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
 	}
 	
