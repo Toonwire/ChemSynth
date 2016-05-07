@@ -64,8 +64,9 @@ public class SQLiteDatabase {
 	public void insertIntoTable(){
 		
 		try{
-			
 			connection = this.connect();
+			
+			// get the path for the reactions.txt file
 			URL url = getClass().getResource("reactions.txt");
 			InputStream in = null;
 			Scanner s = null;
@@ -135,7 +136,7 @@ public class SQLiteDatabase {
 				reactionID++;
 			}
 			
-//			s = new Scanner(new File("/compoundCosts.txt"));
+			// get the path of the compound costs text file
 			url = getClass().getResource("compoundCosts.txt");
 			try {
 				in = url.openStream();
@@ -209,13 +210,10 @@ public class SQLiteDatabase {
 		
 	private Connection connect(){
 		try {
-			
 			Class.forName("org.sqlite.JDBC");
-//			connection = DriverManager.getConnection("jdbc:sqlite:chemSynth.db");
 		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
-			
 //			System.out.println("---> Connected to database");
-			
+		    
 		} catch (Exception e){
 			System.err.println("---> Could not connect to the database");
 			e.printStackTrace();
