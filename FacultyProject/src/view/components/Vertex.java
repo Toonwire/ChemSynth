@@ -69,6 +69,10 @@ public class Vertex extends JPanel {
 	public boolean isRecursiveLink() {
 		return recursiveLink;
 	}
+	
+	public Vertex getLinkedVertex() {
+		return linkedVertex;
+	}
 
 	public Connection formLink(Vertex linkedVertex, boolean recursiveLink, Color linkColor) {
 		this.linkedVertex = linkedVertex;

@@ -2,17 +2,18 @@ package database;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,8 +69,16 @@ public class SQLiteDatabase {
 		try{
 			
 			connection = this.connect();
-			
-			Scanner s = new Scanner(new File("reactions.txt"));
+			URL url = getClass().getResource("reactions.txt");
+			InputStream in = null;
+			Scanner s = null;
+			try {
+				in = url.openStream();
+				s = new Scanner(in);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+//			Scanner s = new Scanner(new File(this.getClass().getResource("reactions.txt").toString()));
 			PrintStream insertFile = new PrintStream(new File("insertFile.txt"));
 			
 			int reactionID = 1;
@@ -129,8 +138,14 @@ public class SQLiteDatabase {
 				reactionID++;
 			}
 			
-			s = new Scanner(new File("compoundCosts.txt"));
-			
+//			s = new Scanner(new File("/compoundCosts.txt"));
+			url = getClass().getResource("compoundCosts.txt");
+			try {
+				in = url.openStream();
+				s = new Scanner(in);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			while(s.hasNextLine()) {
 				String[] compoundCost = s.nextLine().trim().split("\\$");
 				String compound = compoundCost[0];
@@ -150,9 +165,14 @@ public class SQLiteDatabase {
 				prepStmt.setInt(2, cost);
 				prepStmt.execute();
 			}
-
-			s.close();
-			insertFile.close();
+			
+			try {
+				in.close();
+				s.close();
+				insertFile.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 //			System.out.println("Inserted into table");
 			disconnect();
@@ -195,7 +215,9 @@ public class SQLiteDatabase {
 		try {
 			
 			Class.forName("org.sqlite.JDBC");
-			connection = DriverManager.getConnection("jdbc:sqlite:chemSynth.db");
+//			connection = DriverManager.getConnection("jdbc:sqlite:chemSynth.db");
+		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
+			
 //			System.out.println("---> Connected to database");
 			
 		} catch (Exception e){
