@@ -1,10 +1,7 @@
 package database;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -78,8 +75,12 @@ public class SQLiteDatabase {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//			Scanner s = new Scanner(new File(this.getClass().getResource("reactions.txt").toString()));
-			PrintStream insertFile = new PrintStream(new File("insertFile.txt"));
+			
+			/*
+			 * Uncomment the insertFile statements below to create
+			 * and see the resulting SQL insert statements.
+			 */
+//			PrintStream insertFile = new PrintStream(new File("insertFile.txt"));	
 			
 			int reactionID = 1;
 			while(s.hasNextLine()) {
@@ -100,8 +101,8 @@ public class SQLiteDatabase {
 						coefficient = 1;
 					}
 					
-					String reactantInsert = "insert or ignore into reactants(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
-					insertFile.println(reactantInsert);
+//					String reactantInsert = "insert or ignore into reactants(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
+//					insertFile.println(reactantInsert);
 					
 					prepStmt = connection.prepareStatement("insert or ignore into reactants(reactionID, formula, coefficient) values(?,?,?);");
 					prepStmt.setInt(1, reactionID);
@@ -122,8 +123,8 @@ public class SQLiteDatabase {
 						coefficient = 1;
 					}
 					
-					String productInsert = "insert or ignore into products(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
-					insertFile.println(productInsert);
+//					String productInsert = "insert or ignore into products(reactionID, formula, coefficient) values(" + reactionID + "," + "'" + formula + "'" + "," + coefficient + ");";
+//					insertFile.println(productInsert);
 					
 					prepStmt = connection.prepareStatement("insert or ignore into products(reactionID, formula, coefficient) values(?,?,?);");
 					prepStmt.setInt(1, reactionID);
@@ -131,10 +132,6 @@ public class SQLiteDatabase {
 					prepStmt.setInt(3, coefficient);
 					prepStmt.execute();
 				}
-
-//				Need to add a cost to each reaction for below to be relevant
-//				insert or ignore into reactions(reactionID, cost) values(1, 7);
-				
 				reactionID++;
 			}
 			
@@ -157,8 +154,8 @@ public class SQLiteDatabase {
 				}
 				
 					
-				String costInsert = "insert or ignore into costs(formula, cost) values('" + compound + "', " + cost + ");";
-				insertFile.println(costInsert);
+//				String costInsert = "insert or ignore into costs(formula, cost) values('" + compound + "', " + cost + ");";
+//				insertFile.println(costInsert);
 				
 				prepStmt = connection.prepareStatement("insert or ignore into costs(formula, cost) values(?,?);");
 				prepStmt.setString(1, compound);
@@ -169,7 +166,7 @@ public class SQLiteDatabase {
 			try {
 				in.close();
 				s.close();
-				insertFile.close();
+//				insertFile.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -177,8 +174,7 @@ public class SQLiteDatabase {
 //			System.out.println("Inserted into table");
 			disconnect();
 			
-		} catch (SQLException | FileNotFoundException e){
-			System.err.println("Most likely, the file wasn't found - see StackTrace");
+		} catch (SQLException e){
 			e.printStackTrace();
 		}
 	}
