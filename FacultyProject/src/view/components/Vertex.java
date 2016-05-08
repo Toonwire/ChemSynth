@@ -1,11 +1,14 @@
 package view.components;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 public class Vertex extends JPanel {
 
@@ -30,22 +33,22 @@ public class Vertex extends JPanel {
 		this.reactionID = reactionID;
 		this.formula = formula;
 		this.coef = coef;
-		this.setLayout(null);
-		
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+		this.setLayout(new FlowLayout());
         this.setBackground(vertexColor);
 		
-		this.coefLabel = new JLabel("" + Math.abs(coef), SwingConstants.CENTER);
+		this.coefLabel = new JLabel("" + Math.abs(coef));
 		this.formulaLabel = new JLabel(this.formula);
 		coefLabel.setForeground(Color.WHITE);
 		formulaLabel.setForeground(Color.WHITE);
 
-		coefLabel.setBounds(10,0,15,35);
-		formulaLabel.setBounds(30,0,85,35);
+//		coefLabel.setBounds(10,0,15,35);
+//		formulaLabel.setBounds(30,0,85,35);
 		
 		this.add(coefLabel);
 		this.add(formulaLabel);
+		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
+		Border margin = new EmptyBorder(10, 10, 10, 10);
+		this.setBorder(new CompoundBorder(border, margin));
 		
 	}
 	
@@ -91,7 +94,10 @@ public class Vertex extends JPanel {
 	}
 
 	public void setPrimaryBorder(Color linkColor) {
-		this.setBorder(BorderFactory.createLineBorder(linkColor, 3));
+		this.getBorder();
+		Border linkBorder = BorderFactory.createLineBorder(linkColor, 3);
+//		this.setBorder(BorderFactory.createLineBorder(linkColor, 3));
+		this.setBorder(new CompoundBorder(linkBorder, this.getBorder()));
 	}
 	
 	

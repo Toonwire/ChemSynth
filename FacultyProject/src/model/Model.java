@@ -96,13 +96,11 @@ public class Model {
 		}
 		
 		if (!netIDs.isEmpty()) {
-			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost + "\nAchieved by the sequence of reactions:");
+//			System.out.println("\n\nMinimum cost for a synthesis of the chemical " + desired + " is : " + minCost + "\nAchieved by the sequence of reactions:");
 			for (int usedID = 0; usedID < netIDs.size(); usedID++) {
-				/*
-				 * SWING WORKER HERE MAYBE!?
-				 */
-				System.out.println(reactionsIDMap.get(netIDs.get(usedID)));
+//				System.out.println(reactionsIDMap.get(netIDs.get(usedID)));
 				rememberPath(netIDs.get(usedID), netReaction.getRecursiveList().get(usedID), reactionsIDMap.get(netIDs.get(usedID)));
+				
 			}
 			//System.out.println("\nResulting in the net reaction: \n" + netReaction);
 			
@@ -238,7 +236,11 @@ public class Model {
 		for (String chem : netReaction.getMap().keySet()) {
 			if (netReaction.getMap().get(chem) > 0)	{
 				if (!chem.equals(desired))
-					totalCost += costMap.get(chem);
+					if (costMap.containsKey(chem))
+						totalCost += costMap.get(chem);
+					else {
+						System.err.println("No cost for the chemical " + chem + " has been declared");
+					}
 			}
 		}
 		

@@ -117,3 +117,4 @@ SnO2$2
 Zn$1
 ZnCl2$7
 ZnSO4$7
+Ca10(PO4)6(OH)2$6

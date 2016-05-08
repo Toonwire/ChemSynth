@@ -111,10 +111,11 @@ public class SynthPanel extends JPanel {
 		
 		c.gridx = 0;
 		c.insets = new Insets(20, 10, 20, 0);
+		c.anchor = GridBagConstraints.CENTER;
 		
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
-			vertex.setPreferredSize(new Dimension(100,35));
+//			vertex.setPreferredSize(new Dimension(100,35));
 			//System.out.println("Created vertex " + vertex);
 			connectionPanel.add(vertex, c);
 			//System.out.println(c.gridx +"  " + c.gridy);
@@ -142,7 +143,7 @@ public class SynthPanel extends JPanel {
 			if (lastVertex != null) {
 				JLabel opLabel = new JLabel();
 				opLabel.setFont(new Font("Cambria", Font.BOLD, 16));
-				opLabel.setPreferredSize(new Dimension(15,35));
+//				opLabel.setPreferredSize(new Dimension(15,35));
 				
 				if (vertex.getCoef() < 0) {
 					if (lastVertex.getCoef() < 0)
@@ -150,7 +151,7 @@ public class SynthPanel extends JPanel {
 				}
 				else if (vertex.getCoef() > 0) {
 					if (lastVertex.getCoef() < 0) 
-						opLabel.setText("\u2192");
+						opLabel.setText("\u2192");	// \rightarrow 
 					else if (lastVertex.getCoef() > 0) 
 						opLabel.setText("+");
 				}
@@ -210,7 +211,7 @@ public class SynthPanel extends JPanel {
 			int coef;
 			try {
 				coef = Integer.parseInt(formula.split("\\D")[0]);
-				formula = formula.split("\\d", 2)[1];
+				formula = formula.split("(?<=\\d)(?=\\D)", 2)[1];
 			} catch (Exception e) {
 				coef = 1;
 			}
@@ -225,7 +226,7 @@ public class SynthPanel extends JPanel {
 			int coef;
 			try {
 				coef = Integer.parseInt(formula.split("\\D")[0]);
-				formula = formula.split("\\d", 2)[1];
+				formula = formula.split("(?<=\\d)(?=\\D)", 2)[1];
 			} catch (Exception e) {
 				coef = 1;
 			}

@@ -34,7 +34,13 @@ public class SQLiteDatabase {
 			connection = this.connect();
 			statement = connection.createStatement();
 			
-//		    String sql = "create table if not exists compound (id integer primary key autoincrement, chemName varchar(50) unique not null, formula varchar(30), charge int, altName varchar(50));";
+//			String sql1 = "drop table if exists reactants";
+//			String sql2 = "drop table if exists products";
+//			String sql3 = "drop table if exists costs";
+//			statement.executeUpdate(sql1);
+//			statement.executeUpdate(sql2);
+//			statement.executeUpdate(sql3);
+			
 		    String reactantTable = "create table if not exists reactants (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
 		    String productTable = "create table if not exists products (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
 		    String costTable = "create table if not exists costs(formula varchar(30), cost integer, PRIMARY KEY(formula));";
@@ -44,12 +50,6 @@ public class SQLiteDatabase {
 			statement.executeUpdate(costTable);
 		   
 
-//			String sql1 = "drop table reactants";
-//			String sql2 = "drop table products";
-//			String sql3 = "drop table costs";
-//		    statement.executeUpdate(sql1);
-//		    statement.executeUpdate(sql2);
-//		    statement.executeUpdate(sql3);
 		    
 //		    System.out.println("Created table");
 
@@ -97,7 +97,8 @@ public class SQLiteDatabase {
 					int coefficient;
 					try {
 						coefficient = Integer.parseInt(formula.split("\\D")[0]);
-						formula = formula.split("\\d", 2)[1];
+						formula = formula.split("(?<=\\d)(?=\\D)", 2)[1];	
+						// limit = 2: only split the coefficient from the formula, not the numbers inside the formula
 					} catch (Exception e) {
 						coefficient = 1;
 					}
@@ -119,7 +120,7 @@ public class SQLiteDatabase {
 					int coefficient;
 					try {
 						coefficient = Integer.parseInt(formula.split("\\D")[0]);
-						formula = formula.split("\\d", 2)[1];
+						formula = formula.split("(?<=\\d)(?=\\D)", 2)[1];
 					} catch (Exception e) {
 						coefficient = 1;
 					}
