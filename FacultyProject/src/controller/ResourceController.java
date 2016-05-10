@@ -66,12 +66,12 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 		}
 		else {
 			view.getSynthPanel().getNetLabel().setForeground(Color.WHITE);
-			netString = netString.replace("-->", "\u2192");
 			
+			// clean up format
+			netString = netString.replace("-->", "\u2192");
 			netString = netString.replaceAll("(?<=\\D)*1(?=\\D)", "");
 			view.getSynthPanel().getNetLabel().setText(netString);
-		}
-		
+		}		
 	}
 
 

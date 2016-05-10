@@ -93,12 +93,12 @@ public class SynthPanel extends JPanel {
 
 	public void registerListeners(SynthController controller) {
 		backButton.addActionListener(controller);
+		this.addKeyListener(controller);
 	}
 
 
 	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction) {
 		this.recursiveChem = recursiveOnFormula;
-
 		/*
 		 *  create new vertices based on each chemical found in the reaction (parameters)
 		 *  get the split regex from whereever we did it before
