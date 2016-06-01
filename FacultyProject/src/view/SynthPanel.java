@@ -118,7 +118,7 @@ public class SynthPanel extends JPanel {
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
 //			vertex.setPreferredSize(new Dimension(100,35));
-			System.out.println("Created vertex " + vertex);
+//			System.out.println("Created vertex " + vertex);
 			connectionPanel.add(vertex, c);
 			//System.out.println(c.gridx +"  " + c.gridy);
 			vertexList.add(vertex);
@@ -172,8 +172,8 @@ public class SynthPanel extends JPanel {
 			
 		}
 		
-		System.out.println("ConnectionPanel : " +connectionPanel.isVisible());
-		System.out.println("Vertex : " + lastVertex.isVisible());
+//		System.out.println("ConnectionPanel : " +connectionPanel.isVisible());
+//		System.out.println("Vertex : " + lastVertex.isVisible());
 		repaint();
 		
 		c.gridy++;
