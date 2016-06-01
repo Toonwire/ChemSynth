@@ -100,8 +100,10 @@ public class Model {
 			for (int usedID = 0; usedID < netIDs.size(); usedID++) {
 //				System.out.println(reactionsIDMap.get(netIDs.get(usedID)));
 				rememberPath(netIDs.get(usedID), netReaction.getRecursiveList().get(usedID), reactionsIDMap.get(netIDs.get(usedID)));
+//				System.out.println(netReaction.getRecursiveList().get(usedID));
 				
 			}
+//			System.out.println("-----");
 			//System.out.println("\nResulting in the net reaction: \n" + netReaction);
 			
 		} else {
@@ -239,7 +241,7 @@ public class Model {
 					if (costMap.containsKey(chem))
 						totalCost += costMap.get(chem);
 					else {
-						System.err.println("No cost for the chemical " + chem + " has been declared");
+//						System.err.println("No cost for the chemical " + chem + " has been declared");
 					}
 			}
 		}

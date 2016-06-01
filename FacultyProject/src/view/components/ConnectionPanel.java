@@ -23,12 +23,13 @@ public class ConnectionPanel extends JPanel {
 		this.connections = connections;
 	}
 
-	public List<Connection> getConnections() {
-		return connections;
-	}
+//	public List<Connection> getConnections() {
+//		return connections;
+//	}
 
-	public void paint(Graphics g) {
-		super.paint(g);
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		if (connections != null) {
 			for (Connection connection : connections) {
 				if (connection != null)

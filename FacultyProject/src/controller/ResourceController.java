@@ -156,15 +156,17 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	private boolean allSet() {
 		boolean ready = true;
 		
-//		for (JTextField tf : view.getResourcePanel().getChemList()){
-//			if (tf.getBackground().equals(CUSTOM_RED)) {
-//				ready = false;
-//				break;
-//			}
-//		}
-		
-		if (!view.getResourcePanel().getDesiredTextField().getBackground().equals(CUSTOM_GREEN))
+		if (!view.getResourcePanel().getDesiredTextField().getBackground().equals(CUSTOM_GREEN)) {
 			ready = false;
+		} else {
+			for (JTextField tf : view.getResourcePanel().getChemList()){
+				if (tf.getBackground().equals(CUSTOM_RED)) {
+					ready = false;
+					break;
+				}
+			}
+		}
+		
 		
 		return ready;
 	}
@@ -196,7 +198,7 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 					// to catch the '||' part of the above if statement in case resource limit reached.
 					if (view.getResourcePanel().getChemList().size() == 5) {
 						tf.setBackground(CUSTOM_GREEN);
-						this.view.getResourcePanel().getErrorLabel().setForeground(CUSTOM_GREEN);
+						this.view.getResourcePanel().getErrorLabel().setForeground(new Color(37,141,105));
 						this.view.getResourcePanel().getErrorLabel().setText("Resource limit reached");	
 						
 					} else {

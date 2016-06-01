@@ -130,9 +130,9 @@ public class NetReaction {
 		return usedReactions.get(steps-1);
 	}
 	
-	public int getInitialID() {
-		return initialID;
-	}
+//	public int getInitialID() {
+//		return initialID;
+//	}
 	
 	public String toString(){
 		
