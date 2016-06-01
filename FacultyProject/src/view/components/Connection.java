@@ -57,7 +57,7 @@ public class Connection extends JPanel {
 			
 			// draw the connection
 			g2d.draw(line);
-		}   
+		}
 	}
 
 	public void setLineColor(Color c) {

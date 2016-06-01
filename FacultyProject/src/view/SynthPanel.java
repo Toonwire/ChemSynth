@@ -5,10 +5,11 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,11 +25,12 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
-import controller.SynthController;
 import model.Model;
+import model.NetReaction;
 import view.components.Connection;
 import view.components.ConnectionPanel;
 import view.components.Vertex;
+import controller.SynthController;
 
 public class SynthPanel extends JPanel {
 	// Do something fancy in here, animation perhaps
@@ -39,16 +41,20 @@ public class SynthPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private final int SIZE = 800;
 	
+	private Model model;
+	
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
-	private JButton nextButton = new JButton("Next");
 	private ConnectionPanel connectionPanel;
 	private JPanel netPanel;
+	private JPanel drawingPanel;
 	private JLabel netLabel = new JLabel("Net Reaction");
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private String recursiveChem = null;
 	private List<Connection> connections = new ArrayList<>();
+	private Map<String, JScrollPane> scrollMap = new HashMap<>();
+	private Map<JScrollPane, NetReaction> netScrollMap = new HashMap<>();	
 	private JScrollPane scrollPane = new JScrollPane();
 	private GridBagConstraints c;
 	
@@ -56,11 +62,15 @@ public class SynthPanel extends JPanel {
 	private Color connectionPanelColor = new Color(91,192,222);
 	
 	private Font operatorFont = new Font("Cambria", Font.BOLD, 16);
+	private CardLayout cardLayout = new CardLayout();
+	private int flipCount = 1;
 	
 	public SynthPanel(Model model){
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
 		this.setLayout(null);
 		this.setBackground(new Color(51,122,183));
+		
+		this.model = model;
 		
 		connectionPanel = new ConnectionPanel(new GridBagLayout());
 		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
@@ -72,6 +82,7 @@ public class SynthPanel extends JPanel {
 		c.gridy = 0;
 		
 		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		netLabel.setForeground(Color.WHITE);
 		netLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		this.netPanel = new JPanel(new BorderLayout());
@@ -84,15 +95,13 @@ public class SynthPanel extends JPanel {
 		
 		backButton.setBounds(SIZE-100, 40, 80, 30);
 		backButton.setBackground(Color.CYAN);
-		nextButton.setBounds(SIZE-65, SIZE/2, 60, 30);
 		
-		scrollPane.setBounds(0,100, SIZE, SIZE-200);
-		
+		drawingPanel = new JPanel(cardLayout);
+		drawingPanel.setBounds(0,100, SIZE, SIZE-200);		
 		
 		this.add(titleLabel);
 		this.add(backButton);
-		this.add(nextButton);
-		this.add(scrollPane);
+		this.add(drawingPanel);
 		this.add(netPanel);
 		
 	}
@@ -100,7 +109,6 @@ public class SynthPanel extends JPanel {
 
 	public void registerListeners(SynthController controller) {
 		backButton.addActionListener(controller);
-		nextButton.addActionListener(controller);
 		this.addKeyListener(controller);
 	}
 
@@ -183,6 +191,7 @@ public class SynthPanel extends JPanel {
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
 		scrollPane.setViewportView(connectionPanel);
+		
 	}
 
 	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
@@ -195,7 +204,7 @@ public class SynthPanel extends JPanel {
 			else if (Math.abs(recursiveVertex.getCoef()) < Math.abs(destVertex.getCoef())) {
 				for (List<Vertex> list : vertexMap.values()) {
 					for (Vertex v : list) {
-						v.setCoef(Math.abs(recursiveVertex.getCoef()*destVertex.getCoef()/gcd(destVertex.getCoef(), recursiveVertex.getCoef())));
+						v.setCoef(Math.abs(v.getCoef()*recursiveVertex.getCoef()*destVertex.getCoef()/gcd(destVertex.getCoef(), recursiveVertex.getCoef())));
 					}
 				}
 			}
@@ -247,30 +256,16 @@ public class SynthPanel extends JPanel {
 	}
 
 	public void reset() {
-//		scrollPane.remove(connectionPanel);
-//		this.remove(scrollPane);
-		
-//		this.connectionPanel = new ConnectionPanel(new GridBagLayout());
-//		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
-//		connectionPanel.setBackground(connectionPanelColor);
-//		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-		
-//		this.scrollPane = new JScrollPane();
-//		scrollPane.setBounds(0,100, SIZE, SIZE-200);
-//		scrollPane.setViewportView(connectionPanel);
-		
-//		this.netPanel = new JPanel();
-//		this.vertexMap = new HashMap<>();
-//		this.connections = new ArrayList<>();
-//		this.add(scrollPane);
-		
 		connectionPanel.removeAll();
+		scrollMap.clear();
+		netScrollMap.clear();
+		drawingPanel.removeAll();
 		vertexMap.clear();
 		connections.clear();
+		flipCount = 1;
 		
 		c.gridx = 0;
 		c.gridy = 0;
-		
 		
 	}
 
@@ -286,10 +281,53 @@ public class SynthPanel extends JPanel {
 
 
 	public void showNextReaction() {
-		connectionPanel.removeAll();
-		connectionPanel.repaint();
-		connectionPanel.add(new Vertex(1, "CaO", 3));
-		scrollPane.setViewportView(connectionPanel);
+		cardLayout.show(drawingPanel, "scrollPane" + flipCount%drawingPanel.getComponentCount());
+		String netString = netScrollMap.get(scrollMap.get("scrollPane"+flipCount%drawingPanel.getComponentCount())).toString();
+		netLabel.setText(netString);
+		
+		flipCount++;
+	}
+	
+	public JPanel getDrawingPanel() {
+		return drawingPanel;
 	}
 
+
+	public JScrollPane getScrollPane() {
+		return scrollPane;
+	}
+
+
+	public void drawReactions() {
+		int i = 0;
+		for (NetReaction nr : model.getNetMap().keySet()) {
+			if (model.getNetMap().get(nr) == model.getMinCost()) {
+				if (!nr.getUsedReactions().isEmpty()) {
+					for (int usedID = 0; usedID < nr.getUsedReactions().size(); usedID++) {
+						addReactionToPath(nr.getUsedReactions().get(usedID), nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
+					}
+					
+					if (i == 0) netLabel.setText(nr.toString());
+					scrollMap.put("scrollPane"+i, scrollPane);
+					netScrollMap.put(scrollPane, nr);
+					drawingPanel.add(scrollPane, "scrollPane" + i);
+					i++;
+
+					
+					this.scrollPane.addMouseListener(new MouseAdapter() {
+						public void mousePressed(MouseEvent e) {
+							showNextReaction();
+						}
+					});
+					this.scrollPane = new JScrollPane();
+					
+					this.connectionPanel = new ConnectionPanel(new GridBagLayout());
+					this.connections = new ArrayList<>();
+					this.vertexMap = new HashMap<>();
+					connectionPanel.setBackground(connectionPanelColor);
+					connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+				}
+			}
+		}
+	}
 }

@@ -12,7 +12,8 @@ public class NetReaction {
 	private List<Integer> usedReactions;
 	private List<Integer> oldReacCoef;
 	private List<Integer> newReacCoef;
-	private int steps = 0, initialID = -1;
+	private int steps = 0;
+//	private int initialID = -1;
 	private List<String> recursiveList = new ArrayList<>();
 	
 	public NetReaction() {
@@ -25,7 +26,7 @@ public class NetReaction {
 	}
 	
 	private void InitialUpdate(ReactionCol rCol){		
-		initialID = rCol.getCurrentID();
+//		initialID = rCol.getCurrentID();
 		//strips first reaction
 		for( Pair pair : rCol.getPairs()){				
 			netReaction.put(pair.getFormula(), pair.getCoefficient());
@@ -153,7 +154,11 @@ public class NetReaction {
 			builder.append(" --> ");
 			builder.append(productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		}
-		return builder.toString();
+		String netString = builder.toString();
+		netString = netString.replace("-->", "\u2192");
+		netString = netString.replaceAll("(?<=\\D)*1(?=\\D)", "");
+		
+		return netString;
 	}
 	
 	public List<String> getRecursiveList() {
