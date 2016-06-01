@@ -212,9 +212,8 @@ public class SQLiteDatabase {
 	private Connection connect(){
 		try {
 			Class.forName("org.sqlite.JDBC");
-//		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
+		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
 
-		    connection = DriverManager.getConnection("jdbc:sqlite::resource:file:/C:/Users/Lukas/Documents/DTU/Fagprojekt/ChemSynthesizer/FacultyProject/bin/database/chemSynth.db");
 //			System.out.println("---> Connected to database");
 		    
 		} catch (Exception e){

@@ -62,7 +62,7 @@ H2S + NaOH -> NaHS + H2O
 H2S + 2NaOH -> Na2S + 2H2O
 Na2S + 2HCl -> 2NaCl + H2S
 Na2S + H2S -> 2NaHS
-Na2S + 4S -> Na2(S5)
+Na2S + 4S -> Na2S5
 Na2S + Na2SO3 + I2 -> Na2SO3S + 2NaI
 Na2S + 4H2O2 -> Na2SO4 + 4H2O
 NaOH + H2SO4 -> NaHSO4 + H2O
@@ -83,8 +83,8 @@ CaCl2 + 2H2O -> Ca(OH)2 + 2HCl
 CaCl2 + 2NaOH -> Ca(OH)2 + 2NaCl
 2Cl2 + 2H2O -> 4HCl + O2
 2CrCl2 + 2HCl  -> 2CrCl3 + H2
-2CrCl3 + 2FeCl2 -> 2CrCl2 + 2FeCl3
-2CuCl + 2FeCl3 -> 2CuCl2 + 2FeCl2
+CrCl3 + FeCl2 -> CrCl2 + FeCl3
+CuCl + FeCl3 -> CuCl2 + FeCl2
 2CuCl2 -> Cl2 + 2CuCl
 2CuCl2 + Pd -> 2CuCl + PdCl2
 4CuCl + 4HCl + O2 -> 4CuCl2 + 2H2O
