@@ -183,8 +183,8 @@ public class SynthPanel extends JPanel {
 			}
 			
 			lastVertex = vertex;
-			
-		}		
+		}
+		
 		c.gridy++;
 		
 		updateCoefs(recursiveVertex, destVertex, vertexList);
