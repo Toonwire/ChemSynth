@@ -34,12 +34,12 @@ public class SQLiteDatabase {
 			connection = this.connect();
 			statement = connection.createStatement();
 			
-//			String sql1 = "drop table if exists reactants";
-//			String sql2 = "drop table if exists products";
-//			String sql3 = "drop table if exists costs";
-//			statement.executeUpdate(sql1);
-//			statement.executeUpdate(sql2);
-//			statement.executeUpdate(sql3);
+			String sql1 = "drop table if exists reactants";
+			String sql2 = "drop table if exists products";
+			String sql3 = "drop table if exists costs";
+			statement.executeUpdate(sql1);
+			statement.executeUpdate(sql2);
+			statement.executeUpdate(sql3);
 			
 		    String reactantTable = "create table if not exists reactants (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
 		    String productTable = "create table if not exists products (reactionID integer, formula varchar(30), coefficient integer, PRIMARY KEY(reactionID, formula))";
@@ -212,7 +212,9 @@ public class SQLiteDatabase {
 	private Connection connect(){
 		try {
 			Class.forName("org.sqlite.JDBC");
-		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
+//		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
+
+		    connection = DriverManager.getConnection("jdbc:sqlite::resource:file:/C:/Users/Lukas/Documents/DTU/Fagprojekt/ChemSynthesizer/FacultyProject/bin/database/chemSynth.db");
 //			System.out.println("---> Connected to database");
 		    
 		} catch (Exception e){
