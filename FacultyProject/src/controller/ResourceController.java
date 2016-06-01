@@ -71,7 +71,8 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 			netString = netString.replace("-->", "\u2192");
 			netString = netString.replaceAll("(?<=\\D)*1(?=\\D)", "");
 			view.getSynthPanel().getNetLabel().setText(netString);
-		}		
+		}
+		
 	}
 
 

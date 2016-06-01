@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -117,7 +118,7 @@ public class SynthPanel extends JPanel {
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
 //			vertex.setPreferredSize(new Dimension(100,35));
-			//System.out.println("Created vertex " + vertex);
+			System.out.println("Created vertex " + vertex);
 			connectionPanel.add(vertex, c);
 			//System.out.println(c.gridx +"  " + c.gridy);
 			vertexList.add(vertex);
@@ -140,7 +141,6 @@ public class SynthPanel extends JPanel {
 				}
 			}
 
-			
 			/*
 			 * adding '+' and '-->' between vertices
 			 */
@@ -171,6 +171,10 @@ public class SynthPanel extends JPanel {
 			lastVertex = vertex;
 			
 		}
+		
+		System.out.println("ConnectionPanel : " +connectionPanel.isVisible());
+		System.out.println("Vertex : " + lastVertex.isVisible());
+		repaint();
 		
 		c.gridy++;
 		
@@ -273,5 +277,10 @@ public class SynthPanel extends JPanel {
 	public JLabel getNetLabel() {
 		return netLabel;
 	}
-	
+
+
+	public ConnectionPanel getConnectionPanel() {
+		return connectionPanel;
+	}
+
 }
