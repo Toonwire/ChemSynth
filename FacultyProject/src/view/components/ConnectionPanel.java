@@ -34,6 +34,6 @@ public class ConnectionPanel extends JPanel {
 				if (connection != null)
 					connection.paintComponent(g);
         	}
-        }
+		}
     }
 }
