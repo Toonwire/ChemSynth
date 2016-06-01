@@ -101,5 +101,4 @@ public class Vertex extends JPanel {
 		this.setBorder(new CompoundBorder(linkBorder, this.getBorder()));
 	}
 	
-	
 }

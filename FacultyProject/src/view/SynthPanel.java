@@ -53,6 +53,8 @@ public class SynthPanel extends JPanel {
 	private Color connectionHighlightColor = Color.BLUE;
 	private Color connectionPanelColor = new Color(91,192,222);
 	
+	private Font operatorFont = new Font("Cambria", Font.BOLD, 16);
+	
 	public SynthPanel(Model model){
 		this.setPreferredSize(new Dimension(SIZE,SIZE));
 		this.setLayout(null);
@@ -82,7 +84,6 @@ public class SynthPanel extends JPanel {
 		backButton.setBackground(Color.CYAN);
 		
 		scrollPane.setBounds(0,100, SIZE, SIZE-200);
-		scrollPane.setViewportView(connectionPanel);
 		
 		this.add(titleLabel);
 		this.add(backButton);
@@ -124,6 +125,7 @@ public class SynthPanel extends JPanel {
 			if (!vertexMap.isEmpty()) {
 				for (Integer id : vertexMap.keySet()) {
 					for (Vertex v : vertexMap.get(id)) {
+//						System.out.println(v);
 						if (v.getFormula().equals(vertex.getFormula())) {
 							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
 							if (recursiveLink) { /* remove to get all links */
@@ -131,6 +133,8 @@ public class SynthPanel extends JPanel {
 //								System.out.println("Linked " + vertex + " with " + v);
 								recursiveVertex = v;
 								destVertex = vertex;
+//								System.out.println("\n\n");
+								break;
 							}
 						}
 					}
@@ -142,7 +146,7 @@ public class SynthPanel extends JPanel {
 			 */
 			if (lastVertex != null) {
 				JLabel opLabel = new JLabel();
-				opLabel.setFont(new Font("Cambria", Font.BOLD, 16));
+				opLabel.setFont(operatorFont);
 //				opLabel.setPreferredSize(new Dimension(15,35));
 				
 				if (vertex.getCoef() < 0) {
@@ -177,6 +181,7 @@ public class SynthPanel extends JPanel {
 		updateCoefs(recursiveVertex, destVertex, vertexList);
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
+		scrollPane.setViewportView(connectionPanel);
 	}
 
 	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
@@ -241,26 +246,30 @@ public class SynthPanel extends JPanel {
 	}
 
 	public void reset() {
+//		scrollPane.remove(connectionPanel);
+//		this.remove(scrollPane);
+		
+//		this.connectionPanel = new ConnectionPanel(new GridBagLayout());
+//		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
+//		connectionPanel.setBackground(connectionPanelColor);
+//		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+		
+//		this.scrollPane = new JScrollPane();
+//		scrollPane.setBounds(0,100, SIZE, SIZE-200);
+//		scrollPane.setViewportView(connectionPanel);
+		
+//		this.netPanel = new JPanel();
+//		this.vertexMap = new HashMap<>();
+//		this.connections = new ArrayList<>();
+//		this.add(scrollPane);
+		
 		connectionPanel.removeAll();
-		scrollPane.remove(connectionPanel);
-		this.remove(scrollPane);
+		vertexMap.clear();
+		connections.clear();
 		
-		this.connectionPanel = new ConnectionPanel(new GridBagLayout());
-		connectionPanel.setBounds(0,100, SIZE, SIZE-200);
-		connectionPanel.setBackground(connectionPanelColor);
-		connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-		
-		this.scrollPane = new JScrollPane();
-		scrollPane.setBounds(0,100, SIZE, SIZE-200);
-		scrollPane.setViewportView(connectionPanel);
-		
-		this.netPanel = new JPanel();
-		this.vertexMap = new HashMap<>();
-		this.connections = new ArrayList<>();
 		c.gridx = 0;
 		c.gridy = 0;
 		
-		this.add(scrollPane);
 		
 	}
 

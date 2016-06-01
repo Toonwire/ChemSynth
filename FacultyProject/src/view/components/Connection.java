@@ -53,9 +53,9 @@ public class Connection extends JPanel {
 			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 			g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 			g2d.setStroke(new BasicStroke(thickness));
+			g2d.setColor(lineColor);
 			
 			// draw the connection
-			g2d.setColor(lineColor);
 			g2d.draw(line);
 		}   
 	}
