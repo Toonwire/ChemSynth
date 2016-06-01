@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -40,6 +41,7 @@ public class SynthPanel extends JPanel {
 	
 	private JLabel titleLabel = new JLabel("Synthesizer");
 	private JButton backButton = new JButton("Back");
+	private JButton nextButton = new JButton("Next");
 	private ConnectionPanel connectionPanel;
 	private JPanel netPanel;
 	private JLabel netLabel = new JLabel("Net Reaction");
@@ -82,11 +84,14 @@ public class SynthPanel extends JPanel {
 		
 		backButton.setBounds(SIZE-100, 40, 80, 30);
 		backButton.setBackground(Color.CYAN);
+		nextButton.setBounds(SIZE-65, SIZE/2, 60, 30);
 		
 		scrollPane.setBounds(0,100, SIZE, SIZE-200);
 		
+		
 		this.add(titleLabel);
 		this.add(backButton);
+		this.add(nextButton);
 		this.add(scrollPane);
 		this.add(netPanel);
 		
@@ -95,6 +100,7 @@ public class SynthPanel extends JPanel {
 
 	public void registerListeners(SynthController controller) {
 		backButton.addActionListener(controller);
+		nextButton.addActionListener(controller);
 		this.addKeyListener(controller);
 	}
 
@@ -276,6 +282,14 @@ public class SynthPanel extends JPanel {
 
 	public ConnectionPanel getConnectionPanel() {
 		return connectionPanel;
+	}
+
+
+	public void showNextReaction() {
+		connectionPanel.removeAll();
+		connectionPanel.repaint();
+		connectionPanel.add(new Vertex(1, "CaO", 3));
+		scrollPane.setViewportView(connectionPanel);
 	}
 
 }
