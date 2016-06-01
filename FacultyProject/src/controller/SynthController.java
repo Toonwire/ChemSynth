@@ -39,6 +39,8 @@ public class SynthController implements PropertyChangeListener, ActionListener, 
 		String actionCommand = e.getActionCommand();
 		if (actionCommand.equals("Back")) 
 			reset();
+		if (actionCommand.equals("Next"))
+			view.getSynthPanel().showNextReaction();
 	}
 
 	@Override
