@@ -169,12 +169,7 @@ public class SynthPanel extends JPanel {
 			}
 			
 			lastVertex = vertex;
-			
 		}
-		
-//		System.out.println("ConnectionPanel : " +connectionPanel.isVisible());
-//		System.out.println("Vertex : " + lastVertex.isVisible());
-		repaint();
 		
 		c.gridy++;
 		

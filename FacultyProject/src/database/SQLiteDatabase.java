@@ -213,6 +213,7 @@ public class SQLiteDatabase {
 		try {
 			Class.forName("org.sqlite.JDBC");
 		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
+
 //			System.out.println("---> Connected to database");
 		    
 		} catch (Exception e){
