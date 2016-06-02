@@ -89,7 +89,7 @@ CuCl + FeCl3 -> CuCl2 + FeCl2
 2CuCl2 + Pd -> 2CuCl + PdCl2
 4CuCl + 4HCl + O2 -> 4CuCl2 + 2H2O
 C2H4 + H2O + PdCl2 -> CH3CHO + 2HCl + Pd
-2NO + O2 -> 2NO2
+NH3 + HCl -> NH4Cl
 Mg + 2HCl -> MgCl2 + H2
 2NH3 -> N2 + 3H2
 2ClO -> Cl2 + O2
