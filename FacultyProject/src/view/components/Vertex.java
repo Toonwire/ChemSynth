@@ -2,7 +2,6 @@ package view.components;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;

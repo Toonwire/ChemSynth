@@ -11,7 +11,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JTextField;
 
 import model.Model;
-import model.NetReaction;
 import view.View;
 
 public class ResourceController implements FocusListener, ActionListener, KeyListener {
@@ -53,26 +52,16 @@ public class ResourceController implements FocusListener, ActionListener, KeyLis
 	private void startSynth() {
 		view.remove(view.getResourcePanel());
 		view.add(view.getSynthPanel());
-		view.pack();
 		
 		String desired = view.getResourcePanel().getDesiredTextField().getText().trim();
 		model.setUpSynth(view.getResourcePanel().getResourceList(), desired);
-		NetReaction netReaction = model.getNetReaction();
-		String netString = netReaction.toString();
+		view.getSynthPanel().drawReactions();
 		
-		if (netReaction.toString().isEmpty()) {
-			view.getSynthPanel().getNetLabel().setForeground(new Color(255,128,0));
+		if (view.getSynthPanel().getNetLabel().getText().isEmpty())
 			view.getSynthPanel().getNetLabel().setText(errorMsg);
-		}
-		else {
-			view.getSynthPanel().getNetLabel().setForeground(Color.WHITE);
-			
-			// clean up format
-			netString = netString.replace("-->", "\u2192");
-			netString = netString.replaceAll("(?<=\\D)*1(?=\\D)", "");
-			view.getSynthPanel().getNetLabel().setText(netString);
-		}
 		
+		view.pack();
+		view.getSynthPanel().requestFocus();
 	}
 
 
