@@ -32,7 +32,7 @@ public class NetReaction {
 			netReaction.put(pair.getFormula(), pair.getCoefficient());
 		}
 		usedReactions.add(rCol.getCurrentID());
-		steps = usedReactions.size();	//=1
+		steps = 1;
 	}
 
 	public void update(String formula, ReactionCol currentCol) {
@@ -45,6 +45,9 @@ public class NetReaction {
 			//finds the coefficients of formula in the net reaction
 
 			//finds the coefficient of formula in currReaction
+			if (netReaction.get(formula) == null) {
+				return;
+			}
 			int reactantCoef = Math.abs(netReaction.get(formula));
 			int productCoef = 0;
 			for(Pair pair : currentCol.getPairs()){
@@ -109,6 +112,7 @@ public class NetReaction {
 			}
 			
 			//remove reaction from usedList
+//			System.out.println("Removed : " + usedReactions.get(steps-1));
 			usedReactions.remove(steps-1);
 			steps--;
 		}

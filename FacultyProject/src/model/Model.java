@@ -66,7 +66,7 @@ public class Model {
 		resourceList.add("HCl");
 		resourceList.add("CO2");
 		resourceList.add("NaOH");
-		
+
 		retroSynth(desired);
 		computeMinCost();
 		

@@ -33,7 +33,6 @@ import view.components.Vertex;
 import controller.SynthController;
 
 public class SynthPanel extends JPanel {
-	// Do something fancy in here, animation perhaps
 
 	/**
 	 * 
@@ -48,10 +47,9 @@ public class SynthPanel extends JPanel {
 	private ConnectionPanel connectionPanel;
 	private JPanel netPanel;
 	private JPanel drawingPanel;
-	private JLabel netLabel = new JLabel("Net Reaction");
+	private JLabel netLabel = new JLabel("");
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
-	private String recursiveChem = null;
 	private List<Connection> connections = new ArrayList<>();
 	private Map<String, JScrollPane> scrollMap = new HashMap<>();
 	private Map<JScrollPane, NetReaction> netScrollMap = new HashMap<>();	
@@ -97,6 +95,7 @@ public class SynthPanel extends JPanel {
 		backButton.setBackground(Color.CYAN);
 		
 		drawingPanel = new JPanel(cardLayout);
+		drawingPanel.setBackground(connectionPanelColor);
 		drawingPanel.setBounds(0,100, SIZE, SIZE-200);		
 		
 		this.add(titleLabel);
@@ -114,7 +113,6 @@ public class SynthPanel extends JPanel {
 
 
 	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction) {
-		this.recursiveChem = recursiveOnFormula;
 		/*
 		 *  create new vertices based on each chemical found in the reaction (parameters)
 		 *  get the split regex from whereever we did it before
@@ -141,13 +139,13 @@ public class SynthPanel extends JPanel {
 					for (Vertex v : vertexMap.get(id)) {
 //						System.out.println(v);
 						if (v.getFormula().equals(vertex.getFormula())) {
-							boolean recursiveLink = (v.getFormula().equals(recursiveChem)) ? true : false;
+							boolean recursiveLink = (v.getFormula().equals(recursiveOnFormula)) ? true : false;
 							if (recursiveLink) { /* remove to get all links */
+//								System.out.println(recursiveOnFormula);
 								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
 //								System.out.println("Linked " + vertex + " with " + v);
 								recursiveVertex = v;
 								destVertex = vertex;
-//								System.out.println("\n\n");
 								break;
 							}
 						}
@@ -263,6 +261,7 @@ public class SynthPanel extends JPanel {
 		vertexMap.clear();
 		connections.clear();
 		flipCount = 1;
+		netLabel.setText("");
 		
 		c.gridx = 0;
 		c.gridy = 0;
@@ -299,6 +298,9 @@ public class SynthPanel extends JPanel {
 
 
 	public void drawReactions() {
+		if (model.getNetMap().isEmpty()) {
+			
+		}
 		int i = 0;
 		for (NetReaction nr : model.getNetMap().keySet()) {
 			if (model.getNetMap().get(nr) == model.getMinCost()) {
@@ -326,6 +328,7 @@ public class SynthPanel extends JPanel {
 					this.vertexMap = new HashMap<>();
 					connectionPanel.setBackground(connectionPanelColor);
 					connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+//					System.out.println("\n");
 				}
 			}
 		}
