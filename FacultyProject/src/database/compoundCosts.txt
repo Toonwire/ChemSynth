@@ -82,7 +82,6 @@ NO$7
 NO2$9
 NOBr$4
 Na$6
-Na2S$6
 Na2CO3$5
 Na2O$6
 Na2O2$8
