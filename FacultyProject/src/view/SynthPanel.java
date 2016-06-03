@@ -3,8 +3,11 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -262,6 +265,7 @@ public class SynthPanel extends JPanel {
 		connections.clear();
 		flipCount = 1;
 		netLabel.setText("");
+		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		
 		c.gridx = 0;
 		c.gridy = 0;
@@ -283,7 +287,7 @@ public class SynthPanel extends JPanel {
 		cardLayout.show(drawingPanel, "scrollPane" + flipCount%drawingPanel.getComponentCount());
 		String netString = netScrollMap.get(scrollMap.get("scrollPane"+flipCount%drawingPanel.getComponentCount())).toString();
 		netLabel.setText(netString);
-		
+		scaleFont(netLabel);
 		flipCount++;
 	}
 	
@@ -309,7 +313,10 @@ public class SynthPanel extends JPanel {
 						addReactionToPath(nr.getUsedReactions().get(usedID), nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
 					}
 					
-					if (i == 0) netLabel.setText(nr.toString());
+					if (i == 0) {
+						netLabel.setText(nr.toString());
+						scaleFont(netLabel);
+					}
 					scrollMap.put("scrollPane"+i, scrollPane);
 					netScrollMap.put(scrollPane, nr);
 					drawingPanel.add(scrollPane, "scrollPane" + i);
@@ -331,6 +338,22 @@ public class SynthPanel extends JPanel {
 //					System.out.println("\n");
 				}
 			}
+		}
+	}
+
+	public void scaleFont(JLabel label) {
+	    int maxWidth = netPanel.getWidth();
+		if(label.getFontMetrics(label.getFont()).stringWidth(label.getText()) > maxWidth){
+			Font labelFont = label.getFont();
+			String labelText = label.getText();
+
+			int stringWidth = label.getFontMetrics(labelFont).stringWidth(labelText);
+			int componentWidth = netPanel.getWidth();
+
+			double widthRatio = (double) componentWidth / (double) stringWidth;
+			int newFontSize = (int) (labelFont.getSize() * widthRatio);
+
+			label.setFont(new Font(labelFont.getName(), Font.BOLD, newFontSize));
 		}
 	}
 }
