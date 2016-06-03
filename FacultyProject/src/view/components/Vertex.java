@@ -1,6 +1,7 @@
 package view.components;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.BorderFactory;
@@ -37,14 +38,16 @@ public class Vertex extends JPanel {
         this.setBackground(vertexColor);
 		
 		this.coefLabel = new JLabel("" + Math.abs(coef));
-		this.formulaLabel = new JLabel(this.formula);
+		if (formula.matches(".*\\d.*")) {
+			this.formulaLabel = new JLabel("<html><body>>" + Math.abs(coef) + " " + formula.replaceAll("(\\d)", "<sub>$1</sub>" + "</body></html>"));
+			formulaLabel.setBorder(BorderFactory.createEmptyBorder( 0, 0, -4, 0 ));
+		} else 
+			this.formulaLabel = new JLabel(formula);
 		coefLabel.setForeground(Color.WHITE);
 		formulaLabel.setForeground(Color.WHITE);
 
 //		coefLabel.setBounds(10,0,15,35);
 //		formulaLabel.setBounds(30,0,85,35);
-		
-		this.add(coefLabel);
 		this.add(formulaLabel);
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 		Border margin = new EmptyBorder(10, 10, 10, 10);

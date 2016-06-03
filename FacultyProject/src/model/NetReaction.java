@@ -155,11 +155,10 @@ public class NetReaction {
 		}
 		if (reactantBuilder.toString().length() != 0 && productBuilder.toString().length() != 0) {
 			builder.append(reactantBuilder.toString().substring(0, reactantBuilder.toString().length()-3));
-			builder.append(" --> ");
+			builder.append(" \u2192 ");
 			builder.append(productBuilder.toString().substring(0, productBuilder.toString().length()-3));
 		}
 		String netString = builder.toString();
-		netString = netString.replace("-->", "\u2192");
 		netString = netString.replaceAll("(?<=\\D)*1(?=\\D)", "");
 		
 		return netString;

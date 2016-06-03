@@ -196,13 +196,15 @@ public class SynthPanel extends JPanel {
 		if (recursiveVertex != null && Math.abs(recursiveVertex.getCoef()) != Math.abs(destVertex.getCoef())) {
 			if (Math.abs(recursiveVertex.getCoef()) > Math.abs(destVertex.getCoef())) {
 				for (Vertex v : vertexList) {
-					v.setCoef(Math.abs(recursiveVertex.getCoef()*v.getCoef()/gcd(v.getCoef(), recursiveVertex.getCoef())));
+					v.setCoef(Math.abs(recursiveVertex.getCoef())*v.getCoef()/gcd(v.getCoef(), Math.abs(recursiveVertex.getCoef())));
 				}
 			} 
 			else if (Math.abs(recursiveVertex.getCoef()) < Math.abs(destVertex.getCoef())) {
+				int rCoef = Math.abs(recursiveVertex.getCoef());
+				int dCoef = destVertex.getCoef();
 				for (List<Vertex> list : vertexMap.values()) {
 					for (Vertex v : list) {
-						v.setCoef(Math.abs(v.getCoef()*recursiveVertex.getCoef()*destVertex.getCoef()/gcd(destVertex.getCoef(), recursiveVertex.getCoef())));
+						v.setCoef(Math.abs(v.getCoef())*dCoef/rCoef);
 					}
 				}
 			}
@@ -308,8 +310,8 @@ public class SynthPanel extends JPanel {
 					for (int usedID = 0; usedID < nr.getUsedReactions().size(); usedID++) {
 						addReactionToPath(nr.getUsedReactions().get(usedID), nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
 					}
-					
 					if (i == 0) netLabel.setText(nr.toString());
+					
 					scrollMap.put("scrollPane"+i, scrollPane);
 					netScrollMap.put(scrollPane, nr);
 					drawingPanel.add(scrollPane, "scrollPane" + i);

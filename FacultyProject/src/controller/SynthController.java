@@ -54,7 +54,7 @@ public class SynthController implements ActionListener, KeyListener {
 		view.remove(view.getSynthPanel());
 		view.add(view.getResourcePanel());
 		view.pack();
-		view.getResourcePanel().requestFocus();
+		view.getResourcePanel().getDesiredTextField().requestFocus();
 	}
 
 }
