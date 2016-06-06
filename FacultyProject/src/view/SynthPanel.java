@@ -12,11 +12,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -136,27 +134,34 @@ public class SynthPanel extends JPanel {
 			vertexList.add(vertex);
 			if (!vertexMap.isEmpty()) {
 				if (vertex.getFormula().equals(recursiveOnFormula)) {
+					List<Vertex> candidateRecursiveVertex = new ArrayList<>();
 					for (Integer id : vertexMap.keySet()) {
 						for (Vertex v : vertexMap.get(id)) {
 							if (v.getFormula().equals(vertex.getFormula())) {
-								connections.add(v.formLink(vertex));
-								recursiveVertex = v;
-								destVertex = vertex;
+								candidateRecursiveVertex.add(v);
 								break;
 							}	
 						}
 					}
+					int latestOccurence = 0;
+					for(Vertex candidate : candidateRecursiveVertex){
+						if(rIDSeqMap.get(candidate.getReactionID()) >= latestOccurence){
+							latestOccurence = rIDSeqMap.get(candidate.getReactionID());
+							recursiveVertex = candidate;
+
+						}
+					}
+					connections.add(recursiveVertex.formLink(vertex));
+					destVertex = vertex;
 				}
 			}
-			
-
+						
 			/*
 			 * adding '+' and '-->' between vertices
 			 */
 			if (lastVertex != null) {
 				JLabel opLabel = new JLabel();
 				opLabel.setFont(operatorFont);
-//				opLabel.setPreferredSize(new Dimension(15,35));
 				
 				if (vertex.getCoef() < 0) {
 					if (lastVertex.getCoef() < 0)
@@ -170,8 +175,6 @@ public class SynthPanel extends JPanel {
 				}
 				c.gridx--;
 				connectionPanel.add(opLabel, c);
-//				System.out.println("Created " + opLabel.getText());
-//				System.out.println(c.gridx +"  " + c.gridy);
 				c.gridx += 3;
 			} else {
 				c.gridx += 2;
@@ -259,6 +262,7 @@ public class SynthPanel extends JPanel {
 		drawingPanel.removeAll();
 		vertexMap.clear();
 		connections.clear();
+		rIDSeqMap.clear();
 		
 		flipCount = 1;
 		netLabel.setText("");
