@@ -26,6 +26,7 @@ public class Vertex extends JPanel {
 	private Color vertexColor = new Color(92,184,92);		// Green
 	private Color sourceColor = new Color(217,83,79);		// Red
 	private Color destColor = new Color(240,173,78);		// Golden
+	private Color linkColor = Color.BLUE;
 	
 	private JLabel coefLabel, formulaLabel;	
 	
@@ -85,16 +86,12 @@ public class Vertex extends JPanel {
 		return linkedVertex;
 	}
 
-	public Connection formLink(Vertex linkedVertex, boolean recursiveLink, Color linkColor) {
+	public Connection formLink(Vertex linkedVertex) {
 		this.linkedVertex = linkedVertex;
-		this.recursiveLink = recursiveLink;
-		
-		if (recursiveLink) {
-			this.setBackground(sourceColor);
-			linkedVertex.setBackground(destColor);
-			this.setPrimaryBorder(linkColor);
-			linkedVertex.setPrimaryBorder(linkColor);
-		}
+		this.setBackground(sourceColor);
+		linkedVertex.setBackground(destColor);
+		this.setPrimaryBorder(linkColor);
+		linkedVertex.setPrimaryBorder(linkColor);
 		
 		Connection connection = new Connection(this, linkedVertex);
 		connection.setLineColor(linkColor);

@@ -52,6 +52,7 @@ public class SynthPanel extends JPanel {
 	private JLabel netLabel = new JLabel("");
 	
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
+	private Map<Integer, Integer> rIDSeqMap = new HashMap<>();
 	private List<Connection> connections = new ArrayList<>();
 	private Map<String, JScrollPane> scrollMap = new HashMap<>();
 	private Map<JScrollPane, NetReaction> netScrollMap = new HashMap<>();	
@@ -131,29 +132,23 @@ public class SynthPanel extends JPanel {
 		
 		for (String formula : splitMap.keySet()) {
 			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
-//			vertex.setPreferredSize(new Dimension(100,35));
-//			System.out.println("Created vertex " + vertex);
 			connectionPanel.add(vertex, c);
-			//System.out.println(c.gridx +"  " + c.gridy);
 			vertexList.add(vertex);
 			if (!vertexMap.isEmpty()) {
-				for (Integer id : vertexMap.keySet()) {
-					for (Vertex v : vertexMap.get(id)) {
-//						System.out.println(v);
-						if (v.getFormula().equals(vertex.getFormula())) {
-							boolean recursiveLink = (v.getFormula().equals(recursiveOnFormula)) ? true : false;
-							if (recursiveLink) { /* remove to get all links */
-//								System.out.println(recursiveOnFormula);
-								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
-//								System.out.println("Linked " + vertex + " with " + v);
+				if (vertex.getFormula().equals(recursiveOnFormula)) {
+					for (Integer id : vertexMap.keySet()) {
+						for (Vertex v : vertexMap.get(id)) {
+							if (v.getFormula().equals(vertex.getFormula())) {
+								connections.add(v.formLink(vertex));
 								recursiveVertex = v;
 								destVertex = vertex;
 								break;
-							}
+							}	
 						}
 					}
 				}
 			}
+			
 
 			/*
 			 * adding '+' and '-->' between vertices
@@ -312,7 +307,9 @@ public class SynthPanel extends JPanel {
 			if (model.getNetMap().get(nr) == model.getMinCost()) {
 				if (!nr.getUsedReactions().isEmpty()) {
 					for (int usedID = 0; usedID < nr.getUsedReactions().size(); usedID++) {
-						addReactionToPath(nr.getUsedReactions().get(usedID), nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
+						int reactionID = nr.getUsedReactions().get(usedID);
+						rIDSeqMap.put(reactionID, usedID);
+						addReactionToPath(reactionID, nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
 					}
 					if (i == 0) {
 						netLabel.setText(nr.toString());
@@ -333,6 +330,7 @@ public class SynthPanel extends JPanel {
 					this.connectionPanel = new ConnectionPanel(new GridBagLayout());
 					this.connections = new ArrayList<>();
 					this.vertexMap = new HashMap<>();
+					this.rIDSeqMap = new HashMap<>();
 					
 					connectionPanel.setBackground(connectionPanelColor);
 					connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
