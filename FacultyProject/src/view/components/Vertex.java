@@ -36,8 +36,11 @@ public class Vertex extends JPanel {
 		this.coef = coef;
 		this.setLayout(new FlowLayout());
         this.setBackground(vertexColor);
-		System.out.println(formula);
-		this.coefLabel = new JLabel("" + Math.abs(coef));
+        
+        if (Math.abs(coef) == 1)
+        	this.coefLabel = new JLabel("");
+        else
+        	this.coefLabel = new JLabel("" + Math.abs(coef));
 		if (formula.matches(".*\\d.*")) {
 			this.formulaLabel = new JLabel("<html><body> " + formula.replaceAll("(\\d+)", "<sub>$1</sub>") + "</body></html>");
 			formulaLabel.setBorder(BorderFactory.createEmptyBorder( 0, 0, -4, 0 ));
