@@ -12,9 +12,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +51,7 @@ public class SynthPanel extends JPanel {
 	private JPanel drawingPanel;
 	private JLabel netLabel = new JLabel("");
 	
+	private Set<String> alreadySearchedRecursive  = new HashSet<>();
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private List<Connection> connections = new ArrayList<>();
 	private Map<String, JScrollPane> scrollMap = new HashMap<>();
@@ -134,19 +137,22 @@ public class SynthPanel extends JPanel {
 			connectionPanel.add(vertex, c);
 			//System.out.println(c.gridx +"  " + c.gridy);
 			vertexList.add(vertex);
-			if (!vertexMap.isEmpty()) {
-				for (Integer id : vertexMap.keySet()) {
-					for (Vertex v : vertexMap.get(id)) {
-//						System.out.println(v);
-						if (v.getFormula().equals(vertex.getFormula())) {
-							boolean recursiveLink = (v.getFormula().equals(recursiveOnFormula)) ? true : false;
-							if (recursiveLink) { /* remove to get all links */
-//								System.out.println(recursiveOnFormula);
-								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
-//								System.out.println("Linked " + vertex + " with " + v);
-								recursiveVertex = v;
-								destVertex = vertex;
-								break;
+			if( !alreadySearchedRecursive.contains(recursiveOnFormula)){
+				if (!vertexMap.isEmpty()) {
+					for (Integer id : vertexMap.keySet()) {
+						for (Vertex v : vertexMap.get(id)) {
+	//						System.out.println(v);
+							if (v.getFormula().equals(vertex.getFormula())) {
+								boolean recursiveLink = (v.getFormula().equals(recursiveOnFormula)) ? true : false;
+								if (recursiveLink) { /* remove to get all links */
+	//								System.out.println(recursiveOnFormula);
+									connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
+	//								System.out.println("Linked " + vertex + " with " + v);
+									alreadySearchedRecursive.add(recursiveOnFormula);
+									recursiveVertex = v;
+									destVertex = vertex;
+									break;
+								}
 							}
 						}
 					}
@@ -262,8 +268,11 @@ public class SynthPanel extends JPanel {
 		drawingPanel.removeAll();
 		vertexMap.clear();
 		connections.clear();
+		alreadySearchedRecursive.clear();
+		
 		flipCount = 1;
 		netLabel.setText("");
+		netLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		
 		c.gridx = 0;
 		c.gridy = 0;
@@ -285,7 +294,7 @@ public class SynthPanel extends JPanel {
 		cardLayout.show(drawingPanel, "scrollPane" + flipCount%drawingPanel.getComponentCount());
 		String netString = netScrollMap.get(scrollMap.get("scrollPane"+flipCount%drawingPanel.getComponentCount())).toString();
 		netLabel.setText(netString);
-		
+		scaleFont(netLabel);
 		flipCount++;
 	}
 	
@@ -310,8 +319,10 @@ public class SynthPanel extends JPanel {
 					for (int usedID = 0; usedID < nr.getUsedReactions().size(); usedID++) {
 						addReactionToPath(nr.getUsedReactions().get(usedID), nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
 					}
-					if (i == 0) netLabel.setText(nr.toString());
-					
+					if (i == 0) {
+						netLabel.setText(nr.toString());
+						scaleFont(netLabel);
+					}
 					scrollMap.put("scrollPane"+i, scrollPane);
 					netScrollMap.put(scrollPane, nr);
 					drawingPanel.add(scrollPane, "scrollPane" + i);
@@ -328,11 +339,33 @@ public class SynthPanel extends JPanel {
 					this.connectionPanel = new ConnectionPanel(new GridBagLayout());
 					this.connections = new ArrayList<>();
 					this.vertexMap = new HashMap<>();
+					this.alreadySearchedRecursive.clear();
+					
 					connectionPanel.setBackground(connectionPanelColor);
 					connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
 //					System.out.println("\n");
 				}
 			}
+		}
+	}
+
+	public void scaleFont(JLabel label) {
+	    int maxWidth = netPanel.getWidth();
+		if(label.getFontMetrics(label.getFont()).stringWidth(label.getText()) > maxWidth){
+			Font labelFont = label.getFont();
+			String labelText = label.getText();
+
+			int stringWidth = label.getFontMetrics(labelFont).stringWidth(labelText);
+			int componentWidth = netPanel.getWidth();
+
+			double widthRatio = (double) componentWidth / (double) stringWidth;
+			int newFontSize = (int) (labelFont.getSize() * widthRatio);
+
+			label.setFont(new Font(labelFont.getName(), Font.BOLD, newFontSize));
+			
+		}
+		if (label.getText().matches(".*\\d.*")) {
+			label.setText("<html><body>" + label.getText().replaceAll("(\\d+(?<!(^|\\s)\\d{1,2})(?=\\D|$))", "<sub>$1</sub>") + "</body></html>");
 		}
 	}
 }

@@ -28,7 +28,6 @@ public class Vertex extends JPanel {
 	private Color destColor = new Color(240,173,78);		// Golden
 	
 	private JLabel coefLabel, formulaLabel;	
-
 	
 	public Vertex(int reactionID, String formula, int coef) {
 		this.reactionID = reactionID;
@@ -36,18 +35,20 @@ public class Vertex extends JPanel {
 		this.coef = coef;
 		this.setLayout(new FlowLayout());
         this.setBackground(vertexColor);
-		
+		System.out.println(formula);
 		this.coefLabel = new JLabel("" + Math.abs(coef));
 		if (formula.matches(".*\\d.*")) {
-			this.formulaLabel = new JLabel("<html><body>>" + Math.abs(coef) + " " + formula.replaceAll("(\\d)", "<sub>$1</sub>" + "</body></html>"));
+			this.formulaLabel = new JLabel("<html><body> " + formula.replaceAll("(\\d+)", "<sub>$1</sub>") + "</body></html>");
 			formulaLabel.setBorder(BorderFactory.createEmptyBorder( 0, 0, -4, 0 ));
+			coefLabel.setBorder(BorderFactory.createEmptyBorder( 0, 0, 4, 0 ));
 		} else 
 			this.formulaLabel = new JLabel(formula);
-		coefLabel.setForeground(Color.WHITE);
 		formulaLabel.setForeground(Color.WHITE);
+		coefLabel.setForeground(Color.WHITE);
 
-//		coefLabel.setBounds(10,0,15,35);
-//		formulaLabel.setBounds(30,0,85,35);
+		coefLabel.setBounds(10,0,15,35);
+		formulaLabel.setBounds(30,0,85,35);
+		this.add(coefLabel);
 		this.add(formulaLabel);
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
 		Border margin = new EmptyBorder(10, 10, 10, 10);

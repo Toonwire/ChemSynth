@@ -114,6 +114,7 @@ public class NetReaction {
 			//remove reaction from usedList
 //			System.out.println("Removed : " + usedReactions.get(steps-1));
 			usedReactions.remove(steps-1);
+			recursiveList.remove(steps-1);
 			steps--;
 		}
 	
