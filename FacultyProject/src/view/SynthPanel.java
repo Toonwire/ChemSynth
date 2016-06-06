@@ -51,7 +51,6 @@ public class SynthPanel extends JPanel {
 	private JPanel drawingPanel;
 	private JLabel netLabel = new JLabel("");
 	
-	private Set<String> alreadySearchedRecursive  = new HashSet<>();
 	private Map<Integer, List<Vertex>> vertexMap = new HashMap<>();
 	private List<Connection> connections = new ArrayList<>();
 	private Map<String, JScrollPane> scrollMap = new HashMap<>();
@@ -137,22 +136,19 @@ public class SynthPanel extends JPanel {
 			connectionPanel.add(vertex, c);
 			//System.out.println(c.gridx +"  " + c.gridy);
 			vertexList.add(vertex);
-			if( !alreadySearchedRecursive.contains(recursiveOnFormula)){
-				if (!vertexMap.isEmpty()) {
-					for (Integer id : vertexMap.keySet()) {
-						for (Vertex v : vertexMap.get(id)) {
-	//						System.out.println(v);
-							if (v.getFormula().equals(vertex.getFormula())) {
-								boolean recursiveLink = (v.getFormula().equals(recursiveOnFormula)) ? true : false;
-								if (recursiveLink) { /* remove to get all links */
-	//								System.out.println(recursiveOnFormula);
-									connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
-	//								System.out.println("Linked " + vertex + " with " + v);
-									alreadySearchedRecursive.add(recursiveOnFormula);
-									recursiveVertex = v;
-									destVertex = vertex;
-									break;
-								}
+			if (!vertexMap.isEmpty()) {
+				for (Integer id : vertexMap.keySet()) {
+					for (Vertex v : vertexMap.get(id)) {
+//						System.out.println(v);
+						if (v.getFormula().equals(vertex.getFormula())) {
+							boolean recursiveLink = (v.getFormula().equals(recursiveOnFormula)) ? true : false;
+							if (recursiveLink) { /* remove to get all links */
+//								System.out.println(recursiveOnFormula);
+								connections.add(v.formLink(vertex, recursiveLink, connectionHighlightColor));
+//								System.out.println("Linked " + vertex + " with " + v);
+								recursiveVertex = v;
+								destVertex = vertex;
+								break;
 							}
 						}
 					}
@@ -268,7 +264,6 @@ public class SynthPanel extends JPanel {
 		drawingPanel.removeAll();
 		vertexMap.clear();
 		connections.clear();
-		alreadySearchedRecursive.clear();
 		
 		flipCount = 1;
 		netLabel.setText("");
@@ -327,7 +322,6 @@ public class SynthPanel extends JPanel {
 					netScrollMap.put(scrollPane, nr);
 					drawingPanel.add(scrollPane, "scrollPane" + i);
 					i++;
-
 					
 					this.scrollPane.addMouseListener(new MouseAdapter() {
 						public void mousePressed(MouseEvent e) {
@@ -339,7 +333,6 @@ public class SynthPanel extends JPanel {
 					this.connectionPanel = new ConnectionPanel(new GridBagLayout());
 					this.connections = new ArrayList<>();
 					this.vertexMap = new HashMap<>();
-					this.alreadySearchedRecursive.clear();
 					
 					connectionPanel.setBackground(connectionPanelColor);
 					connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));

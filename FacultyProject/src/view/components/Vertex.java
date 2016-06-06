@@ -68,6 +68,10 @@ public class Vertex extends JPanel {
 		return coef;
 	}
 	
+	public int getReactionID() {
+		return reactionID;
+	}
+	
 	public void setCoef(int coef) {
 		this.coef = coef;
 		this.coefLabel.setText("" + coef);
