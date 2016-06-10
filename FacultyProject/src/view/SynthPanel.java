@@ -57,7 +57,6 @@ public class SynthPanel extends JPanel {
 	private JScrollPane scrollPane = new JScrollPane();
 	private GridBagConstraints c;
 	
-	private Color connectionHighlightColor = Color.BLUE;
 	private Color connectionPanelColor = new Color(91,192,222);
 	
 	private Font operatorFont = new Font("Cambria", Font.BOLD, 16);
@@ -91,6 +90,7 @@ public class SynthPanel extends JPanel {
 		
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 26));
 		titleLabel.setBounds(SIZE/2-70, 40, 200, 50);
+		titleLabel.setForeground(Color.WHITE);
 		
 		backButton.setBounds(SIZE-100, 40, 80, 30);
 		backButton.setBackground(Color.CYAN);
