@@ -120,7 +120,6 @@ public class SynthPanel extends JPanel {
 		List<Vertex> vertexList = new ArrayList<Vertex>();
 		Map<String, Integer> splitMap = splitReaction(reaction);
 		Vertex recursiveVertex = null;
-		Vertex destVertex = null;
 		Vertex lastVertex = null;
 		
 		c.gridx = 0;
@@ -151,7 +150,6 @@ public class SynthPanel extends JPanel {
 						}
 					}
 					connections.add(recursiveVertex.formLink(vertex));
-					destVertex = vertex;
 				}
 			}
 						
@@ -190,29 +188,29 @@ public class SynthPanel extends JPanel {
 		
 	}
 
-	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
-		if (recursiveVertex != null && Math.abs(recursiveVertex.getCoef()) != Math.abs(destVertex.getCoef())) {
-			if (Math.abs(recursiveVertex.getCoef()) > Math.abs(destVertex.getCoef())) {
-				for (Vertex v : vertexList) {
-					v.setCoef(Math.abs(recursiveVertex.getCoef())*v.getCoef()/gcd(v.getCoef(), Math.abs(recursiveVertex.getCoef())));
-				}
-			} 
-			else if (Math.abs(recursiveVertex.getCoef()) < Math.abs(destVertex.getCoef())) {
-				int rCoef = Math.abs(recursiveVertex.getCoef());
-				int dCoef = destVertex.getCoef();
-				for (List<Vertex> list : vertexMap.values()) {
-					for (Vertex v : list) {
-						v.setCoef(Math.abs(v.getCoef())*dCoef/rCoef);
-					}
-				}
-			}
-		}
-		
-	}
-
-	private int gcd(int a, int b){
-		return (b == 0) ? a : gcd(b, a%b);
-	}
+//	private void updateCoefs(Vertex recursiveVertex, Vertex destVertex, List<Vertex> vertexList) {
+//		if (recursiveVertex != null && Math.abs(recursiveVertex.getCoef()) != Math.abs(destVertex.getCoef())) {
+//			if (Math.abs(recursiveVertex.getCoef()) > Math.abs(destVertex.getCoef())) {
+//				for (Vertex v : vertexList) {
+//					v.setCoef(Math.abs(recursiveVertex.getCoef())*v.getCoef()/gcd(v.getCoef(), Math.abs(recursiveVertex.getCoef())));
+//				}
+//			} 
+//			else if (Math.abs(recursiveVertex.getCoef()) < Math.abs(destVertex.getCoef())) {
+//				int rCoef = Math.abs(recursiveVertex.getCoef());
+//				int dCoef = destVertex.getCoef();
+//				for (List<Vertex> list : vertexMap.values()) {
+//					for (Vertex v : list) {
+//						v.setCoef(Math.abs(v.getCoef())*dCoef/rCoef);
+//					}
+//				}
+//			}
+//		}
+//		
+//	}
+//
+//	private int gcd(int a, int b){
+//		return (b == 0) ? a : gcd(b, a%b);
+//	}
 
 
 	private Map<String, Integer> splitReaction(String reaction) {
@@ -332,7 +330,6 @@ public class SynthPanel extends JPanel {
 					
 					connectionPanel.setBackground(connectionPanelColor);
 					connectionPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-//					System.out.println("\n");
 				}
 			}
 		}
