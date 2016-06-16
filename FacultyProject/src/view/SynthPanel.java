@@ -113,7 +113,7 @@ public class SynthPanel extends JPanel {
 	}
 
 
-	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction) {
+	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction, int reactionCoef) {
 		/*
 		 *  create new vertices based on each chemical found in the reaction 
 		 */
@@ -128,7 +128,7 @@ public class SynthPanel extends JPanel {
 		c.anchor = GridBagConstraints.CENTER;
 		
 		for (String formula : splitMap.keySet()) {
-			Vertex vertex = new Vertex(reactionID, formula, splitMap.get(formula));
+			Vertex vertex = new Vertex(reactionID, formula, reactionCoef*splitMap.get(formula));
 			connectionPanel.add(vertex, c);
 			vertexList.add(vertex);
 			if (!vertexMap.isEmpty()) {
@@ -183,7 +183,7 @@ public class SynthPanel extends JPanel {
 		}
 		c.gridy++;
 		
-		updateCoefs(recursiveVertex, destVertex, vertexList);
+		//updateCoefs(recursiveVertex, destVertex, vertexList);
 		vertexMap.put(reactionID, vertexList);
 		connectionPanel.setConnections(connections);
 		scrollPane.setViewportView(connectionPanel);
@@ -307,7 +307,7 @@ public class SynthPanel extends JPanel {
 					for (int usedID = 0; usedID < nr.getUsedReactions().size(); usedID++) {
 						int reactionID = nr.getUsedReactions().get(usedID);
 						rIDSeqMap.put(reactionID, usedID);
-						addReactionToPath(reactionID, nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)));
+						addReactionToPath(reactionID, nr.getRecursiveList().get(usedID), model.getReactionsIDMap().get(nr.getUsedReactions().get(usedID)), nr.getCoefUsedInRecipe().get(usedID));
 					}
 					if (i == 0) {
 						netLabel.setText(nr.toString());
