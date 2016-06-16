@@ -23,10 +23,6 @@ public class ConnectionPanel extends JPanel {
 		this.connections = connections;
 	}
 
-//	public List<Connection> getConnections() {
-//		return connections;
-//	}
-
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);

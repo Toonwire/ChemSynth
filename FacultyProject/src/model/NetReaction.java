@@ -8,16 +8,13 @@ import java.util.Map;
 public class NetReaction {
 	
 	private Map<String, Integer> netReaction;
-	//to store history
-	private List<Integer> usedReactions;
+	private List<Integer> usedReactions;	//to store history
 	private List<Integer> oldReacCoef;
 	private List<Integer> newReacCoef;
 	private int steps = 0;
-//	private int initialID = -1;
 	private List<String> recursiveList = new ArrayList<>();
 	
 	public NetReaction() {
-		
 		netReaction = new HashMap<String, Integer>();
 		oldReacCoef = new ArrayList<Integer>();
 		newReacCoef = new ArrayList<Integer>();
@@ -26,7 +23,6 @@ public class NetReaction {
 	}
 	
 	private void InitialUpdate(ReactionCol rCol){		
-//		initialID = rCol.getCurrentID();
 		//strips first reaction
 		for( Pair pair : rCol.getPairs()){				
 			netReaction.put(pair.getFormula(), pair.getCoefficient());
@@ -41,10 +37,8 @@ public class NetReaction {
 			recursiveList.add(formula);
 		} else {
 			recursiveList.add(formula);
-			
-			//finds the coefficients of formula in the net reaction
 
-			//finds the coefficient of formula in currReaction
+			//finds the coefficient of formula in current reaction
 			if (netReaction.get(formula) == null) {
 				return;
 			}
@@ -92,7 +86,6 @@ public class NetReaction {
 		if (reactionToRemove.getCurrentID() != usedReactions.get(steps-1))
 			throw new IllegalArgumentException("No rollback possible");
 		if (steps <= 1){
-			//note:if <1 something went wrong! 
 			netReaction.clear();
 		} else {
 			//opposite of computation steps in updateForward
@@ -112,7 +105,6 @@ public class NetReaction {
 			}
 			
 			//remove reaction from usedList
-//			System.out.println("Removed : " + usedReactions.get(steps-1));
 			usedReactions.remove(steps-1);
 			recursiveList.remove(steps-1);
 			steps--;
@@ -135,10 +127,6 @@ public class NetReaction {
 	public int getLastReaction(){
 		return usedReactions.get(steps-1);
 	}
-	
-//	public int getInitialID() {
-//		return initialID;
-//	}
 	
 	public String toString(){
 		

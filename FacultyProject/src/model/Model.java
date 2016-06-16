@@ -93,8 +93,6 @@ public class Model {
  		}
 	
  		if (!map.containsKey(bestID)) {
- 			//System.out.println("recursive on " + formula);
-			//System.out.println("ID = " + bestID);
 			List<Pair> pairList = new ArrayList<>();		
 			List<String> chemList = new ArrayList<>();		
 			
@@ -107,11 +105,9 @@ public class Model {
 			map.put(bestID, rCol);
 			
 			netReaction.update(formula, rCol);
-			//System.out.println(netReaction);
 			
 			if (!netReaction.getMap().containsKey(desired)) {
 				netReaction.rollback(rCol);
-//				System.out.println("rollback");
 				recursiveDepth--;
 				retroSynth(formula);
 				return;
@@ -135,7 +131,6 @@ public class Model {
 		
 		if (recursiveDepth == 1 && !initialReactionCosts.containsKey(initialBestID)) {
 			initialReactionCosts.put(initialBestID, getNetCost());
-			//System.out.println("\n\n\n");
 			netMap.put(netReaction, getNetCost());
 			
 			this.netReaction = new NetReaction();
@@ -191,8 +186,6 @@ public class Model {
 		int upCount = 0;
 		
 		for (int k = 0; k < chem.length(); k++) {
-		    
-		    // Check for uppercase letters.
 		    if (Character.isUpperCase(chem.charAt(k)))
 		    	upCount++;
 		}
@@ -204,12 +197,10 @@ public class Model {
 		int totalCost = 0;
 		for (String chem : netReaction.getMap().keySet()) {
 			if (netReaction.getMap().get(chem) > 0)	{
-				if (!chem.equals(desired))
+				if (!chem.equals(desired)) {
 					if (costMap.containsKey(chem))
 						totalCost += costMap.get(chem);
-					else {
-//						System.err.println("No cost for the chemical " + chem + " has been declared");
-					}
+				}
 			}
 		}
 		

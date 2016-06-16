@@ -115,8 +115,7 @@ public class SynthPanel extends JPanel {
 
 	public void addReactionToPath(int reactionID, String recursiveOnFormula, String reaction) {
 		/*
-		 *  create new vertices based on each chemical found in the reaction (parameters)
-		 *  get the split regex from whereever we did it before
+		 *  create new vertices based on each chemical found in the reaction 
 		 */
 		List<Vertex> vertexList = new ArrayList<Vertex>();
 		Map<String, Integer> splitMap = splitReaction(reaction);
@@ -144,8 +143,8 @@ public class SynthPanel extends JPanel {
 						}
 					}
 					int latestOccurence = 0;
-					for(Vertex candidate : candidateRecursiveVertex){
-						if(rIDSeqMap.get(candidate.getReactionID()) >= latestOccurence){
+					for (Vertex candidate : candidateRecursiveVertex){
+						if (rIDSeqMap.get(candidate.getReactionID()) >= latestOccurence){
 							latestOccurence = rIDSeqMap.get(candidate.getReactionID());
 							recursiveVertex = candidate;
 
@@ -157,7 +156,7 @@ public class SynthPanel extends JPanel {
 			}
 						
 			/*
-			 * adding '+' and '-->' between vertices
+			 * adding '+' and '-->' between vertices to resemble reaction equations
 			 */
 			if (lastVertex != null) {
 				JLabel opLabel = new JLabel();
@@ -182,7 +181,6 @@ public class SynthPanel extends JPanel {
 			
 			lastVertex = vertex;
 		}
-		
 		c.gridy++;
 		
 		updateCoefs(recursiveVertex, destVertex, vertexList);
@@ -211,7 +209,6 @@ public class SynthPanel extends JPanel {
 		}
 		
 	}
-
 
 	private int gcd(int a, int b){
 		return (b == 0) ? a : gcd(b, a%b);
@@ -288,7 +285,7 @@ public class SynthPanel extends JPanel {
 		cardLayout.show(drawingPanel, "scrollPane" + flipCount%drawingPanel.getComponentCount());
 		String netString = netScrollMap.get(scrollMap.get("scrollPane"+flipCount%drawingPanel.getComponentCount())).toString();
 		netLabel.setText(netString);
-		scaleFont(netLabel);
+		formatFont(netLabel);
 		flipCount++;
 	}
 	
@@ -303,9 +300,6 @@ public class SynthPanel extends JPanel {
 
 
 	public void drawReactions() {
-		if (model.getNetMap().isEmpty()) {
-			
-		}
 		int i = 0;
 		for (NetReaction nr : model.getNetMap().keySet()) {
 			if (model.getNetMap().get(nr) == model.getMinCost()) {
@@ -317,7 +311,7 @@ public class SynthPanel extends JPanel {
 					}
 					if (i == 0) {
 						netLabel.setText(nr.toString());
-						scaleFont(netLabel);
+						formatFont(netLabel);
 					}
 					scrollMap.put("scrollPane"+i, scrollPane);
 					netScrollMap.put(scrollPane, nr);
@@ -344,7 +338,11 @@ public class SynthPanel extends JPanel {
 		}
 	}
 
-	public void scaleFont(JLabel label) {
+	public void formatFont(JLabel label) {
+		
+		/*
+		 * scale the text of the label to the bounds of its container, if bigger
+		 */
 	    int maxWidth = netPanel.getWidth();
 		if(label.getFontMetrics(label.getFont()).stringWidth(label.getText()) > maxWidth){
 			Font labelFont = label.getFont();
@@ -359,6 +357,10 @@ public class SynthPanel extends JPanel {
 			label.setFont(new Font(labelFont.getName(), Font.BOLD, newFontSize));
 			
 		}
+		
+		/*
+		 * Rewrite all numbers, excluding coefficients, in subscripts for easier chemical reading.
+		 */
 		if (label.getText().matches(".*\\d.*")) {
 			label.setText("<html><body>" + label.getText().replaceAll("(\\d+(?<!(^|\\s)\\d{1,2})(?=\\D|$))", "<sub>$1</sub>") + "</body></html>");
 		}

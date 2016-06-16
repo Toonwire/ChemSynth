@@ -39,11 +39,10 @@ public class Connection extends JPanel {
 		Rectangle start = source.getBounds();
 		Rectangle end = dest.getBounds();
 		
-		// don't draw a line if there is no space between the components
+		// don't draw a line if there is no space between the components.
 		// Doesn't really apply here as we manually space the vertices,
 		// but we might as well just handle it just in case.
 		if (!start.intersects(end)) {
-			
 			this.sourceMidBot = new Point(start.x + start.width / 2, start.y + start.height);
 			this.destMidTop = new Point(end.x + end.width / 2, end.y);
 			line = new Line2D.Double(sourceMidBot, destMidTop);

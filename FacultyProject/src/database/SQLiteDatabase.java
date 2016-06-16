@@ -48,10 +48,6 @@ public class SQLiteDatabase {
 			statement.executeUpdate(reactantTable);
 			statement.executeUpdate(productTable);
 			statement.executeUpdate(costTable);
-		   
-
-		    
-//		    System.out.println("Created table");
 
 		    disconnect();
 		    
@@ -173,7 +169,6 @@ public class SQLiteDatabase {
 				e.printStackTrace();
 			}
 			
-//			System.out.println("Inserted into table");
 			disconnect();
 			
 		} catch (SQLException e){
@@ -199,7 +194,6 @@ public class SQLiteDatabase {
 			resultSet.close();
 			resultSet = null;
 			
-//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
@@ -213,8 +207,6 @@ public class SQLiteDatabase {
 		try {
 			Class.forName("org.sqlite.JDBC");
 		    connection = DriverManager.getConnection("jdbc:sqlite::resource:" + getClass().getResource("chemSynth.db").toString());
-
-//			System.out.println("---> Connected to database");
 		    
 		} catch (Exception e){
 			System.err.println("---> Could not connect to the database");
@@ -232,48 +224,17 @@ public class SQLiteDatabase {
 				prepStmt.close();
 			}
 			
-			
 			connection.close();
-			
 			connection = null;
 			statement = null;
 			prepStmt = null;
-			
-//			System.out.println("---> Disconnected from database\n");
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-//	public ArrayList<String> getAttributeNames(String table){
-//		
-//		ArrayList<String> attributeNames = new ArrayList<String>();
-//		try{
-//			connection = this.connect();
-//			statement = connection.createStatement();
-//			
-//			// Only used to get a ResultSet object back, of which we get the MetaData
-//			ResultSet rs = statement.executeQuery("select * from " + table);	
-//			
-//			ResultSetMetaData rsmd = rs.getMetaData();		// this is what we're after
-//			int columnCount = rsmd.getColumnCount();
-//
-//			// The column count starts from 1, for some reason..
-//			for (int i = 1; i <= columnCount; i++ ) {
-//				attributeNames.add(rsmd.getColumnName(i));
-//			}
-//		} catch (SQLException e){
-//			e.printStackTrace();
-//		}
-//		
-//		return attributeNames;
-//	}
-//	
-//	public String toString(){
-//		return "Da fuck you doin' mon'";
-//	}
-
+	
 	public ArrayList<Integer> getReactionIDs(String desired) {
 		ArrayList<Integer> reactionIDs = new ArrayList<Integer>();
 		
@@ -302,35 +263,6 @@ public class SQLiteDatabase {
 		
 		return reactionIDs;
 	}
-
-//	public LinkedList<String> getReactants(Integer reactionID) {
-//		LinkedList<String> reactants = new LinkedList<String>();
-//		
-//		String sql = "select * from reactants where reactionID=?;";
-//		
-//		try {
-//			connection = this.connect();
-//			prepStmt = connection.prepareStatement(sql);
-//			prepStmt.setInt(1, reactionID);
-//			
-//			ResultSet resultSet = prepStmt.executeQuery();
-//	      
-//			if (resultSet.next()) {
-//				reactants.add(resultSet.getString("formula"));
-//			}
-//			      
-//			resultSet.close();
-//			resultSet = null;
-//			
-////			System.out.println("Extracted information from database");
-//			disconnect();
-//		      
-//		} catch (SQLException e) {
-//				e.printStackTrace();
-//		} 
-//		
-//		return reactants;
-//	}
 
 	public int getCoefficient(int reactionID, String formula) {
 		int coefficient = 1;
@@ -365,7 +297,6 @@ public class SQLiteDatabase {
 			resultSet.close();
 			resultSet = null;
 			
-//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
@@ -395,7 +326,6 @@ public class SQLiteDatabase {
 			resultSet.close();
 			resultSet = null;
 			
-//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){
@@ -404,35 +334,6 @@ public class SQLiteDatabase {
 		
 		return chemicals;
 	}
-	
-	
-//	public ArrayList<String> getAllCompounds() {
-//		ArrayList<String> result = new ArrayList<String>();
-//		
-//		String sql = "select formula from reactants union select formula from products;";
-//		
-//		try {
-//			connection = this.connect();
-//			prepStmt = connection.prepareStatement(sql);
-//			
-//			ResultSet resultSet = prepStmt.executeQuery();
-//	      
-//			while (resultSet.next()) {
-//				result.add(resultSet.getString("formula"));
-//			}
-//			      
-//			resultSet.close();
-//			resultSet = null;
-//			
-////			System.out.println("Extracted information from database");
-//			disconnect();
-//		      
-//		} catch (SQLException e){
-//				e.printStackTrace();
-//		} 
-//		
-//		return result;
-//	}
 
 	public HashMap<String, Integer> getCompoundCosts() {
 		HashMap<String, Integer> result = new HashMap<>();
@@ -456,7 +357,6 @@ public class SQLiteDatabase {
 			resultSet.close();
 			resultSet = null;
 			
-//			System.out.println("Extracted information from database");
 			disconnect();
 		      
 		} catch (SQLException e){

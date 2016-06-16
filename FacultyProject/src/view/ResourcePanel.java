@@ -37,6 +37,7 @@ public class ResourcePanel extends JPanel{
 //	-											   -
 //	-                                   SYNTHESIZE -
 //	------------------------------------------------
+	
 	private final int SIZE = 800;
 	private final String chemTextPlaceholder = " Enter chemical resource";
 	private final String desiredTextPlaceholder = " Enter desired chemical";
@@ -117,13 +118,13 @@ public class ResourcePanel extends JPanel{
 		 
 		JTextField chemTextField = new JTextField(chemTextPlaceholder);
 		chemTextField.setName("ChemTextField");
+		
 		resourceMap.put(chemTextField, "");
 		resourceMap.put(desireTextField, "");
-		//always pair one chemical with an amount
 		chemList.add(chemTextField);
-		
 		chemTextField.setFont(new Font("Plain", Font.ITALIC, 14));
 		chemTextField.setBounds(60, SIZE/2-150+50*chemList.size(), 200, 30);
+		
 		this.add(chemTextField);
 				
 	}
