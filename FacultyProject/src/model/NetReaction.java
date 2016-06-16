@@ -9,6 +9,7 @@ public class NetReaction {
 	
 	private Map<String, Integer> netReaction;
 	private List<Integer> usedReactions;	//to store history
+	private List<Integer> coefUsedInRecipe;
 	private List<Integer> oldReacCoef;
 	private List<Integer> newReacCoef;
 	private int steps = 0;
@@ -19,6 +20,7 @@ public class NetReaction {
 		oldReacCoef = new ArrayList<Integer>();
 		newReacCoef = new ArrayList<Integer>();
 		usedReactions = new ArrayList<Integer>();
+		coefUsedInRecipe = new ArrayList<Integer>();
 		
 	}
 	
@@ -28,6 +30,7 @@ public class NetReaction {
 			netReaction.put(pair.getFormula(), pair.getCoefficient());
 		}
 		usedReactions.add(rCol.getCurrentID());
+		coefUsedInRecipe.add(1);
 		steps = 1;
 	}
 
@@ -63,6 +66,11 @@ public class NetReaction {
 
 			//store to enable rollback
 			usedReactions.add(currentCol.getCurrentID());
+			for( int i = 0; i < coefUsedInRecipe.size(); i++){
+				int coef = coefUsedInRecipe.get(i);
+				coefUsedInRecipe.set(i, coef*oldCoef);
+			}
+			coefUsedInRecipe.add(newCoef);
 			oldReacCoef.add(oldCoef);
 			newReacCoef.add(newCoef);
 			steps++;
@@ -106,6 +114,10 @@ public class NetReaction {
 			
 			//remove reaction from usedList
 			usedReactions.remove(steps-1);
+			coefUsedInRecipe.remove(steps-1);
+			for(Integer coef : coefUsedInRecipe){
+				coef = coef/oldCoef;
+			}
 			recursiveList.remove(steps-1);
 			steps--;
 		}
@@ -124,8 +136,26 @@ public class NetReaction {
 		return usedReactions;
 	}
 	
+	public List<Integer> getCoefUsedInRecipe(){
+		return coefUsedInRecipe;
+	}
+	
 	public int getLastReaction(){
 		return usedReactions.get(steps-1);
+	}
+	
+	public void printRecipe(){
+		System.out.println(this);
+		System.out.print("Recipe: ");
+		Integer[] usedReactionsArray = usedReactions.toArray(new Integer[0]);
+		Integer[] coefUsedInRecipeArray = coefUsedInRecipe.toArray(new Integer[0]);
+		int i = 0;
+		for(i = 0; i < usedReactionsArray.length-1; i++){
+			System.out.print(coefUsedInRecipeArray[i] + "*R" + usedReactionsArray[i] + " + ");
+		}
+		System.out.println(coefUsedInRecipeArray[i] + "*R" + usedReactionsArray[i]);
+		System.out.println();
+		
 	}
 	
 	public String toString(){
